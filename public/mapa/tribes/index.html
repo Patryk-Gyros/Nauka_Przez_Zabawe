@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Mapa plemion</title>
+
+<style>
+
+/* 🔥 usuwa highlight i zaznaczanie */
+* {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+html, body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* LAYOUT */
+#container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+}
+
+#left {
+  width: 700px;
+}
+
+#question {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+#timer {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* MAPA */
+#game {
+  position: relative;
+}
+
+#map {
+  width: 100%;
+  display: block;
+  cursor: pointer;
+}
+
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: none;
+  pointer-events: none;
+}
+
+/* PANEL PRAWO */
+#right {
+  width: 320px;
+  min-height: 420px; /* 🔥 zamiast height */
+  background: #f4f4f4;
+  padding: 15px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden; /* 🔥 usuwa pasek */
+}
+
+/* INFO */
+#info {
+  display: none;
+}
+
+/* PRZYCISK */
+#nextBtn {
+  margin-top: 15px;
+  padding: 14px;
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(135deg, #4CAF50, #2e7d32);
+  color: white;
+  cursor: pointer;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: transform 0.15s ease;
+}
+
+#nextBtn:hover {
+  transform: scale(1.03);
+}
+
+#nextBtn:active {
+  transform: scale(0.97);
+}
+
+/* strzałka */
+.arrow {
+  margin-left: 8px;
+  font-size: 18px;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+#nextBtn:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* KOMUNIKAT */
+#msg {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+#msg.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#msg.error {
+  background: #ffe5e5;
+  color: #b30000;
+}
+
+#msg.success {
+  background: #e6ffe6;
+  color: #0a7a0a;
+}
+
+/* KONIEC */
+#endScreen {
+  display: none;
+  text-align: center;
+}
+
+#endScreen h2 {
+  color: #1e88e5;
+}
+
+/* restart */
+#restartBtn {
+  padding: 10px;
+  border: none;
+  background: #1e88e5;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ranking */
+#ranking {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="container">
+
+  <div id="left">
+    <div id="question">Kliknij plemię...</div>
+    <div id="timer"></div>
+
+    <div id="game">
+      <img id="map" src="base.png">
+      <img id="overlay">
+    </div>
+  </div>
+
+  <div id="right">
+
+    <div id="info">
+      <h2 id="tribeName"></h2>
+      <p id="tribeDesc"></p>
+      <p><strong>Główne grody:</strong> <span id="tribeCities"></span></p>
+
+      <div id="nextBtn">
+        Dalej <span class="arrow">→</span>
+      </div>
+    </div>
+
+    <div id="msg"></div>
+
+    <div id="endScreen">
+      <h2>
+        Brawo! 🎉<br><br>
+        To koniec gry!<br>
+        Teraz wiesz więcej o plemionach Polski przedpiastowskiej.
+      </h2>
+
+      <button id="restartBtn">Zagraj ponownie</button>
+    </div>
+
+    <div id="ranking"></div>
+
+  </div>
+
+</div>
+
+<script src="game.js"></script>
+
+</body>
+</html>

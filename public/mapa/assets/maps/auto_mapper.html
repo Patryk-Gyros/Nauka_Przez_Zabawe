@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Mapper krajów (klikany)</title>
+
+<style>
+body {
+  background:#0f172a;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+}
+
+canvas {
+  border:2px solid #444;
+  margin-top:20px;
+  max-width:90vw;
+  cursor:pointer;
+}
+
+#panel {
+  margin-top:15px;
+}
+
+input {
+  padding:10px;
+  font-size:16px;
+  width:250px;
+}
+
+button {
+  padding:10px 20px;
+  margin:5px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+#colorBox {
+  width:40px;
+  height:25px;
+  display:inline-block;
+  border:1px solid white;
+  margin-left:10px;
+}
+
+#list {
+  margin-top:15px;
+  max-height:250px;
+  overflow:auto;
+  text-align:left;
+  display:inline-block;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🎯 Mapowanie krajów (kliknij → wpisz)</h2>
+
+<canvas id="canvas"></canvas>
+
+<div id="panel">
+  <input id="name" placeholder="Nazwa kraju">
+  <div id="colorBox"></div>
+  <br>
+  <button onclick="save()">Zapisz</button>
+  <button onclick="exportData()">Eksportuj</button>
+</div>
+
+<div id="list"></div>
+
+<script>
+
+const img = new Image();
+img.src = "./europe_now.hitmap.png";
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
+let currentColor = null;
+let mapping = {};
+
+// ===== LOAD =====
+img.onload = () => {
+  canvas.width = img.width;
+  canvas.height = img.height;
+
+  canvas.style.width = "900px";
+  canvas.style.height = "auto";
+
+  ctx.drawImage(img, 0, 0);
+};
+
+// ===== CLICK =====
+canvas.onclick = function(e) {
+
+  const rect = canvas.getBoundingClientRect();
+
+  const x = Math.floor((e.clientX - rect.left) * (img.width / rect.width));
+  const y = Math.floor((e.clientY - rect.top) * (img.height / rect.height));
+
+  const pixel = ctx.getImageData(x, y, 1, 1).data;
+
+  currentColor = `${pixel[0]},${pixel[1]},${pixel[2]}`;
+
+  document.getElementById("colorBox").style.background =
+    `rgb(${pixel[0]},${pixel[1]},${pixel[2]})`;
+
+  console.log("Klik:", currentColor);
+};
+
+// ===== SAVE =====
+function save() {
+
+  const name = document.getElementById("name").value;
+
+  if (!name || !currentColor) return;
+
+  mapping[currentColor] = name;
+
+  document.getElementById("name").value = "";
+
+  renderList();
+}
+
+// ===== LIST =====
+function renderList() {
+
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  for (let key in mapping) {
+    const div = document.createElement("div");
+    div.innerText = `${key} → ${mapping[key]}`;
+    list.appendChild(div);
+  }
+}
+
+// ===== EXPORT =====
+function exportData() {
+
+  let output = "const regions = {\n";
+
+  for (let key in mapping) {
+    output += `  "${key}": "${mapping[key]}",\n`;
+  }
+
+  output += "};";
+
+  console.log(output);
+  alert("Gotowe! Skopiuj z konsoli (F12)");
+}
+
+</script>
+
+</body>
+</html>

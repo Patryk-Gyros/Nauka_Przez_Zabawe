@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>AI Gra Historia</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:Inter,sans-serif;
+  background:linear-gradient(135deg,#dbe9f6,#eaf2fb,#d6e4f3);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.card{
+  background:white;
+  width:420px;
+  padding:40px;
+  border-radius:28px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.12);
+  text-align:center;
+}
+
+h1{
+  margin:0 0 8px 0;
+  font-size:22px;
+  font-weight:600;
+  color:#1f2d3d;
+}
+
+.subtitle{
+  font-size:14px;
+  color:#6b7c93;
+  margin-bottom:28px;
+}
+
+input[type="file"]{
+  margin-bottom:20px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:18px;
+  font-size:15px;
+  font-weight:500;
+  background:linear-gradient(135deg,#5b8def,#3c6df0);
+  color:white;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(60,109,240,.3);
+}
+
+button:disabled{
+  background:#c5d3f6;
+  cursor:not-allowed;
+  box-shadow:none;
+  transform:none;
+}
+
+.progress-container{
+  width:100%;
+  height:6px;
+  background:#eef3fa;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:20px;
+  display:none;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#5b8def,#3c6df0);
+  transition:width .3s ease;
+}
+
+.status{
+  margin-top:14px;
+  font-size:13px;
+  color:#4a5a73;
+  min-height:18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>AI Gra Historia</h1>
+  <div class="subtitle">
+    Wgraj zdjęcia materiału. AI przygotuje pytania do gry edukacyjnej.
+  </div>
+
+  <input type="file" id="files" multiple accept="image/*">
+
+  <button id="generateBtn" onclick="startAnalysis()">
+    Analizuj materiał
+  </button>
+
+  <div class="progress-container" id="progressContainer">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="status" id="statusText"></div>
+</div>
+
+<script>
+
+async function startAnalysis(){
+
+  const files=document.getElementById("files").files;
+  if(files.length===0){
+    alert("Wybierz pliki.");
+    return;
+  }
+
+  const btn=document.getElementById("generateBtn");
+  const progressContainer=document.getElementById("progressContainer");
+  const progressBar=document.getElementById("progressBar");
+  const status=document.getElementById("statusText");
+
+  btn.disabled=true;
+  progressContainer.style.display="block";
+  status.innerText="Analizuję materiał...";
+
+  // FAKE PROGRESS (animacja wizualna)
+  let progress=0;
+  const interval=setInterval(()=>{
+    if(progress<90){
+      progress+=Math.random()*8;
+      progressBar.style.width=progress+"%";
+    }
+  },300);
+
+  const formData=new FormData();
+  for(let i=0;i<files.length;i++){
+    formData.append("images",files[i]);
+  }
+
+  try{
+    const response=await fetch("/analizuj",{
+      method:"POST",
+      body:formData
+    });
+
+    const data=await response.json();
+
+    clearInterval(interval);
+    progressBar.style.width="100%";
+    status.innerText="Gotowe! Otwieram edytor...";
+
+    setTimeout(()=>{
+      window.location.href="edytor.html";
+    },800);
+
+  }catch(err){
+    clearInterval(interval);
+    status.innerText="Błąd połączenia z serwerem.";
+    btn.disabled=false;
+    progressBar.style.width="0%";
+  }
+}
+
+</script>
+
+</body>
+</html>

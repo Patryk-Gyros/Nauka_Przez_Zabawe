@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Edytor pytań – Generator offline</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body{font-family:Inter,sans-serif;background:#eaf3ff;margin:0;text-align:center}
+h2{margin-top:20px}
+#editor{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:20px}
+.category{background:white;padding:15px;border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,.08)}
+.question{background:#f5f5f5;padding:10px;margin-bottom:12px;border-radius:8px}
+.qtext{font-weight:bold;margin-bottom:6px}
+.answer{background:#ddd;margin:4px 0;padding:6px;border-radius:6px;cursor:pointer}
+.answer.correct{background:#c8f7c5;border:2px solid #2e7d32}
+.expl{font-size:14px;margin-top:6px}
+button{margin:20px;padding:12px 30px;font-size:16px;border:none;border-radius:28px;background:linear-gradient(#ffb74d,#f57c00);color:white;cursor:pointer}
+</style>
+</head>
+<body>
+
+<h2>Edytor pytań</h2>
+<div id="editor"></div>
+<button onclick="generateOffline()">Zapisz wersję offline</button>
+
+<script>
+
+let data=[];
+
+async function load(){
+  const res = await fetch("/pytania");
+  data = await res.json();
+  build();
+}
+load();
+
+function build(){
+  const editor=document.getElementById("editor");
+  editor.innerHTML="";
+  data.forEach(cat=>{
+    const div=document.createElement("div");
+    div.className="category";
+    div.innerHTML="<h3 contenteditable='true'>"+cat.category+"</h3>";
+
+    cat.questions.forEach(q=>{
+      const qDiv=document.createElement("div");
+      qDiv.className="question";
+
+      const qText=document.createElement("div");
+      qText.className="qtext";
+      qText.contentEditable=true;
+      qText.innerText=q.question;
+      qDiv.appendChild(qText);
+
+      q.answers.forEach((a,i)=>{
+        const aDiv=document.createElement("div");
+        aDiv.className="answer";
+        if(i===0) aDiv.classList.add("correct");
+        aDiv.contentEditable=true;
+        aDiv.innerText=a;
+        aDiv.onclick=function(){
+          qDiv.querySelectorAll(".answer").forEach(el=>el.classList.remove("correct"));
+          aDiv.classList.add("correct");
+        };
+        qDiv.appendChild(aDiv);
+      });
+
+      const expl=document.createElement("div");
+      expl.className="expl";
+      expl.contentEditable=true;
+      expl.innerText=q.explanation;
+      qDiv.appendChild(expl);
+
+      div.appendChild(qDiv);
+    });
+
+    editor.appendChild(div);
+  });
+}
+
+function generateOffline(){
+
+  const categories=[];
+
+  document.querySelectorAll(".category").forEach(catDiv=>{
+    const name=catDiv.querySelector("h3").innerText.trim();
+    const questions=[];
+    catDiv.querySelectorAll(".question").forEach(qDiv=>{
+      const q=qDiv.querySelector(".qtext").innerText.trim();
+      const a=[];
+      let correctIndex=0;
+      qDiv.querySelectorAll(".answer").forEach((ans,i)=>{
+        a.push(ans.innerText.trim());
+        if(ans.classList.contains("correct")) correctIndex=i;
+      });
+      const explanation=qDiv.querySelector(".expl").innerText.trim();
+      questions.push({q,a,correct:correctIndex,explanation});
+    });
+    categories.push({name,questions});
+  });
+
+  if(categories.length!==6){
+    alert("Gra musi mieć dokładnie 6 kategorii.");
+    return;
+  }
+
+  const title=categories[0].name;
+
+  let segmentsHTML="";
+  for(let i=0;i<6;i++){
+    const angle=30+(i*60);
+    const label=categories[i].name.split(" ").join("<br>");
+    segmentsHTML += "<div class='segment' style='transform:rotate("+angle+"deg)'><span>"+label+"</span></div>";
+  }
+
+  const scriptContent =
+"let score=0;" +
+"let rotation=0;" +
+"let spinning=false;" +
+"let solved=0;" +
+"const TOTAL=18;" +
+"const wheel=document.getElementById('wheel');" +
+"const panel=document.getElementById('panel');" +
+"const feedback=document.getElementById('feedback');" +
+"const spinBtn=document.getElementById('spinBtn');" +
+"function shuffleArray(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}" +
+"const categories="+JSON.stringify(categories)+";" +
+"categories.forEach(c=>c.remaining=[...c.questions]);" +
+"function spin(){if(spinning){rotation+=360;wheel.style.transform='rotate('+rotation+'deg)';return;}" +
+"const segments=document.querySelectorAll('.segment');" +
+"const active=categories.map((c,i)=>c.remaining.length>0?i:null).filter(i=>i!==null);" +
+"if(active.length===0){endGame();return;}" +
+"spinning=true;feedback.style.display='none';panel.innerHTML='';segments.forEach(s=>s.classList.remove('active'));" +
+"const index=active[Math.floor(Math.random()*active.length)];" +
+"const targetAngle=(360-(index*60+30))%360;" +
+"rotation+=720+targetAngle-(rotation%360);" +
+"wheel.style.transform='rotate('+rotation+'deg)';" +
+"setTimeout(()=>{showQuestion(index);spinning=false;},4000);}" +
+"function showQuestion(index){const segments=document.querySelectorAll('.segment');const cat=categories[index];segments[index].classList.add('active');" +
+"const q=cat.remaining.splice(Math.floor(Math.random()*cat.remaining.length),1)[0];solved++;" +
+"panel.innerHTML='<b>'+cat.name+'</b><br><br>'+q.q;" +
+"const answers=q.a.map((t,i)=>({text:t,correct:i===q.correct}));shuffleArray(answers);" +
+"answers.forEach(ans=>{const btn=document.createElement('div');btn.className='answer';btn.innerText=ans.text;" +
+"btn.onclick=function(){if(spinning)return;if(ans.correct){btn.classList.add('correct');score++;document.getElementById('scoreBox').innerText='Punkty: '+score;feedback.innerHTML=q.explanation;}" +
+"else{btn.classList.add('wrong');feedback.innerHTML='Niepoprawna odpowiedź.';}feedback.style.display='block';spinBtn.disabled=true;" +
+"if(cat.remaining.length===0){segments[index].classList.add('completed');}" +
+"setTimeout(()=>{spinBtn.disabled=false;if(solved===TOTAL)endGame();},3000);};panel.appendChild(btn);});}" +
+"function endGame(){document.getElementById('finalScore').innerText='Twój wynik: '+score+' / '+TOTAL;document.getElementById('endScreen').style.display='flex';}";
+
+  const html =
+"<!DOCTYPE html><html lang='pl'><head><meta charset='UTF-8'><title>"+title+"</title>" +
+"<link href='https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600&display=swap' rel='stylesheet'>" +
+"<style>" +
+"body{font-family:Inter,sans-serif;background:radial-gradient(circle at top,#eef4fb,#ffffff);margin:0;text-align:center}" +
+"header{font-family:'Playfair Display',serif;padding:10px 0 4px 0;font-size:24px}" +
+"#scoreBox{display:inline-block;margin-top:6px;padding:6px 18px;font-size:15px;background:white;border-radius:20px;box-shadow:0 4px 10px rgba(0,0,0,.15)}" +
+"#wheel-box{position:relative;width:280px;height:280px;margin:10px auto 0 auto}" +
+"#wheel{width:100%;height:100%;border-radius:50%;border:6px solid #222;box-shadow:0 6px 14px rgba(0,0,0,.35);transition:transform 4s cubic-bezier(.2,.7,.25,1);background:conic-gradient(#1E5E44 0 60deg,#F0B234 60deg 120deg,#EB703C 120deg 180deg,#CA366C 180deg 240deg,#EC962E 240deg 300deg,#489EA0 300deg 360deg)}" +
+".segment{position:absolute;width:100%;top:50%;font-size:11px;font-weight:600;pointer-events:none;transition:opacity .4s ease}" +
+".segment span{display:inline-block;transform:translateY(-110px)}" +
+".segment.active span{background:#fff;padding:2px 6px;border-radius:8px;box-shadow:0 0 8px rgba(255,255,255,.9)}" +
+".segment.completed{opacity:.25}" +
+"#pointer{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:26px;color:#ff3b3b;text-shadow:0 0 8px rgba(255,0,0,.6);z-index:5}" +
+"#spinBtn{margin-top:16px;padding:10px 28px;font-size:16px;border:none;border-radius:28px;background:linear-gradient(#ffb74d,#f57c00);color:white;cursor:pointer}" +
+".answer{margin:6px auto;padding:10px;border-radius:12px;border:2px solid #444;background:#f7f7f7;cursor:pointer;width:420px;max-width:90%}" +
+".correct{background:#c8f7c5 !important;border-color:#2e7d32 !important}" +
+".wrong{background:#ffcdd2 !important;border-color:#c62828 !important}" +
+"#feedback{display:none;margin-top:8px;padding:16px;border-radius:14px;background:#e3f2fd;max-width:620px;margin:auto}" +
+"#endScreen{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center}" +
+"#endBox{background:white;padding:40px;border-radius:20px;font-size:22px}" +
+"</style></head><body>" +
+"<header>🎡 "+title+"<br><div id='scoreBox'>Punkty: 0</div></header>" +
+"<div id='wheel-box'><div id='pointer'>🔻</div><div id='wheel'>"+segmentsHTML+"</div></div>" +
+"<button id='spinBtn' onclick='spin()'>Zakręć kołem</button>" +
+"<div id='panel'></div><div id='feedback'></div>" +
+"<div id='endScreen'><div id='endBox'>🎯 Gra ukończona!<br><br><span id='finalScore'></span><br><br><button onclick='location.reload()'>Zagraj ponownie</button></div></div>" +
+"<script>"+scriptContent+"<\/script></body></html>";
+
+  const blob=new Blob([html],{type:"text/html"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=title.replace(/\s+/g,"_")+".html";
+  a.click();
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Auto Mapper</title>
+
+<style>
+body {
+  background:#0f172a;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+}
+
+canvas {
+  border:2px solid #444;
+  margin:10px;
+  max-width:45vw;
+}
+
+#panel {
+  margin-top:10px;
+}
+
+input {
+  padding:8px;
+  font-size:14px;
+}
+
+button {
+  padding:10px 15px;
+  margin:5px;
+}
+
+#preview {
+  margin-top:10px;
+  font-size:18px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🔥 AUTO MAPOWANIE KRAJÓW</h2>
+
+<canvas id="map"></canvas>
+<canvas id="hit" style="display:none;"></canvas>
+
+<div id="panel">
+  <input id="name" placeholder="Nazwa kraju">
+  <button onclick="save()">Zapisz</button>
+  <button onclick="exportData()">Eksportuj</button>
+</div>
+
+<div id="preview"></div>
+
+<script>
+const mapImg = new Image();
+const hitImg = new Image();
+
+// ✅ KLUCZOWA POPRAWKA — ścieżki względne
+mapImg.src = "./europe_now.png";
+hitImg.src = "./europe_now.hitmap.png";
+
+const mapCanvas = document.getElementById("map");
+const mapCtx = mapCanvas.getContext("2d");
+
+const hitCanvas = document.getElementById("hit");
+const hitCtx = hitCanvas.getContext("2d", { willReadFrequently: true });
+
+let colors = [];
+let currentIndex = 0;
+let mapping = {};
+
+mapImg.onload = () => {
+  mapCanvas.width = mapImg.width;
+  mapCanvas.height = mapImg.height;
+
+  // ładne skalowanie
+  mapCanvas.style.width = "900px";
+  mapCanvas.style.height = "auto";
+
+  mapCtx.drawImage(mapImg, 0, 0);
+};
+
+hitImg.onload = () => {
+  hitCanvas.width = hitImg.width;
+  hitCanvas.height = hitImg.height;
+
+  hitCtx.drawImage(hitImg, 0, 0);
+
+  extractColors();
+  nextColor();
+};
+
+// ===== WYCIĄGANIE KOLORÓW =====
+function extractColors() {
+  const data = hitCtx.getImageData(0, 0, hitCanvas.width, hitCanvas.height).data;
+  const set = new Set();
+
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i];
+    const g = data[i+1];
+    const b = data[i+2];
+    const a = data[i+3];
+
+    if (a === 0) continue;
+    if (r > 240 && g > 240 && b > 240) continue;
+
+    set.add(`${r},${g},${b}`);
+  }
+
+  colors = [...set];
+}
+
+// ===== SZUKANIE ŚRODKA KOLORU =====
+function findCenter(color) {
+  const [r,g,b] = color.split(",").map(Number);
+
+  const data = hitCtx.getImageData(0, 0, hitCanvas.width, hitCanvas.height).data;
+
+  let sumX = 0;
+  let sumY = 0;
+  let count = 0;
+
+  for (let y = 0; y < hitCanvas.height; y += 5) {
+    for (let x = 0; x < hitCanvas.width; x += 5) {
+
+      const i = (y * hitCanvas.width + x) * 4;
+
+      if (
+        data[i] === r &&
+        data[i+1] === g &&
+        data[i+2] === b
+      ) {
+        sumX += x;
+        sumY += y;
+        count++;
+      }
+    }
+  }
+
+  if (count === 0) return null;
+
+  return {
+    x: Math.floor(sumX / count),
+    y: Math.floor(sumY / count)
+  };
+}
+
+// ===== KOLEJNY KRAJ =====
+function nextColor() {
+
+  if (currentIndex >= colors.length) {
+    document.getElementById("preview").innerText = "DONE ✅";
+    return;
+  }
+
+  const color = colors[currentIndex];
+  const center = findCenter(color);
+
+  if (!center) {
+    currentIndex++;
+    nextColor();
+    return;
+  }
+
+  mapCtx.drawImage(mapImg, 0, 0);
+
+  mapCtx.beginPath();
+  mapCtx.arc(center.x, center.y, 12, 0, Math.PI * 2);
+  mapCtx.fillStyle = "red";
+  mapCtx.fill();
+
+  document.getElementById("preview").innerText =
+    `Kolor: ${color} (${currentIndex+1}/${colors.length})`;
+
+  window.currentColor = color;
+  document.getElementById("name").focus();
+}
+
+// ===== ZAPIS =====
+function save() {
+  const name = document.getElementById("name").value;
+
+  if (!name) return;
+
+  mapping[currentColor] = name;
+
+  document.getElementById("name").value = "";
+
+  currentIndex++;
+  nextColor();
+}
+
+// ===== EKSPORT =====
+function exportData() {
+  let output = "const regions = {\n";
+
+  for (let key in mapping) {
+    output += `  "${key}": "${mapping[key]}",\n`;
+  }
+
+  output += "};";
+
+  console.log(output);
+  alert("Gotowe! Skopiuj z konsoli (F12)");
+}
+</script>
+
+</body>
+</html>

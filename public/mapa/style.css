@@ -1,0 +1,77 @@
+body {
+    margin: 0;
+    background: #0f172a;
+    color: white;
+    font-family: Arial;
+}
+
+.app {
+    max-width: 1300px;
+    margin: auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+header p {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #cbd5f5;
+}
+
+.maps {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.map-box {
+    background: #1e293b;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.map-box h2 {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+canvas {
+    border-radius: 8px;
+    background: #0b1220;
+}
+
+.controls {
+    margin-top: 20px;
+    text-align: center;
+}
+
+button {
+    padding: 12px 24px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    background: #22c55e;
+    color: black;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+button:hover {
+    background: #16a34a;
+}
+
+#score {
+    display: inline-block;
+    font-size: 18px;
+}
