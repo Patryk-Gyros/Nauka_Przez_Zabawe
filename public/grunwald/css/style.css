@@ -1,0 +1,455 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    overflow:hidden;
+    background:black;
+    font-family:Georgia, serif;
+}
+
+#scene{
+
+    position:relative;
+
+    width:100vw;
+    height:100vh;
+
+    background:black;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#pergamin{
+
+    max-width:95vw;
+    max-height:95vh;
+
+    width:auto;
+    height:auto;
+
+    opacity:0;
+
+    transition:opacity 3s;
+}
+#flash{
+
+    position:absolute;
+
+    width:100%;
+    height:100%;
+
+    background:white;
+
+    opacity:0;
+}
+
+#title{
+transition: all 2s ease;
+    position:absolute;
+
+    top:50%;
+    left:50%;
+font-family:'Cinzel', serif;
+
+    transform:translate(-50%,-50%);
+
+    text-align:center;
+
+    font-size:82px;
+
+    font-weight:bold;
+
+    color:#ffd34d;
+
+    letter-spacing:4px;
+
+    opacity:0;
+
+    transition:opacity 2s;
+
+    z-index:10;
+
+    text-shadow:
+        3px 3px 0 #3a1f00,
+        0 0 10px #ffcc33,
+        0 0 20px #ff9900,
+        0 0 35px rgba(255,180,0,0.8),
+        0 0 50px rgba(255,120,0,0.5);
+}
+@keyframes glow {
+
+    0% {
+        transform:translate(-50%,-50%) scale(1);
+    }
+
+    50% {
+        transform:translate(-50%,-50%) scale(1.03);
+    }
+
+    100% {
+        transform:translate(-50%,-50%) scale(1);
+    }
+}
+#europa{
+
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+width:86%;
+height:84%;
+
+    object-fit:contain;
+
+    opacity:0;
+
+    transition:opacity 3s ease;
+
+    z-index:2;
+}
+#polska,
+#litwa,
+#krzyzacy{
+
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:80%;
+    height:80%;
+
+    object-fit:contain;
+
+    opacity:0;
+
+    z-index:3;
+
+    transition:opacity 2s ease;
+}
+#herb-polska,
+#herb-litwa,
+#herb-krzyzacy{
+
+    position:absolute;
+
+    width:260px;
+
+    opacity:0;
+
+    z-index:20;
+
+    transition:all 1.5s ease;
+}
+#herb-polska{
+
+    left:-500px;
+    right:auto;
+}
+
+#herb-litwa{
+
+    right:-500px;
+}
+
+
+#herb-krzyzacy{
+
+    right:auto;
+    left:50%;
+
+    top:-500px;
+
+    transform:translateX(-50%);
+}
+#map-container{
+
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:100vw;
+    height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#rok{
+
+    position:absolute;
+
+    left:2%;
+
+    top:-300px;
+
+    width:260px;
+
+    opacity:0;
+
+    z-index:30;
+
+    transition:all 2s ease;
+}
+#map-background{
+
+    position:absolute;
+
+    left:0;
+    top:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    opacity:0;
+
+    z-index:1;
+
+    transition:opacity 1s ease;
+}
+#mapa-krewo{
+
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+   width:79%;
+   height:79%;
+    object-fit:contain;
+
+    opacity:0;
+
+filter:brightness(0.1);
+
+transition:
+    opacity 2s ease,
+    filter 2s ease;
+
+    z-index:5;
+}
+#marker-krewo{
+
+    position:absolute;
+
+    width:260px;
+
+    left:50%;
+    top:29%;
+
+    transform:translate(-50%,-50%);
+
+    opacity:0;
+
+    z-index:60;
+}
+#mapa-krewo-unia{
+opacity:0;
+
+filter:
+    brightness(1.6)
+    saturate(1.8);
+
+transition:
+    opacity 1.5s ease,
+    filter 1.5s ease;
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:79%;
+    height:79%;
+
+    object-fit:contain;
+
+    opacity:0;
+
+    z-index:6;
+}
+#jadwiga-slub{
+
+    position:absolute;
+
+    width:300px;
+
+    left:-400px;
+
+    bottom:8%;
+
+    opacity:0;
+
+    transition:all 2s ease;
+
+    z-index:30;
+}
+
+#jagiello-slub{
+
+    position:absolute;
+
+    width:300px;
+
+    right:-400px;
+
+    bottom:8%;
+
+    opacity:0;
+
+    transition:all 2s ease;
+
+    z-index:30;
+}
+#marker-slub{
+
+    position:absolute;
+
+    width:260px;
+
+    left:42%;
+    top:49%;
+
+    transform:translate(-50%,-50%);
+
+    opacity:0;
+
+    z-index:60;
+
+    transition:all 0.5s ease;
+}
+#godlo-unii{
+
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%) scale(0);
+
+    width:420px;
+
+    opacity:0;
+
+    transition:all 2s ease;
+
+    z-index:40;
+}
+#mapa-1410,
+#mapa-zmudz{
+
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+  width:79%;
+height:79%;
+
+    object-fit:contain;
+
+    opacity:0;
+
+    z-index:10;
+}
+#marker-powstanie{
+
+    position:absolute;
+
+    width:220px;
+
+    left:58%;
+    top:30%;
+
+    transform:translate(-50%,-50%);
+
+    opacity:0;
+
+    z-index:60;
+}
+#ulrich{
+
+    position:absolute;
+
+    width:250px;
+
+    left:50%;
+    top:-500px;
+
+    transform:translateX(-50%);
+
+    opacity:0;
+
+    transition:all 2s ease;
+
+    z-index:50;
+}
+#jagiello-krol{
+
+    position:absolute;
+
+    width:250px;
+
+    left:-400px;
+
+    bottom:4%;
+
+    opacity:0;
+
+    transition:all 2s ease;
+
+    z-index:50;
+}
+#witold{
+
+    position:absolute;
+
+    width:250px;
+
+    right:-400px;
+
+    bottom:4%;
+
+    opacity:0;
+
+    transition:all 2s ease;
+
+    z-index:50;
+}
+#symbol-wojny{
+
+    position:absolute;
+
+    width:220px;
+
+    left:50%;
+    top:48%;
+
+    transform:translate(-50%,-50%) scale(0);
+
+    opacity:0;
+
+    transition:all 1s ease;
+
+    z-index:60;
+}

@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System Rafcia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=rafcia11-06-click-start-fix">
+<!-- System Rafcia build: V11.06 click-and-start-fix -->
+</head>
+<body>
+<div class="appShell">
+
+
+<main>
+<!-- 1. START — tylko ekran powitalny, reszta aplikacji bez zmian -->
+<section id="welcomeScreen" class="screen">
+  <div class="welcomeSplash">
+     <span class="rafciaVersionTag">V11.06</span>
+    <img src="assets/splash-art-v1091.png" alt="Ilustracja Systemu Rafcia: chłopiec i czarny kot w spokojnym, baśniowym lesie">
+    <span class="buildVersionBadge">V11.06</span>
+    <button id="goParent" class="welcomeHotspot" type="button" aria-label="Panel rodzica"></button>
+    <button id="goChild" class="welcomeChildButton" type="button" aria-label="Panel dziecka"><span class="srOnly">Panel dziecka</span></button>
+  </div>
+  <div class="welcomeNewGameBar"><div><b>🌟 Rozpoczynamy nową wyprawę?</b><small>Utwórz nową grę i ustaw jej zasady.</small></div><button id="welcomeNewGame" type="button">＋ Nowa gra</button></div>
+</section>
+
+<!-- 2. PARENT -->
+<section id="parentScreen" class="screen hidden">
+  <div id="parentPin" class="pinOverlay hidden">
+    <div id="pinLoginCard" class="pinModal card">
+      <button id="closePin" class="modalClose" type="button" aria-label="Zamknij">×</button>
+      <div id="pinLoginContent">
+        <div class="bigIcon">🔐</div><div class="eyebrow">STREFA RODZICA</div><h2>Panel konfiguracji</h2>
+        <p>Wpisz swój PIN rodzica, aby otworzyć panel.</p>
+        <form id="pinForm"><input id="pinInput" type="password" inputmode="numeric" maxlength="12" placeholder="PIN rodzica" autocomplete="off" required><button class="primary" type="submit">Otwórz panel →</button></form>
+        <div id="pinError" class="error"></div>
+      </div>
+      <div id="pinSetupContent" class="hidden">
+        <div class="bigIcon">🔐</div><div class="eyebrow">PIERWSZE URUCHOMIENIE</div><h2>Ustaw PIN rodzica</h2>
+        <p>Ustal teraz własny PIN. Nie ma PIN-u domyślnego — od tej chwili tylko ten PIN będzie otwierał strefę rodzica.</p>
+        <form id="pinSetupForm">
+          <input id="newPinInput" type="password" inputmode="numeric" maxlength="12" minlength="4" placeholder="Nowy PIN (4–12 cyfr)" autocomplete="new-password" required>
+          <input id="newPinConfirm" type="password" inputmode="numeric" maxlength="12" minlength="4" placeholder="Powtórz PIN" autocomplete="new-password" required>
+          <button class="primary" type="submit">Ustaw PIN i otwórz panel →</button>
+        </form>
+        <div id="pinSetupError" class="error"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="parentPanel" class="hidden">
+    <div class="panelNav"><button id="panelNavDaily" class="panelNavTitle panelNavTitleButton" type="button">🔐 Panel rodzica</button><button id="parentToChild" type="button" class="panelNavBtn">👤 Panel dziecka</button></div>
+    <div id="parentDailyToolbar" class="parentDailyToolbar">
+      <button id="aboutGameBtn" class="aboutGameBtn" type="button">📖 O grze</button>
+      <div class="parentDailyToolbarActions">
+        <button id="openConfigToolbar" class="toolbarAction configToolbarAction" type="button">⚙️ Konfiguracja gry</button>
+        <button id="toolbarSaveGame" class="toolbarAction" type="button">💾 Zapisz</button>
+        <button id="toolbarLoadGame" class="toolbarAction" type="button">📂 Wczytaj</button>
+        <button id="toolbarNewGame" class="toolbarAction newGameToolbarAction" type="button">＋ Nowa gra</button>
+        <input id="loadGameFile" type="file" accept="application/json,.json" class="hidden" aria-hidden="true">
+      </div>
+    </div>
+    <div id="aboutGameModal" class="aboutGameOverlay hidden" role="dialog" aria-modal="true" aria-labelledby="aboutGameTitle">
+      <article class="aboutGameDialog">
+        <button id="closeAboutGame" class="aboutGameClose" type="button" aria-label="Zamknij">×</button>
+        <header class="aboutGameIntro">
+          <div class="aboutGameBrand"><span>🌿</span><div><small>SYSTEM RAFCIA</small><h2 id="aboutGameTitle">Więcej niż gra</h2><p>Dobra zmiana zaczyna się od małych kroków.</p></div></div>
+          <div class="aboutGameLead"><b>Codzienne obowiązki mogą stać się okazją do budowania samodzielności.</b><p>System Rafcia łączy plan dnia, punkty, nagrody i jasne zasady. Pomaga rodzicowi zauważać postępy dziecka, a dziecku lepiej rozumieć oczekiwania i konsekwencje.</p></div>
+        </header>
+        <div class="aboutGameContent">
+          <main class="aboutGameMain">
+            <section><h3>Jak to działa?</h3><p>Gra jest formą przyjaznych ćwiczeń behawioralnych, podczas których dziecko wypracowuje i ugruntowuje pozytywne zachowania.</p><p>Dziecko otrzymuje czytelny plan dnia i konkretne zadania. Za wykonanie obowiązku zdobywa 5 punktów, a za jego niewykonanie traci 5 punktów. Może również zdobywać dodatkowe punkty za pozytywne zachowania, osiągnięcia i inicjatywę. Rodzic może też przyznać bonus albo odjąć punkty za poważniejsze przewinienie.</p><p>Dziecko obserwuje swoje postępy, widzi konsekwencje decyzji i zbliża się do wybranych nagród. Mechanizm jest prosty: <strong>robię mały krok – widzę postęp – mam powód, żeby spróbować ponownie.</strong></p></section>
+            <section class="aboutGameHighlight"><h3>Dlaczego może to pomagać – szczególnie przy ADHD?</h3><p>Dzieci z ADHD mogą potrzebować większego zewnętrznego wsparcia w organizacji, rozpoczynaniu zadań, pamiętaniu o kolejnych czynnościach i czekaniu na odroczoną nagrodę. System może wspierać je poprzez:</p><ul><li><b>Stały plan i przewidywalność</b> – kalendarz i powtarzalne zadania porządkują dzień.</li><li><b>Budowanie nawyków</b> – regularne ćwiczenie prostych czynności, takich jak higiena czy pakowanie plecaka.</li><li><b>Szybką informację zwrotną</b> – punkty pokazują związek między działaniem a jego następstwem.</li><li><b>Pozytywną motywację</b> – zauważanie wysiłku i dobrych zachowań, a nie tylko błędów.</li><li><b>Małe kroki i sprawczość</b> – dziecko widzi osiągalne cele i własny wpływ na postępy.</li></ul><p>Te mechanizmy mogą być przydatne także dzieciom bez ADHD – w rozwijaniu samodzielności, organizacji i odpowiedzialności.</p></section>
+            <section><h3>Nagroda to nie przekupstwo</h3><p>W dobrze prowadzonym systemie nagroda nie służy kupowaniu posłuszeństwa. Jest informacją: „Zauważyłem Twój wysiłek. To, co zrobiłeś, jest ważne”. Punkty są narzędziem, a nie celem samym w sobie. Warto doceniać również samodzielność, wytrwałość i próbę ponownego podjęcia zadania.</p></section>
+            <section><h3>Metody naukowe wykorzystane w grze</h3><p class="aboutGameMethodIntro">System Rafcia wykorzystuje wybrane mechanizmy psychologii behawioralnej (<i>behavioral psychology</i>) i stosowanej analizy zachowania (<i>Applied Behavior Analysis – ABA</i>).</p>
+              <div class="aboutGameMethods">
+                <div><h4>1. Zasada Premacka <small>(Premack Principle)</small></h4><p>David Premack (1959) opisał zasadę, według której bardziej atrakcyjna aktywność może wzmacniać zachowanie mniej atrakcyjne. W praktyce: najpierw obowiązek, potem przyjemność. Punkty zdobywane za zadania przybliżają dziecko do wybranych nagród [2]. Dzięki temu atrakcyjna aktywność staje się czytelnym celem, do którego prowadzi wykonanie mniej atrakcyjnego obowiązku. Ważne, by nagroda była realnie dostępna i ustalona wspólnie z dzieckiem.</p></div>
+                <div><h4>2. Pozytywne wzmocnienie <small>(Positive Reinforcement)</small></h4><p>Mechanizm warunkowania sprawczego rozwijany m.in. przez B.F. Skinnera. Dodatkowe punkty za dobre zachowania, osiągnięcia i inicjatywę mogą zwiększać prawdopodobieństwo ich powtarzania. Ważne jest też docenianie konkretnego wysiłku przez rodzica [1, 4]. Informacja zwrotna powinna pojawić się możliwie szybko i jasno wskazywać, jakie zachowanie zostało zauważone. Wzmacniamy w ten sposób nie tylko efekt, lecz także staranie i samodzielną próbę.</p></div>
+                <div><h4>3. System żetonowy <small>(Token Economy)</small></h4><p>Technika analizowana m.in. przez Alana E. Kazdina: punkty lub żetony przyznawane za określone zachowania można później wymienić na nagrody. W grze pozwalają śledzić postępy i widzieć drogę do celu [3]. Zebrane punkty mają umowną wartość i same w sobie nie są nagrodą – można je wymienić na wcześniej ustalone przywileje lub aktywności. Czytelne zasady wymiany pomagają dziecku zrozumieć, jak jego codzienne działania łączą się z dłuższym celem.</p></div>
+                <div><h4>4. Koszt reakcji <small>(Response Cost)</small></h4><p>Odejmowanie punktów jako konsekwencja zachowania, określane w analizie zachowania jako forma kary negatywnej (<i>negative punishment</i>). W Rafci niewykonanie obowiązku oznacza utratę 5 punktów. Zasada jest znana z góry [1, 4]. Jej zastosowanie powinno być spokojne, przewidywalne i proporcjonalne, bez zawstydzania dziecka. W praktyce system powinien równocześnie zapewniać liczne okazje do zdobywania punktów i odbudowania wyniku.</p></div>
+                <div><h4>5. Zarządzanie konsekwencjami <small>(Contingency Management)</small></h4><p>Rodzic może przyznać bonus za pozytywne zachowanie lub odjąć punkty za poważniejsze przewinienie. Konsekwencja powinna być zrozumiała, proporcjonalna i możliwie bliska czasowo zachowaniu [4, 5]. Dziecko powinno wiedzieć wcześniej, jakie zachowanie wiąże się z daną konsekwencją. Równie ważne jest zauważanie poprawy i dawanie możliwości powrotu do współpracy.</p></div>
+                <div><h4>6. Strukturyzacja dnia i nawyki <small>(Environmental Structuring &amp; Habit Formation)</small></h4><p>Kalendarz, stałe zadania i powtarzalny plan tworzą zewnętrzną strukturę wspierającą organizację, pamięć i rozpoczynanie czynności – obszary, które mogą być trudniejsze u dzieci z ADHD [1, 5]. Gdy plan jest widoczny, dziecko nie musi za każdym razem odtwarzać wszystkich kroków z pamięci. Powtarzalność ułatwia stopniowe utrwalanie rutyn, ale tempo ich budowania powinno być dostosowane do możliwości dziecka.</p></div>
+              </div>
+            </section>
+            <section class="aboutGameClosing"><h3>Najważniejsza jest równowaga i relacja</h3><p>Skuteczny system nie polega na ciągłym nagradzaniu ani odbieraniu punktów. Dziecko powinno mieć wiele okazji do zdobywania punktów i doświadczania sukcesu, a konsekwencje powinny być jasne, wcześniej ustalone i proporcjonalne.</p><p>System Rafcia ma ułatwiać wspólną pracę rodzica i dziecka. Nie zastępuje rozmowy, bliskości, cierpliwości ani indywidualnego podejścia.</p><strong>Nie chodzi o wychowanie dziecka, które zdobywa najwięcej punktów. Chodzi o wspieranie dziecka, które krok po kroku uczy się samodzielności, odpowiedzialności i wiary we własne możliwości.</strong></section>
+          </main>
+          <aside class="aboutGameSide"><div class="aboutGameSideCard"><span>🌱</span><h3>Co może wnieść do życia dziecka?</h3><ul><li>lepszą organizację i rytm dnia,</li><li>większą samodzielność,</li><li>motywację do codziennych zadań,</li><li>poczucie odpowiedzialności,</li><li>wzrost pewności siebie,</li><li>więcej pozytywnych interakcji z rodzicem.</li></ul></div>
+            <div class="aboutGameSideCard aboutGameReminder"><span>❤️</span><h3>Pamiętaj</h3><p>Gra jest narzędziem wspierającym wychowanie i codzienną organizację. Nie zastępuje relacji, rozmowy ani profesjonalnej terapii. Może być pomocna zarówno dzieciom z ADHD, jak i bez diagnozy.</p></div>
+            <div class="aboutGameSideCard"><h3>Bibliografia</h3><ol><li>Kołakowski, A., Pisula, A. (2025). <i>Sposób na trudne dziecko. Przyjazna terapia behawioralna</i>. GWP.</li><li>Premack, D. (1959). Toward empirical behavior laws. I. Positive reinforcement. <i>Psychological Review, 66</i>(4), 219–233.</li><li>Kazdin, A. E., Bootzin, R. R. (1972). The token economy: An evaluative review. <i>Journal of Applied Behavior Analysis, 5</i>(3), 343–372.</li><li>Fabiano, G. A. i in. (2009). A meta-analysis of behavioral treatments for ADHD. <i>Clinical Psychology Review, 29</i>(2), 129–140.</li><li>Wolraich, M. L. i in. (2019). Clinical Practice Guideline for ADHD. <i>Pediatrics, 144</i>(4), e20192528.</li></ol></div></aside>
+        </div>
+        <footer class="aboutGameFoot">System Rafcia jest narzędziem wspierającym organizację codzienności i motywację dziecka. Nie jest terapią ani metodą leczenia ADHD. Skuteczność samej aplikacji nie była dotąd przedmiotem badań klinicznych.</footer>
+      </article>
+    </div>
+    <div id="setupPanel">
+  <div class="configHeader">
+    <div class="configBrand"><div class="leafLogo">🌿</div><div><span class="eyebrow">SYSTEM RAFCIA</span><h2>Moje Wyzwania</h2><p>Panel rodzica – konfiguracja gry</p></div></div>
+    <div class="configHeaderActions"><button id="changePinBtn" class="pinConfigBtn" type="button">🔒 PIN rodzica</button><button id="configToParent" class="configParentBtn" type="button">👨‍👩‍👧 Panel rodzica</button></div>
+  </div>
+  <div class="configLayout referenceLayout">
+    <div class="configMain">
+      <section class="refCard taskRef card">
+        <div class="refHead"><div class="refTitle"><span class="refIcon coral">📋</span><div><h3>Codzienne obowiązki <i>?</i></h3><p>Dodaj obowiązki, które będą pojawiały się każdego dnia. Wybierz liczbę punktów za każdy z nich.</p></div></div><button class="refAdd teal" data-open-add="task" type="button">＋ Dodaj obowiązek</button></div>
+        <div id="parentTasks" class="refList"></div>
+      </section>
+      <section class="refCard extraRef card">
+        <div class="refHead"><div class="refTitle"><span class="refIcon yellow">⭐</span><div><h3>Czynności ekstra <i>?</i></h3><p>Dodaj dodatkowe aktywności, za które można zdobyć punkty.</p></div></div><button class="refAdd yellowBtn" data-open-add="extra" type="button">＋ Dodaj czynność</button></div>
+        <div id="parentExtras" class="refList"></div>
+      </section>
+      <section class="refCard questionRef card">
+        <div class="refHead"><div class="refTitle"><span class="refIcon blue">💭</span><div><h3>Pytanie dnia</h3><p>Jedno pytanie na dziś, widoczne w panelu dziecka i codziennym raporcie rodzica.</p></div></div></div>
+        <div class="questionConfigFields"><label for="questionDayInput">Treść pytania</label><textarea id="questionDayInput" rows="3" maxlength="500" placeholder="Co było dziś najprzyjemniejszą częścią Twojego dnia?">Co było dziś najprzyjemniejszą częścią Twojego dnia?</textarea><div class="questionConfigActions"><button id="saveQuestionDay" class="refAdd teal" type="button">＋ Dodaj dzisiejsze pytanie</button><label class="questionPointsLabel" for="questionDayPointsInput">Ustal ilość punktów<input id="questionDayPointsInput" type="number" min="0" max="1000" step="1" value="10"></label></div><span id="questionDaySaveMsg" role="status"></span></div>
+      </section>
+      <section class="refCard missionRef card">
+        <div class="refHead"><div class="refTitle"><span class="refIcon violet">🚀</span><div><h3>Misje czasowe <i>?</i></h3><p>Ustal misję na określony czas. Po spełnieniu można zdobyć punkty. Brak wykonania nie odejmuje punktów.</p></div></div><button class="refAdd violetBtn" data-open-add="challenge" type="button">＋ Dodaj misję</button></div>
+        <div id="parentChallenges" class="refList"></div>
+      </section>
+      <section class="refCard rewardRef card">
+        <div class="refHead"><div class="refTitle"><span class="refIcon pink">🎁</span><div><h3>Nagrody <i>?</i></h3><p>Ustal nagrody za określoną liczbę zdobytych punktów. Możesz dodać własne.</p></div></div><button class="refAdd pinkBtn" data-open-add="reward" type="button">＋ Dodaj nagrodę</button></div>
+        <div id="parentRewards" class="refList"></div>
+      </section>
+      <section class="consequenceConfigCard card">
+        <div class="consequenceConfigHead"><div class="consequenceBomb">💣</div><div><span class="eyebrow">KONSEKWENCJE KARNE</span><h3>Konsekwencje za poważne przewinienia</h3><p>Jednorazowo odejmij punkty i zapisz dokładnie, za co. Konsekwencja pozostaje widoczna u dziecka do końca tej gry.</p></div><button id="configAddConsequence" class="consequenceButton" type="button">💣 Dodaj konsekwencję</button></div>
+        <div id="configConsequences" class="consequenceList"></div>
+      </section>
+      <section class="card bonusPointsParentCard"><div class="sectionHead"><h3>⭐ Dodaj punkty w dowolnym momencie</h3><span class="muted">bonus rodzica</span></div><p class="modalHint">Punkty zostaną dodane natychmiast. Wiadomość — jeśli ją wpiszesz — będzie widoczna u dziecka do końca gry.</p><form id="bonusPointsForm" class="bonusPointsForm"><label>Dodaj ile punktów?<input id="bonusPointsAmount" type="number" min="1" max="100000" step="1" placeholder="np. 50" required></label><label>Jeśli chcesz, napisz dlaczego dodajesz punkty<textarea id="bonusPointsNote" maxlength="300" rows="2" placeholder="Np. za wyjątkową pomoc, samodzielność albo dobre zachowanie..."></textarea></label><button class="primary" type="submit">⭐ Dodaj punkty</button></form><div id="parentBonusHistory" class="consequenceList"></div></section>
+    </div>
+    <aside class="configSide referenceSide">
+      <section class="card gameCalendarRef">
+        <div class="sideTitle"><span class="refIcon green">📅</span><div><h3>Kalendarz gry</h3><p>Gra rozpocznie się od razu po naciśnięciu START GRY.</p></div></div>
+        <div class="dateInfo"><div><small>POCZĄTEK</small><b id="cfgStartLabel">Dzisiaj</b></div><div><small>KONIEC</small><b id="cfgEndLabel">Bez daty końcowej</b></div></div>
+        <div class="cfgPickRow"><button id="cfgPickStart" type="button" class="cfgPick active">📅 Ustaw początek</button><button id="cfgPickEnd" type="button" class="cfgPick">🏁 Ustaw koniec</button></div>
+        <div class="calendarTop"><button id="cfgPrev" type="button">‹</button><strong id="cfgMonth"></strong><button id="cfgNext" type="button">›</button></div>
+        <div class="miniWeek"><span>Pn</span><span>Wt</span><span>Śr</span><span>Cz</span><span>Pt</span><span>So</span><span>Nd</span></div>
+        <div id="cfgCalendar" class="miniCalendar"></div>
+        <div id="cfgCalendarLegend" class="calendarStatusLegend"></div>
+        <div class="cfgEndChoices"><span>Ustal koniec gry:</span><button id="cfgEnd1" type="button">+ 1 miesiąc</button><button id="cfgEnd2" type="button">+ 2 miesiące</button><button id="cfgEndCustom" type="button">📅 Własna data</button><button id="cfgEndNone" type="button">∞ Bez końca</button></div>
+      </section>
+      <section class="card startRef v1099-hidden-config-dates"><div class="startRefIcon">▶</div><div><span class="eyebrow">START GRY</span><h3>Rozpocznij grę teraz</h3><p>Start od dziś, bez ustalania daty końcowej. To szybki wariant rozpoczęcia gry.</p></div></section>
+      <section class="card previewRef v1099-hidden-config-dates"><div class="sideTitle"><span class="refIcon gold">🏆</span><div><h3>Podgląd nagród</h3><p>Tak będą wyglądały cele u dziecka.</p></div></div><div class="podium"><div>🎮<b>100 pkt</b><small>PlayStation</small></div><div class="podiumMain">🍔<b>250 pkt</b><small>Wizyta</small></div><div>🏕️<b>500 pkt</b><small>Wyjątkowe</small></div></div><div class="motivationNote">Motywacja dziś = wielkie rzeczy jutro! ❤️</div></section>
+    </aside>
+  </div>
+  <div id="referenceStartBar" class="referenceStartBar v1099-hidden-config-dates"><div><span class="eyebrow">GOTOWE?</span><h3 id="startBarTitle">Uruchom System Rafcia</h3><p id="startBarText">Przycisk uruchamia grę od dzisiaj, bez ram czasowych.</p></div><div class="startActions"><button id="startGame" class="referenceStartButton" type="button">▶ Rozpocznij grę teraz</button><button id="scheduleGame" class="referenceStartButton scheduleButton" type="button">📅 Zaplanuj start</button></div></div><div id="firstSetupStartBar" class="referenceStartBar firstSetupStartBar hidden"><div><span class="eyebrow">PIERWSZA KONFIGURACJA GOTOWA?</span><h3>Wszystko ustawione?</h3><p>Po sprawdzeniu obowiązków, nagród i kalendarza możesz uruchomić pierwszą grę.</p></div><button id="startFirstConfiguredGame" class="referenceStartButton" type="button">🚀 Rozpocznij pierwszą grę</button></div><div id="laterSetupStartBar" class="referenceStartBar laterSetupStartBar hidden"><div><span class="eyebrow">KONFIGURACJA NOWEJ GRY</span><h3>Gra jest gotowa do uruchomienia</h3><p>Sprawdź obowiązki, nagrody i daty, a następnie rozpocznij grę.</p></div><button id="startLaterConfiguredGame" class="referenceStartButton" type="button">▶ Rozpocznij grę</button></div><div id="configBackToDaily" class="referenceStartBar configBackBar hidden"><div><span class="eyebrow">EDYCJA W TRAKCIE GRY</span><h3>Konfiguracja została zmieniona</h3><p>Nowe obowiązki, bonusy, misje i nagrody są już zapisane. Wróć do codziennego raportu.</p></div><button class="referenceStartButton configBackButton" type="button">← Wróć do panelu codziennego</button></div>
+</div>
+    <div class="configSaveTools hidden"><input id="configLoadGameFile" type="file" accept="application/json,.json" class="hidden" aria-hidden="true"></div>
+    <div id="newGameModal" class="modalOverlay hidden" role="dialog" aria-modal="true" aria-labelledby="newGameTitle">
+      <div class="addModal card newGameDialog newGameDialogV1104">
+        <button id="closeNewGame" class="modalClose" type="button" aria-label="Zamknij">×</button>
+        <div class="modalIcon">🧭</div><span class="eyebrow">WIELKA WYPRAWA RAFCIA</span><h2 id="newGameTitle">Rozpocznij nową grę</h2>
+        <p class="modalHint">Ustal podróżnika, czas trwania gry i zabezpieczenie rodzica. To będzie początek nowego rozdziału.</p>
+        <div id="newGamePinGate" class="newGameSecurityBox hidden">
+          <h3>🔐 Potwierdź, że jesteś rodzicem</h3><p>Przy każdej kolejnej nowej grze wymagamy podania dotychczasowego PIN-u rodzica.</p>
+          <label>Dotychczasowy PIN rodzica<input id="newGameCurrentPin" type="password" inputmode="numeric" maxlength="12" autocomplete="current-password" placeholder="Wpisz dotychczasowy PIN"></label>
+          <button id="newGameVerifyPin" type="button" class="primary">Potwierdź PIN i przejdź dalej →</button><div id="newGamePinError" class="error"></div>
+        </div>
+        <div id="newGameDetails" class="hidden">
+          <label>Imię dziecka / podróżnika<input id="newGameChildName" type="text" maxlength="40" autocomplete="off" placeholder="Wpisz imię" required></label>
+          <div class="newGameDateGrid">
+            <label>Data rozpoczęcia<input id="newGameStartDate" type="date" required></label>
+            <label>Czas trwania<select id="newGameDuration"><option value="1">1 miesiąc</option><option value="2">2 miesiące</option><option value="3">3 miesiące</option><option value="custom">Wybiorę datę końca</option></select></label>
+            <label>Data zakończenia<input id="newGameEndDate" type="date" required></label>
+          </div>
+          <div id="newGameInitialPin" class="newGameSecurityBox hidden">
+            <h3>🔐 Ustal PIN rodzica</h3><p>To pierwsza gra w tym systemie. Ustaw PIN, który będzie wymagany przy każdej kolejnej nowej grze oraz przy wejściu do panelu rodzica.</p>
+            <label>Nowy PIN (4–12 cyfr)<input id="newGameFirstPin" type="password" inputmode="numeric" maxlength="12" minlength="4" autocomplete="new-password" placeholder="Ustal PIN"></label>
+            <label>Powtórz PIN<input id="newGameFirstPinConfirm" type="password" inputmode="numeric" maxlength="12" minlength="4" autocomplete="new-password" placeholder="Powtórz PIN"></label>
+            <div id="newGameFirstPinError" class="error"></div>
+          </div>
+          <div class="newGameSaveChoice" id="newGameSaveChoice"><b>Co zrobić z obecną grą?</b><p>Możesz zachować jej pełną historię w archiwum albo rozpocząć bez archiwizacji.</p>
+            <div class="newGameActions"><button id="newGameSaveAndStart" class="primary" type="button">💾 Zapisz obecną i rozpocznij</button><button id="newGameNoSave" class="secondaryBtn" type="button">Rozpocznij bez zapisu</button></div>
+          </div>
+          <div id="newGameFirstStartActions" class="newGameActions hidden"><button id="newGameFirstStart" class="primary" type="button">🚀 Utwórz pierwszą grę</button></div>
+          <button id="newGameCancel" class="secondaryBtn newGameCancelWide" type="button">Anuluj</button>
+          <div id="newGameArchives" class="newGameArchives"></div>
+        </div>
+      </div>
+    </div>
+    <div id="pinChangeModal" class="modalOverlay hidden">
+      <div class="addModal card pinChangeCard">
+        <button id="closePinChange" class="modalClose" type="button">×</button>
+        <div class="modalIcon">🔒</div><span class="eyebrow">USTAWIENIA</span><h2>Zmień PIN rodzica</h2>
+        <p class="modalHint">Ustaw nowy PIN. Na razie nie dodajemy dodatkowych zabezpieczeń.</p>
+        <form id="pinChangeForm">
+          <label>Nowy PIN<input id="changePinInput" type="password" inputmode="numeric" maxlength="12" minlength="4" placeholder="4–12 cyfr" autocomplete="new-password" required></label>
+          <label>Powtórz PIN<input id="changePinConfirm" type="password" inputmode="numeric" maxlength="12" minlength="4" placeholder="Powtórz PIN" autocomplete="new-password" required></label>
+          <div id="pinChangeError" class="error"></div>
+          <div class="modalActions"><button id="cancelPinChange" type="button" class="secondaryBtn">Anuluj</button><button type="submit" class="primary">🔒 Zapisz nowy PIN</button></div>
+        </form>
+      </div>
+    </div>
+
+    <div id="consequenceModal" class="modalOverlay hidden">
+      <div class="consequenceModal card">
+        <button id="closeConsequence" class="modalClose" type="button">×</button>
+        <div class="consequenceModalIcon">💣</div>
+        <span class="eyebrow consequenceEyebrow">KONSEKWENCJA KARNA</span>
+        <h2>Odejmij punkty</h2>
+        <p class="modalHint">Wpisz, co się wydarzyło. Punkty zostaną odjęte natychmiast, a informacja pozostanie na panelu dziecka do końca tej gry.</p>
+        <form id="consequenceForm">
+          <label class="consequenceReasonLabel">Za co?<textarea id="consequenceReason" maxlength="240" rows="3" placeholder="Np. Celowe zniszczenie rzeczy, agresja, kłamstwo..." required></textarea></label>
+          <div class="consequenceChoices">
+            <span class="consequenceLabel">Ile punktów odjąć?</span>
+            <div class="consequencePresets">
+              <button type="button" data-consequence-points="100">−100</button>
+              <button type="button" data-consequence-points="200">−200</button>
+              <button type="button" data-consequence-points="300">−300</button>
+              <button type="button" data-consequence-points="400">−400</button>
+              <button type="button" data-consequence-points="500">−500</button>
+            </div>
+            <label>Własna liczba punktów<input id="consequenceCustom" type="number" min="1" step="1" placeholder="np. 750"></label>
+            <input id="consequencePoints" type="hidden">
+          </div>
+          <div id="consequenceError" class="error"></div>
+          <div class="modalActions"><button id="cancelConsequence" type="button" class="secondaryBtn">Anuluj</button><button type="submit" class="consequenceConfirm">💣 Odejmij punkty</button></div>
+        </form>
+      </div>
+    </div>
+
+    <div id="addModal" class="modalOverlay hidden">
+      <div class="addModal card">
+        <button id="closeAdd" class="modalClose" type="button">×</button>
+        <div id="modalIcon" class="modalIcon">＋</div><span id="modalEyebrow" class="eyebrow">DODAJ</span><h2 id="modalTitle">Nowy element</h2><p id="modalHint" class="modalHint"></p>
+        <div id="suggestions" class="suggestions"></div>
+        <form id="genericAddForm">
+          <label>Nazwa<input id="modalName" required placeholder="Wpisz własną nazwę"></label>
+          <div class="modalGrid"><label>Punkty / próg<input id="modalPoints" type="number" min="1" value="10" required></label><label>Ikona (możesz wpisać własną emoji)<input id="modalIconInput" maxlength="8" value="⭐" autocomplete="off"></label></div>
+          <div id="rewardIconPicker" class="rewardIconPicker">
+            <div class="rewardIconPickerHead"><b>Wybierz ikonę dla tej pozycji</b><small>Wybierz ikonę z listy albo wpisz własną emoji w polu powyżej.</small></div>
+            <div id="rewardIconGrid" class="rewardIconGrid" role="group" aria-label="Dostępne ikony"></div>
+          </div>
+          <div id="challengeDates" class="modalGrid hidden"><label>Od<input id="modalStart" type="date"></label><label>Do<input id="modalEnd" type="date"></label></div>
+          <div class="modalActions"><button id="cancelAdd" type="button" class="secondaryBtn">Anuluj</button><button type="submit" class="primary">＋ Dodaj</button></div>
+        </form>
+      </div>
+    </div>
+
+
+    <div id="dailyPanel" class="hidden">
+      <div class="pageHero dailyHero"><div><span class="eyebrow">PANEL RODZICA • CODZIENNY RAPORT</span><h2 id="parentDayTitle">Dzisiejszy raport</h2><p>Tu rodzic rozlicza obowiązki i przyznaje punkty za dodatki oraz misje.</p></div><div class="dailyHeroActions"><div class="dailyScore"><b id="parentDayPoints">0</b><small>pkt tego dnia</small></div></div></div>
+      <div class="dailyLayout"><div class="dailyMain">
+      <div class="dailyGrid"><section class="card"><div class="sectionHead"><h3>📋 Obowiązki</h3><span class="muted">+ / − / 0</span></div><div id="parentDayTasks" class="dayManageList"></div></section><section class="card"><div class="sectionHead"><h3>⭐ Czynności ekstra</h3><span class="muted">bonusy</span></div><div id="parentDayExtras" class="dayManageList"></div></section></div>
+      <section class="card questionDayParentCard"><div class="sectionHead"><h3>💭 Pytanie dnia</h3><span class="muted">rozliczenie punktowe</span></div><div id="parentDayQuestion" class="questionDayPrompt"></div><div id="parentDayQuestionActions" class="seg questionDayActions"><button type="button" data-question-status="done">✅ Zaliczone</button><button type="button" data-question-status="missed">❌ Niezaliczone</button></div><div id="parentDayQuestionAnswer" class="parentDayQuestionAnswer"></div></section>
+      <section class="card"><div class="sectionHead"><h3>🚀 Misje aktywne tego dnia</h3><span class="muted">zalicz raz</span></div><div id="parentDayChallenges" class="dayManageList"></div></section>
+      <section class="consequenceParentCard card"><div class="consequenceParentHead"><div><div class="consequenceBomb">💣</div><div><span class="eyebrow">SZYBKA KONSEKWENCJA</span><h3>Odejmij punkty za przewinienie</h3><p>Natychmiastowa kara punktowa. Opis i liczba punktów będą widoczne u dziecka do końca gry.</p></div></div><button id="addConsequenceBtn" class="consequenceButton consequenceBigButton" type="button">💣 Dodaj konsekwencję</button></div><div id="parentConsequences" class="consequenceList"></div></section>
+      <section class="card"><div class="sectionHead"><h3>🎁 Prośby o nagrody</h3></div><div id="pendingRewards"></div></section>
+      <section class="card"><div class="sectionHead"><h3>🎉 Nagrody wykorzystane w tej grze</h3><span class="muted">historia i cofanie</span></div><div id="usedRewards"></div></section>
+      <div class="gameDataActions">
+        <button id="stopGame" class="dangerBtn" type="button">⏹ Zatrzymaj i zresetuj grę</button>
+      </div>
+      </div><aside class="dailySide"><section class="card parentCalendarCard"><div class="sectionHead"><div><span class="sectionIcon">📅</span><div><span class="eyebrow">PLAN I TERMINY</span><h3>Kalendarz gry</h3></div></div><div class="calendarNav"><button id="pPrev" type="button">‹</button><strong id="pMonth"></strong><button id="pNext" type="button">›</button></div></div><div class="weekdays"><span>Pn</span><span>Wt</span><span>Śr</span><span>Cz</span><span>Pt</span><span>So</span><span>Nd</span></div><div id="pCalendar" class="calendarGrid"></div><div id="pCalendarLegend" class="calendarStatusLegend"></div></section></aside></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. CHILD -->
+<section id="childScreen" class="screen hidden">
+  <div id="childWaiting" class="childWaiting card">
+    <div class="waitingMascot" id="childWaitingIcon">🐱</div>
+    <span class="eyebrow">SYSTEM RAFCIA</span>
+    <h2 id="childWaitingTitle">Gra jeszcze nie została uruchomiona</h2>
+    <p id="childWaitingText">Rodzic najpierw przygotuje zasady gry. Gdy gra zostanie uruchomiona, Twój panel pojawi się tutaj.</p>
+    <div id="childWaitingDate" class="waitingDate"></div>
+    <button id="childToParent" class="primary" type="button">🔐 Przejdź do panelu rodzica</button>
+  </div>
+
+  <div id="childActive" class="childActiveWrap hidden">
+    <div class="childTopbar">
+      <button id="childTopToParent" type="button" class="childLockBtn">🔐 Panel rodzica</button>
+    </div>
+
+    <section class="childHeroGreeting">
+      <div class="childHeroCat">
+        <img src="assets/child-storybook-cat.png" alt="System Rafcia – kotek i hasło Małe kroki też prowadzą do wielkich rzeczy">
+      </div>
+      <div class="childHeroWelcome">
+        <span class="eyebrow">SYSTEM RAFCIA • DZISIAJ</span>
+        <h1>Cześć, Rafciu! 👋</h1>
+        <div class="childHeroDate"><span>📅</span><span id="childDateTitle">Poniedziałek, 5 października 2026</span></div>
+        <p>Małe kroki prowadzą do wielkich rzeczy. 💪</p>
+      </div>
+    </section>
+
+    <section class="childQuickStats">
+      <div class="childQuickCard totalScoreCard"><span>⭐</span><div><b id="totalPoints">0</b><small>Twoje punkty • <strong id="dayPoints">0</strong> pkt dzisiaj</small></div></div>
+      <div class="childQuickCard blue"><span>🎯</span><div><b id="completion">0%</b><small>wykonanych obowiązków</small></div></div>
+      <div class="childQuickCard green"><span>🔥</span><div><b id="streak">0</b><small>dni gry</small></div></div>
+      <div class="childQuickCard gold"><span>🎁</span><div><b id="rewardHint">—</b><small>pkt do najbliższej nagrody</small></div></div>
+    </section>
+
+    <section class="rafciaExpedition" aria-label="Wielka Wyprawa Rafcia">
+      <div class="rafciaExpeditionHeading"><span class="expeditionCompass">✦</span><div><span class="eyebrow">WIELKA PRZYGODA</span><h2 id="rafciaExpeditionTitle">Wielka Wyprawa</h2><p>Zdobywaj sprzęt, odkrywaj najwyższe góry świata i zostań prawdziwym Podróżnikiem!</p></div><span class="expeditionCompass">✧</span></div>
+      <div id="rafciaExpeditionPanels" class="rafciaExpeditionPanels"></div>
+    </section>
+
+    <section class="childMainGrid childMainGridV11">
+      <div class="childMainLeft">
+        <section class="childTaskCard card">
+          <div class="childSectionHead">
+            <div><span class="childSectionIcon">📋</span><div><span class="eyebrow">DZISIAJ</span><h2>Moje obowiązki</h2></div></div>
+            <div><span class="selectedDayLabel" id="selectedDayLabel">Dzisiejsze obowiązki</span><span class="childCountPill" id="selectedDayScore">0 pkt</span></div>
+          </div>
+          <div id="childTasks" class="childTaskList"></div>
+          <div class="childMotivation">💬 Dasz radę! Każde wykonane zadanie przybliża Cię do celu.</div>
+        </section>
+        <section class="card childExtrasCard">
+          <div class="childSectionHead"><div><span class="childSectionIcon star">⭐</span><div><span class="eyebrow">BONUS</span><h2>Czynności ekstra</h2></div></div><span class="muted">+ punkty</span></div>
+          <div id="childExtras" class="childTaskList"></div>
+        </section>
+        <section class="card childChallengesCard">
+          <div class="childSectionHead"><div><span class="childSectionIcon flag">🚩</span><div><span class="eyebrow">MISJE</span><h2>Wyzwania specjalne</h2></div></div><span class="muted">bez kary</span></div>
+          <div id="childChallenges" class="childTaskList"></div>
+        </section>
+        <section class="childConsequenceCard card">
+          <div class="childSectionHead">
+            <div><span class="childSectionIcon bomb">💣</span><div><span class="eyebrow">WAŻNE</span><h2>Konsekwencje w tej grze</h2></div></div>
+            <div class="childConsequenceTotal"><b id="consequenceTotal">0</b><small>pkt odjęto</small></div>
+          </div>
+          <p class="childMuted">Informacje dodane przez rodzica pozostają widoczne do końca tej gry.</p>
+          <div id="childBonusPoints"></div><div id="childConsequences" class="childConsequenceList"></div>
+        </section>
+      </div>
+      <div class="childMainRight">
+        <section class="card calendarCard subtleCalendar">
+          <div class="childSectionHead">
+            <div><span class="childSectionIcon calendar">📅</span><div><span class="eyebrow">HISTORIA</span><h2>Twój kalendarz</h2></div></div>
+            <div class="calendarNav"><button id="prevMonth" type="button">‹</button><strong id="monthLabel"></strong><button id="nextMonth" type="button">›</button></div>
+          </div>
+          <div class="weekdays"><span>Pn</span><span>Wt</span><span>Śr</span><span>Cz</span><span>Pt</span><span>So</span><span>Nd</span></div>
+          <div id="calendarGrid" class="calendarGrid"></div>
+          <div id="childCalendarLegend" class="calendarStatusLegend"></div>
+        </section>
+        <section class="childStreakCard card">
+          <div class="childSectionHead"><div><span class="childSectionIcon fire">🔥</span><div><span class="eyebrow">SERIA</span><h2>Twoja seria</h2></div></div></div>
+          <div class="streakBig"><b id="streakBig">0</b><span>dni gry</span></div>
+          <div class="streakDots"><span>W</span><span>Ś</span><span>Cz</span><span>Pt</span><span>Sb</span><span>Nd</span><span>Dziś</span></div>
+        </section>
+
+        <section class="childGoalCard card">
+          <div class="childSectionHead">
+            <div><span class="childSectionIcon">🎯</span><div><span class="eyebrow">CEL DNIA</span><h2>Dzisiejszy cel</h2></div></div>
+          </div>
+          <div class="goalBody">
+            <div class="goalRing"><span id="goalPercent">0%</span></div>
+            <div class="goalCopy"><b id="goalPointsText">0 pkt</b><span>Zdobyte dzisiaj</span><div class="goalBar"><i id="goalBar"></i></div></div>
+          </div>
+          <p class="goalMessage">Jeszcze kilka kroków i będzie super! 🐱</p>
+        </section>
+
+      </div>
+    </section>
+
+    <section class="card childQuestionDayCard childQuestionDayFull">
+      <div class="childQuestionLayout">
+        <div class="childQuestionPrompt">
+          <div class="childSectionHead"><div><span class="childSectionIcon question">💭</span><div><span class="eyebrow">POROZMAWIAJ Z RODZICEM, ZDOBĄDŹ PUNKTY</span><h2>Pytanie dnia!</h2></div></div><span class="questionDayStatus" id="childQuestionDayStatus">🌱</span></div>
+          <p id="childQuestionDayText" class="childQuestionDayText">Co było dziś najprzyjemniejszą częścią Twojego dnia?</p>
+          <p class="childQuestionDayNote">Nie ma złych odpowiedzi — ważne, żeby się zastanowić i porozmawiać. 💚</p>
+        </div>
+        <div id="childQuestionAnswerWrap" class="childQuestionAnswerWrap"><label for="childQuestionAnswer">Twoja odpowiedź</label><textarea id="childQuestionAnswer" rows="3" maxlength="1000" placeholder="Napisz, co myślisz..."></textarea><button id="sendChildQuestionAnswer" type="button" class="primary">📨 Wyślij odpowiedź rodzicowi</button><small id="childQuestionAnswerStatus">Napisz swoją odpowiedź i wyślij ją rodzicowi.</small></div>
+      </div>
+    </section>
+
+    <section class="card progressCard progressFullWidth bitmapRoadCard childRewardMapCard">
+      <div class="childSectionHead"><div><span class="childSectionIcon gift">🗺️</span><div><span class="eyebrow">TWOJA PRZYGODA</span><h2>Mapa nagród Rafcia</h2></div></div><span class="muted">Dotknij ikony nagrody</span></div>
+      <div id="miniChart" class="lineChart"></div>
+    </section>
+
+    <section class="card rewardsCard childRewardsCompact childRewardsWide childRewardsBelowMap">
+      <div class="childSectionHead"><div><span class="childSectionIcon gift">🎁</span><div><span class="eyebrow">TWÓJ CEL</span><h2>Na co zbierasz?</h2></div></div><span class="muted">Postęp do każdej nagrody</span></div>
+      <div id="rewardsList" class="rewardGrid"></div>
+    </section>
+
+    <section class="card childTipCard childTipFull">
+      <div class="tipImage"><span>💡</span></div>
+      <div><span class="eyebrow">CIEKAWOSTKA</span><h2>Małe kroki działają!</h2><p>Regularność jest ważniejsza niż perfekcja. Każde zaliczone zadanie to kolejny krok do Twojego celu.</p></div>
+    </section>
+  </div>
+</section>
+</main>
+</div>
+<script src="app.js?v=rafcia-20261108-v1109-expedition-typography"></script>
+</body>
+</html>
