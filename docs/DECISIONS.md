@@ -12,7 +12,7 @@ Ten rejestr przechowuje istotne, zatwierdzone ustalenia. Pomysły i niezatwierdz
 
 ## Rejestr
 
-Poniższe decyzje początkowe zapisują zasady przekazane w zleceniu „ROZSZERZENIE ZASAD PROJEKTU — WSPÓŁPRACA DWÓCH PROGRAMISTÓW I AGENTÓW AI” z 2026-11-11. Źródłem jest jawna instrukcja zleceniodawcy; nie jest to twierdzenie o odrębnym review lub akceptacji tych plików przez Patryka. Kopia instrukcji pozostaje w rozmowie zlecającej dokumentację; repo zawiera jej ustalenia bez lokalnych ścieżek załączników.
+Decyzje początkowe D-001–D-003 zapisują zasady przekazane w zleceniu „ROZSZERZENIE ZASAD PROJEKTU — WSPÓŁPRACA DWÓCH PROGRAMISTÓW I AGENTÓW AI” z 2026-11-11. Kolejne wpisy podają własne źródło. Źródłem tych instrukcji jest zleceniodawca; nie jest to twierdzenie o odrębnym review lub akceptacji plików przez Patryka. Repo zawiera treść ustaleń potrzebną do pracy bez dostępu do rozmowy i bez lokalnych ścieżek załączników.
 
 ### D-001 — Współpraca przez trwałe artefakty
 
@@ -38,6 +38,16 @@ Poniższe decyzje początkowe zapisują zasady przekazane w zleceniu „ROZSZERZ
 - **Decyzja:** obecny limit wynosi 0 PLN/mies. Wariant 100–200 PLN/mies. pozostaje możliwością wymagającą osobnego zatwierdzenia. Nie wybieramy teraz płatnej usługi ani nowej architektury.
 - **Konsekwencje:** propozycja kosztowa musi określać aktualne ceny i limity, koszt obsługi, ryzyko nadwyżek, migrację, backup i plan rezygnacji. Bez blokowania przyszłego rozwoju przez założenie, że budżet zawsze będzie zerowy.
 - **Akceptacja:** zlecenie dokumentacji, punkty 7 i 9; format oceny w [TEAM_WORKFLOW.md](TEAM_WORKFLOW.md).
+
+### D-004 — Etapowa realizacja i odtwarzalność między sesjami
+
+- **Data / status:** 2026-11-11 / zatwierdzona w instrukcji zleceniodawcy. Uzupełnia D-001 i D-002, nie zastępuje wcześniejszych ustaleń.
+- **Kontekst:** wielomiesięczny rozwój wymaga wznowienia pracy przez dowolnego z obu agentów bez dostępu do poprzedniej rozmowy lub wewnętrznej kompresji kontekstu.
+- **Decyzja:** każdy mały etap ma cel, zakres, zależności, testy, kryteria akceptacji i sposób wycofania. Zakończenie, review lub merge etapu nie upoważnia do rozpoczęcia kolejnego; potrzebne jest osobne zatwierdzenie.
+- **Ciągłość:** po istotnej pracy utrwalić rezultat, decyzje, pliki, wersję, wyniki i braki testów, problemy, ryzyka, pozostałe działania oraz dokładne zadanie i pierwszy krok następnej sesji. Użyć repo/Issue/PR; `SESSION_STATE.md` wskazuje handoff, a przed publikacją zawiera jego bieżącą treść. Poprzednie wersje pozostają w Git. Obaj agenci zaczynają od sprawdzenia repo, wspólnych zasad, aktualnego handoffu, właściwej dokumentacji i otwartych zadań.
+- **Odroczenie:** zarejestrować „System trwałej i warstwowej pamięci agentów AI” jako AI-MEM-01, bez projektowania implementacji, instalacji i wydatków. Zgoda na wpis nie oznacza zgody na realizację systemu.
+- **Zakres bieżącej zgody:** tylko dokumentacja RF-00, na osobnej gałęzi i w lokalnym commicie; brak push, merge, zmian aplikacji i automatycznego rozpoczęcia RF-01. Karty pozostałych etapów są propozycjami, nie przyjętymi rozwiązaniami.
+- **Akceptacja:** instrukcja zleceniodawcy „Dodatkowe wymagania: ciągłość pracy i etapowa realizacja”, punkty 1–5, z 2026-11-11. Nie stwierdzamy odrębnej akceptacji Patryka. Realizacja: [workflow](TEAM_WORKFLOW.md), [roadmapa](ROADMAP.md), [punkt wznowienia](SESSION_STATE.md).
 
 ## Format przyszłego wpisu
 

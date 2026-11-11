@@ -12,6 +12,7 @@ Podział jest elastyczny. Każdy może proponować i wykonywać uzgodnione prace
 - [AGENTS.md](../AGENTS.md) jest krótką instrukcją startową dla obu agentów.
 - [REQUIREMENTS.md](REQUIREMENTS.md) i [RAFCIO.md](RAFCIO.md) opisują produkt; [KNOWN_ISSUES.md](KNOWN_ISSUES.md) opisuje znane problemy; [RUNBOOK.md](RUNBOOK.md) opisuje uruchomienie.
 - [DECISIONS.md](DECISIONS.md) przechowuje zatwierdzone istotne ustalenia i historię ich zastępowania.
+- [ROADMAP.md](ROADMAP.md) porządkuje małe etapy i odroczone inicjatywy; [SESSION_STATE.md](SESSION_STATE.md) wskazuje bieżący handoff i punkt rozpoczęcia następnej sesji.
 - Issue zawiera cel, zakres, właściciela, zależności, kryteria akceptacji i status pracy. PR zawiera zmianę, review oraz handoff. Historia Git wskazuje konkretną wersję kodu.
 
 Niezależne sesje agentów nie mają automatycznie wspólnej pamięci ani kanału komunikacji. Nie wystarczy napisać „drugi agent wie”. Istotną informację należy umieścić w dostępnym dla obu programistów artefakcie. Lokalna pamięć poza repo może pomóc autorowi, ale nie zastępuje Issue, PR ani decyzji w repo.
@@ -31,18 +32,28 @@ Przy utrwalaniu audytu korzystaj z istniejących dokumentów: problem trafia do 
 ## Od zgłoszenia do implementacji
 
 1. **Zgłoszenie.** Użyj szablonu [zadania](../.github/ISSUE_TEMPLATE/task.yml) albo [pomysłu](../.github/ISSUE_TEMPLATE/idea.yml). Drobne powiązane poprawki mogą należeć do jednego istniejącego Issue; nie zakładaj nowego dla każdego pliku.
-2. **Uzgodnienie.** Określ cel, typ A/B/C, zakres i wyłączenia, osobę odpowiedzialną, zależności, kryteria akceptacji i wymagane decyzje. Dla B wskaż potwierdzone wymaganie oraz błąd; dla C uzyskaj osobną akceptację.
+2. **Uzgodnienie.** Określ cel, typ A/B/C, zakres i wyłączenia, osobę odpowiedzialną, zależności, testy, kryteria akceptacji, sposób wycofania i wymagane decyzje. Dla B wskaż potwierdzone wymaganie oraz błąd; dla C uzyskaj osobną akceptację. Zgoda dotyczy wskazanego etapu; miejsce w roadmapie nie upoważnia do rozpoczęcia następnego.
 3. **Podjęcie pracy.** Sprawdź aktywne zadania i PR dotykające tych samych modułów. Zapisz w Issue właściciela, gałąź i status „w toku”, jeśli publikacja jest upoważniona. Zanim druga osoba rozpocznie nakładające się prace, uzgodnij podział.
 4. **Stan kodu.** Sprawdź `git status`, gałąź, bazę i właściwy diff. Przed rozpoczęciem pobierz aktualne referencje ze zdalnego repo, jeśli masz dostęp; sam lokalny `origin/main` nie dowodzi aktualności. Nie wykonuj automatycznego pull na brudnym checkoutcie.
 5. **Gałąź.** Utwórz własną gałąź z aktualnego, uzgodnionego `main`, np. `docs/123-team-workflow`, `fix/124-archive-read` lub `feat/125-approved-feature`. Jedna gałąź realizuje jeden spójny zakres. Nie pracuj bezpośrednio na `main`.
 6. **Implementacja.** Przy istotnej zmianie przedstaw plan przed edycją. Zabezpiecz zmieniane zachowania odpowiednimi testami, pracuj w małych commitach, aktualizuj dokumentację i nie poszerzaj zakresu samodzielnie.
 7. **Publikacja.** Wykonaj push i utwórz PR tylko w zakresie jawnego upoważnienia. Użyj [szablonu PR](../.github/pull_request_template.md), wskaż Issue i poproś drugiego programistę o review. Nie ustawiaj automatycznego merge.
 8. **Review i merge.** Autor poprawia uwagi, a drugi programista zatwierdza aktualny zakres zmian. Istotna zmiana po review wymaga ponownego przeglądu. Merge następuje dopiero po wymaganych kontrolach, review i upoważnieniu do merge. Zgoda na implementację lub push nie jest zgodą na merge ani wdrożenie.
-9. **Zamknięcie.** Po rzeczywistym scaleniu uzupełnij Issue, decyzje i wymagane dalsze działania. Lokalny commit, otwarty PR lub zielone CI nie oznaczają ukończenia wdrożenia.
+9. **Zamknięcie.** Po rzeczywistym scaleniu uzupełnij Issue, decyzje i wymagane dalsze działania. Oddziel stan implementacji, akceptacji, merge i wdrożenia. Lokalny commit, otwarty PR lub zielone CI nie oznaczają ukończenia wdrożenia. Zostaw punkt wznowienia i zakończ pracę nad etapem; nie uruchamiaj kolejnego bez osobnego zatwierdzenia.
 
-Agent może przygotować treść Issue, komentarza lub PR lokalnie, ale nie publikuje jej bez upoważnienia. Gdy GitHub jest niedostępny albo publikacja nie jest zatwierdzona, użyj tymczasowego ID, np. `LOCAL-20261111-TEAM`, i przekaż handoff użytkownikowi. Przy późniejszej publikacji zastąp lokalne ID odnośnikiem do Issue. Nie udawaj, że zespół widzi jeszcze nieopublikowaną gałąź.
+Agent może przygotować treść Issue, komentarza lub PR lokalnie, ale nie publikuje jej bez upoważnienia. Gdy GitHub jest niedostępny albo publikacja nie jest zatwierdzona, użyj lokalnego ID etapu i utrwal handoff w [SESSION_STATE.md](SESSION_STATE.md), także podając go użytkownikowi. Przy późniejszej publikacji dodaj mapowanie lokalnego ID na Issue, zachowując identyfikator do wyszukiwania w historii Git. Nie udawaj, że zespół widzi jeszcze nieopublikowaną gałąź.
 
 Status zadania zapisujemy w Issue: **do uzgodnienia → gotowe → w toku → do review → zakończone**; **zablokowane** wymaga przyczyny i następnego kroku. „Gotowe” oznacza wystarczająco zatwierdzony zakres, nie sam wpis do backlogu.
+
+## Mały etap i warunek przejścia dalej
+
+Etap ma dostarczać jeden sprawdzalny rezultat w jednym PR. Musi dać się go wdrożyć po spełnieniu wskazanych zależności, przetestować, zaakceptować i wycofać bez wdrażania kolejnego etapu. Nie łącz naprawy punktacji, przebudowy logowania i zmiany hostingu w jedną pracę. Jeżeli wycofanie wymaga jeszcze nieuzgodnionej przebudowy danych, najpierw wydziel zadanie decyzyjne.
+
+Karta etapu w Issue zawiera: **ID, cel, zakres i wyłączenia, właściciela, zależności, testy, kryteria akceptacji, sposób wycofania oraz dowód zgody na rozpoczęcie**. Priorytet, ryzyka i szacunek pomagają ustalić kolejność. Niejasną kartę doprecyzuj przed kodowaniem. Szablon [zadania](../.github/ISSUE_TEMPLATE/task.yml) zawiera te pola.
+
+Wycofanie ma opisywać cofany zakres, poprzednią zgodną wersję i kontrolę po cofnięciu. Dla dokumentacji wystarczy nowy commit odwracający konkretną zmianę z ponowną kontrolą linków; nie przepisuj historii. Przy zapisie lub migracji danych samo cofnięcie kodu albo odtworzenie starej kopii może utracić nowsze operacje. Wtedy wymagaj osobno zatwierdzonej i przećwiczonej procedury zachowania tych danych. Wdrożenie bez wykonalnego wycofania jest niedopuszczone w tym procesie.
+
+Na końcu pokaż wynik kryteriów akceptacji oraz pozostałe ograniczenia i wskaż proponowany następny etap. **Akceptacja wyniku bieżącego etapu, merge i zgoda na rozpoczęcie kolejnego są odrębnymi ustaleniami.** Kolejność i strzałki zależności w roadmapie nie stanowią automatycznego zlecenia.
 
 ## Ochrona równoległej pracy
 
@@ -61,15 +72,37 @@ Przekazanie obejmuje:
 
 - ID i cel zadania oraz właściciela;
 - gałąź, commit lub PR i stan publikacji;
-- wykonane zmiany i zmienione moduły;
+- wykonane zmiany, listę zmienionych plików i modułów;
 - decyzje, odnośniki do akceptacji i przyjęte założenia;
 - wykonane kontrole z wynikiem oraz kontrole niewykonane z powodem;
 - znane problemy, ryzyka, zależności i możliwe konflikty;
-- dalsze działania oraz decyzje wymagane od drugiego programisty.
+- pozostałą pracę, następne zadanie, pierwszy krok i stan zgody na nie oraz decyzje wymagane od drugiego programisty.
 
-Gdy PR nie jest gotowy, umieść ten sam format w komentarzu do właściwego Issue. Jeżeli nie można jeszcze publikować, przygotuj handoff w odpowiedzi użytkownikowi lub uzgodnionym, wyraźnie oznaczonym dokumencie roboczym. Nie twórz osobnego pliku Markdown dla każdej drobnej zmiany.
+Gdy PR nie jest gotowy, umieść ten sam format w komentarzu do właściwego Issue. Jeżeli nie można jeszcze publikować, zapisz go w istniejącym [SESSION_STATE.md](SESSION_STATE.md), oznaczając gałąź i brak publikacji. Sama odpowiedź w rozmowie nie wystarcza. Nie twórz osobnego pliku Markdown dla każdej drobnej zmiany.
 
 Odbierający agent najpierw odczytuje handoff, Issue, właściwe decyzje i diff wskazanego commitu. Sprawdza nowsze zmiany i stan swojej gałęzi. Nie zakłada, że zapamiętana rozmowa autora zawiera aktualne wymagania.
+
+## Zakończenie sesji i wznowienie pracy
+
+Obaj agenci stosują ten sam standard, także przy nowej rozmowie lub przekazaniu zadania drugiej osobie. Stan musi dać się odtworzyć z repo oraz wskazanych Issues/PR bez dostępu do poprzedniej rozmowy lub jej wewnętrznego podsumowania.
+
+Na koniec istotnej pracy, również przerwanej w połowie etapu:
+
+1. Sprawdź diff i status. Wskaż zrealizowany zakres, pliki oraz prace niezakończone; oznacz niezacommitowane zmiany. Nie deklaruj zakończenia etapu na podstawie samego końca sesji.
+2. Utrwal decyzje w `DECISIONS.md`, wymagania i ustalenia w właściwych dokumentach. Zapisz faktycznego zatwierdzającego i zakres upoważnienia; nierozstrzygnięte pomysły pozostają propozycjami. Brak opublikowanego uzgodnienia oznacz jawnie, a jego istotną treść zachowaj w repo.
+3. Uzupełnij handoff z szablonu PR, w tym polecenia, środowisko, wersję i wyniki kontroli oraz testy niewykonane z powodem. Logi ogranicz do potrzebnych, zanonimizowanych dowodów. Podaj problemy, ryzyka i zależności.
+4. W `SESSION_STATE.md` wskaż aktualny handoff i dokładne miejsce wznowienia: ID, pierwszy krok, brakujące informacje i zgody. Gdy istnieje Issue/PR, odsyłaj do niego zamiast kopiować cały stan. Bez publikacji przechowuj tam pełne bieżące przekazanie; ten sam dokument jest aktualizowany, a poprzednie wersje zachowuje Git.
+5. Zapisz dokumentację z pracą w odpowiednim commicie i podaj jego identyfikator w przekazaniu. Plik zawarty w commicie nie wpisuje własnego przyszłego hasha: identyfikuje go historia ścieżki (`git log -1 -- docs/SESSION_STATE.md`). Nie zmieniaj cudzego handoffu; równoległe zadania mają osobne wpisy z właścicielem i gałęzią.
+6. Oddziel implementację od review, merge i wdrożenia. Jeśli następny etap nie ma zgody, zakończ na przekazaniu; nie kontynuuj go automatycznie.
+
+Na początku kolejnej sesji:
+
+1. Odczytaj `AGENTS.md`, `SESSION_STATE.md` i wskazany handoff. Sprawdź status Git, gałąź, commity i niezapisane zmiany, zanim zaczniesz edytować.
+2. Zweryfikuj aktualność właściwych Issues, PR, decyzji i referencji zdalnych, jeśli są dostępne; porównaj zmiany od wersji handoffu. Brak dostępu lub nieopublikowane materiały zaznacz jako ograniczenie, nie zgaduj ich treści.
+3. Przeczytaj dokumentację wybranego modułu i etap w roadmapie/Issue. Sprawdź zależności i konflikty. Kod wskazuje zachowanie, zatwierdzone wymagania wskazują cel; sprzeczność zgłoś przed zależną zmianą.
+4. Krótko podaj rozpoznany stan i pierwszy krok. Kontynuuj przerwany etap tylko w granicach nadal aktualnej zgody; jeśli ukończony, poczekaj na zatwierdzenie następnego. Nie powtarzaj kontroli bez powodu: wcześniejsze wyniki zachowują znaczenie tylko dla wskazanej wersji i środowiska.
+
+`SESSION_STATE.md` jest mapą aktywnych przekazań, nie dziennikiem wszystkich rozmów ani drugim rejestrem decyzji. Po publikacji przenieś szczegóły do właściwego Issue/PR i pozostaw odnośnik; wersja offline zostaje w historii Git. Po merge zaktualizuj punkt wznowienia zgodnie z rzeczywistym stanem, bez zgadywania przyszłych hashy. Nie zapisuj sekretów ani danych dzieci w żadnej warstwie dokumentacji.
 
 ## Pomysły i elastyczna roadmapa
 
@@ -77,7 +110,7 @@ GitHub Issues są wspólnym rejestrem pomysłów i zadań; nie tworzymy równole
 
 Status pomysłu: **propozycja / do analizy / zatwierdzona / odroczona / odrzucona**. Przy decyzji zapisz uzasadnienie, osoby zatwierdzające i odnośnik do ich uzgodnienia. Agent nie może sam zatwierdzić propozycji. „Zatwierdzona” nie oznacza jeszcze zgody na rozpoczęcie dowolnej implementacji: zadanie wykonawcze musi mieć uzgodniony zakres i termin/pierwszeństwo.
 
-Priorytet P0–P3, zależności i kolejność w Issues tworzą roadmapę. Nowy pomysł może zmienić kolejność po uzgodnieniu; nie unieważnia automatycznie rozpoczętych zadań. Nie utożsamiaj ważności pomysłu z jego akceptacją. Jeśli w przyszłości powstanie osobny widok roadmapy, ma odsyłać do Issues, a nie kopiować ich statusy.
+Priorytet P0–P3, zależności i kolejność w Issues tworzą roadmapę. [ROADMAP.md](ROADMAP.md) zawiera początkowy podział na etapy oraz inicjatywy jeszcze nieopublikowane. Po utworzeniu Issue zastąp jego roboczą kartę odnośnikiem i zachowaj ID; status i szczegóły aktualizuj w jednym miejscu, w Issue. Nowy pomysł może zmienić kolejność po uzgodnieniu; nie unieważnia automatycznie rozpoczętych zadań. Nie utożsamiaj ważności pomysłu z jego akceptacją. Odroczona inicjatywa pamięci AI pozostaje wyłącznie wpisem na przyszłość.
 
 ## Decyzje i budżet
 
@@ -119,4 +152,4 @@ Szablony nie tworzą etykiet, nie konfigurują branch protection i nie zapewniaj
 
 Przykładowy prompt, po udostępnieniu wspólnej dokumentacji w jego checkoutcie:
 
-> Jestem Patryk i współtworzę Rafcia z Łukaszem. Przeczytaj AGENTS.md, docs/TEAM_WORKFLOW.md i docs/DECISIONS.md, a następnie dokumentację produktu potrzebną do rozpoznania bieżącego zakresu. Sprawdź status i gałąź repo oraz aktualne Issues, decyzje i powiązane PR, jeśli masz do nich dostęp. Nie zakładaj dostępu do pamięci agenta Łukasza. Na razie tylko analizuj: podsumuj produkt, moje domyślne odpowiedzialności i aktywne zależności, a następnie pomóż mi wybrać uzgodnione zadanie lub opisać własny pomysł według szablonu Issue. Nie zmieniaj kodu, mechanik ani infrastruktury, nie publikuj niczego i nie ruszaj pozostałych gier. Zgłoś brakujące informacje zamiast zgadywać. Przed późniejszą implementacją uzgodnimy zakres i utworzymy osobną gałąź; na koniec zostawisz handoff zgodny z szablonem PR.
+> Jestem Patryk i współtworzę Rafcia z Łukaszem. Przeczytaj AGENTS.md, docs/SESSION_STATE.md, wskazany handoff, docs/TEAM_WORKFLOW.md i właściwe decyzje z docs/DECISIONS.md, a następnie dokumentację produktu potrzebną do bieżącego zadania. Sprawdź status i gałąź repo oraz aktualne Issues i powiązane PR, jeśli masz do nich dostęp. Nie zakładaj dostępu do pamięci agenta Łukasza. Na razie tylko analizuj: podsumuj stan, moje odpowiedzialności i zależności, a następnie pomóż mi wybrać jeden zatwierdzony etap z docs/ROADMAP.md lub Issue albo opisać własny pomysł. Nie zmieniaj kodu, mechanik ani infrastruktury i nie publikuj niczego. Zgłoś brakujące informacje. Przed implementacją uzgodnimy cel, zakres, testy, akceptację i wycofanie. Na koniec utrwal handoff i punkt wznowienia; nie rozpoczynaj kolejnego etapu bez zatwierdzenia.

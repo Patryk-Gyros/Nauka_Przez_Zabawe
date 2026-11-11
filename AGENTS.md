@@ -4,10 +4,11 @@ Rafcio jest aplikacją dla wszystkich dzieci, również dzieci o różnych potrz
 
 ## Przed zadaniem
 
-1. Przeczytaj ten plik oraz dokumentację dotyczącą zmienianego modułu. Nie czytaj całego repo przy drobnej operacji.
+1. Przeczytaj ten plik, [punkt wznowienia](docs/SESSION_STATE.md), wskazany handoff oraz dokumentację dotyczącą zmienianego modułu. Nie czytaj całego repo przy drobnej operacji.
 2. Sprawdź zatwierdzone [decyzje](docs/DECISIONS.md), właściwe Issue, zależności i powiązane PR. Gdy nie masz dostępu do GitHub, zaznacz brak weryfikacji i poproś o aktualne informacje potrzebne do pracy.
 3. Sprawdź gałąź, status Git i odpowiednie zmiany względem uzgodnionej bazy. Lokalny `origin/main` może być nieaktualny. Nie nadpisuj cudzych ani niezidentyfikowanych zmian.
 4. Określ zakres i typ zmiany: **A** — refaktor bez zmiany zachowania; **B** — naprawa względem potwierdzonego wymagania; **C** — rozwój produktu wymagający osobnej zgody. Dla istotnej zmiany przedstaw plan i uzgodnij brakujące decyzje przed implementacją.
+5. Wybierz jeden zatwierdzony etap z [roadmapy](docs/ROADMAP.md) lub właściwego Issue. Musi mieć cel, zakres, zależności, testy, kryteria akceptacji i sposób wycofania. Zakończenie etapu nie upoważnia do rozpoczęcia kolejnego.
 
 ## Źródła i granice
 
@@ -21,7 +22,7 @@ Rafcio jest aplikacją dla wszystkich dzieci, również dzieci o różnych potrz
 - Łukasz odpowiada domyślnie za architekturę, backend, integracje, infrastrukturę, bezpieczeństwo, jakość, CI/CD, środowiska i wdrożenia. Patryk za kierunek produktu, mechaniki, grę, propozycje UI/UX i implementację uzgodnionych zadań. Podział jest elastyczny; propozycje obu osób są równorzędne.
 - Istotne decyzje architektoniczne, produktowe i infrastrukturalne uzgadniają obaj programiści. Agent nie zatwierdza decyzji w ich imieniu.
 - Pracuj na osobnej gałęzi i w niezależnym checkoutcie przy równoległej pracy. Bez bezpośrednich zmian na `main`, nadpisywania cudzej gałęzi i automatycznego merge. Push i merge wykonuj tylko w zakresie jawnego upoważnienia; merge wymaga review i zatwierdzenia drugiego programisty.
-- Niezależne sesje agentów nie komunikują się automatycznie. Przekazuj stan przez Issue, PR, komentarze i dokumenty. Stosuj [TEAM_WORKFLOW.md](docs/TEAM_WORKFLOW.md) oraz [szablon PR / handoff](.github/pull_request_template.md).
+- Niezależne sesje agentów nie komunikują się automatycznie. Obaj agenci korzystają z tych samych zatwierdzonych zasad i sprawdzają ich aktualność. Przekazuj stan przez Issue, PR, komentarze i dokumenty; rozmowa, kompresja kontekstu i lokalna pamięć nie są jedynym źródłem. Stosuj [TEAM_WORKFLOW.md](docs/TEAM_WORKFLOW.md) oraz [szablon PR / handoff](.github/pull_request_template.md).
 
 ## Jakość, dane i koszty
 
@@ -34,4 +35,4 @@ Rafcio jest aplikacją dla wszystkich dzieci, również dzieci o różnych potrz
 
 ## Zakończenie
 
-Sprawdź zakres diffu, wyniki wymaganych kontroli i brak danych prywatnych. Zostaw handoff z commitami, decyzjami, testami wykonanymi i niewykonanymi, ryzykami oraz dalszymi krokami. Brak zgody na push oznacza lokalny commit i przekazanie jego identyfikatora, nie publikację.
+Sprawdź zakres diffu, wyniki wymaganych kontroli i brak danych prywatnych. Utrwal handoff: rezultat, decyzje, zmienione pliki, wersję, testy wykonane i niewykonane, problemy, ryzyka oraz pozostałą pracę. Wskaż dokładne zadanie, pierwszy krok i stan zgody dla następnej sesji. Zaktualizuj odnośnik w `docs/SESSION_STATE.md`; bez Issue/PR zapisz tam bieżące przekazanie. Historia Git zachowuje poprzednie wersje. Brak zgody na push oznacza lokalny commit, nie publikację. Nie rozpoczynaj kolejnego etapu bez zatwierdzenia.

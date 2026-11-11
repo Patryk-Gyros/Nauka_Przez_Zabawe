@@ -4,7 +4,14 @@ title: "[Zadanie] "
 body:
   - type: markdown
     attributes:
-      value: "Zgłoszenie nie oznacza zgody na implementację. Sprawdź AGENTS.md, docs/TEAM_WORKFLOW.md i docs/DECISIONS.md."
+      value: "Jedno zadanie opisuje jeden mały etap. Zgłoszenie nie oznacza zgody na implementację. Sprawdź AGENTS.md, docs/SESSION_STATE.md, docs/TEAM_WORKFLOW.md i właściwe decyzje."
+  - type: input
+    id: stage
+    attributes:
+      label: ID etapu i powiązanie z roadmapą
+      description: Podaj lokalne ID z docs/ROADMAP.md albo oznacz nowy etap. Po publikacji to Issue jest źródłem jego statusu i szczegółów.
+    validations:
+      required: true
   - type: textarea
     id: goal
     attributes:
@@ -51,10 +58,17 @@ body:
     validations:
       required: true
   - type: textarea
+    id: rollback
+    attributes:
+      label: Sposób wycofania etapu
+      description: Wskaż cofany zakres, poprzednią zgodną wersję i kontrolę po cofnięciu. Dla zmian danych opisz zachowanie późniejszych operacji. Także etap dokumentacyjny wymaga sposobu wycofania.
+    validations:
+      required: true
+  - type: textarea
     id: decisions
     attributes:
       label: Decyzje i akceptacja zakresu
-      description: ID decyzji i odnośniki do uzgodnień; brakujące zgody oznacz jawnie. Istotne zmiany uzgadniają Łukasz i Patryk.
+      description: Podaj zgodę na rozpoczęcie tego etapu oraz ID decyzji i odnośniki do uzgodnień; brakujące zgody oznacz jawnie. Istotne zmiany uzgadniają Łukasz i Patryk. Zgoda na poprzedni etap nie obejmuje następnego.
     validations:
       required: true
   - type: dropdown
@@ -74,4 +88,4 @@ body:
     id: handoff
     attributes:
       label: Gałąź, PR i przekazanie pracy
-      description: Uzupełnij przy podjęciu pracy. Handoff według .github/pull_request_template.md; przed PR może być komentarzem w tym Issue. Nie publikuj bez upoważnienia.
+      description: Uzupełnij przy podjęciu pracy. Handoff według .github/pull_request_template.md; przed PR może być komentarzem w tym Issue. Wskaż następne zadanie, pierwszy krok i stan zgody oraz link z docs/SESSION_STATE.md. Nie publikuj bez upoważnienia.
