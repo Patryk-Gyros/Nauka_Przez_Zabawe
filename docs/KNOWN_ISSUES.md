@@ -1,0 +1,6 @@
+# Znane problemy punktacji
+
+- **P1 — Ekran i serwer liczą różne saldo.** [Ekran uwzględnia punkty za pytanie dnia](../public/punktacja/app.js), a [serwer pomija je przy sprawdzaniu nagrody](../server.js). Przycisk może więc pokazać dostępną nagrodę, którą serwer odrzuci. Saldo do wyświetlania i zatwierdzania powinno pochodzić z jednej reguły.
+- **P1 — Usunięcie pozycji zmienia wynik za poprzednie dni.** [Usuwanie usuwa definicję](../server.js), a rozliczenie dnia zachowuje tylko identyfikator i ocenę. Jeśli dziecko zdobyło punkty za obowiązek lub misję, ich usunięcie z konfiguracji usuwa też te punkty z wyniku. Warto rozdzielić wycofanie pozycji z konfiguracji od rozliczonej historii.
+- **P2 — Zmiana stawki pytania działa wstecz.** [Ustawienia przechowują jedną stawkę](../server.js), którą ekran stosuje do wszystkich zaliczonych dat. Zmiana z 10 na 5 pkt zmniejsza wynik za każde wcześniej zaliczone pytanie. Jeśli rozliczenia mają być trwałe, trzeba zapisać przyznaną wartość przy dacie.
+- **P2 — Wyprawa pomija niektóre zaliczone pytania.** [Suma wyprawy przechodzi tylko po dniach z rozliczeniem obowiązków, aktywności lub misji](../public/punktacja/app.js). Samo zaliczenie pytania nie tworzy takiego rozliczenia, więc może zwiększyć saldo, ale nie postęp do szczytu.
