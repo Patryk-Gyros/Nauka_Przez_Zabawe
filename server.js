@@ -251,25 +251,28 @@ const punktacjaDbPath = path.join(__dirname, "punktacja-data.json");
 const punktacjaArchiveDir = path.join(__dirname, "punktacja-archive");
 const punktacjaMissionColors = ["#ff4f5e", "#168fe8", "#8b62e8", "#ef9b28", "#d94fc0"];
 const crypto = require("crypto");
+const { parentPinError, hashParentPin, verifyParentPin } = require("./utils/parentPin");
 const parentSessions = new Map();
 const parentLoginAttempts = new Map();
 const parentSessionLifetimeMs = 12 * 60 * 60 * 1000;
+const parentSessionIdleMs = 15 * 60 * 1000;
 const parentLoginWindowMs = 15 * 60 * 1000;
 
-function hashParentPin(pin) {
-  const salt = crypto.randomBytes(16).toString("hex");
-  return `scrypt:${salt}:${crypto.scryptSync(pin, salt, 32).toString("hex")}`;
+function createParentSession() {
+  const token = crypto.randomBytes(24).toString("hex");
+  const now = Date.now();
+  parentSessions.set(token, { createdAt: now, lastUsedAt: now });
+  return token;
 }
 
-function verifyParentPin(pin, stored) {
-  if (!stored) return false;
-  if (!stored.startsWith("scrypt:")) return pin === stored; // starszy zapis
-  const parts = stored.split(":");
-  if (parts.length !== 3 || !/^[0-9a-f]{32}$/.test(parts[1]) || !/^[0-9a-f]{64}$/.test(parts[2])) return false;
-  const expected = Buffer.from(parts[2], "hex");
-  const actual = crypto.scryptSync(pin, parts[1], expected.length);
-  return crypto.timingSafeEqual(actual, expected);
-}
+// Panel i API Rafcia działają z tego samego adresu. Odrzucamy żądania z obcych stron.
+app.use("/api/punktacja", (req, res, next) => {
+  const origin = req.get("origin");
+  if (origin && origin !== `${req.protocol}://${req.get("host")}`) {
+    return res.status(403).json({ error: "Żądanie pochodzi z innej strony." });
+  }
+  next();
+});
 
 // Żadna odpowiedź API punktacji nie może zawierać poświadczenia rodzica.
 app.use("/api/punktacja", (req, res, next) => {
@@ -369,11 +372,14 @@ function savePunktacja(data) {
 function parentAuth(req, res, next) {
   const h = req.headers.authorization || "";
   const token = h.startsWith("Bearer ") ? h.slice(7) : "";
-  const createdAt = parentSessions.get(token);
-  if (!createdAt || Date.now() - createdAt > parentSessionLifetimeMs) {
+  const session = parentSessions.get(token);
+  const now = Date.now();
+  if (!session || now - session.createdAt > parentSessionLifetimeMs || now - session.lastUsedAt > parentSessionIdleMs) {
     parentSessions.delete(token);
     return res.status(401).json({ error: "Wymagane uprawnienia rodzica." });
   }
+  session.lastUsedAt = now;
+  req.parentToken = token;
   next();
 }
 
@@ -452,8 +458,7 @@ app.post("/api/punktacja/parent/login", (req, res) => {
       data.parentPin = hashParentPin(pin);
       savePunktacja(data);
     }
-    const token = crypto.randomBytes(24).toString("hex");
-    parentSessions.set(token, Date.now());
+    const token = createParentSession();
     res.json({ token });
   } catch (err) {
     console.error("Punktacja login:", err);
@@ -469,18 +474,60 @@ app.post("/api/punktacja/parent/setup-pin", (req, res) => {
       return res.status(409).json({ error: "PIN rodzica jest już ustawiony." });
     }
     const pin = String(req.body?.pin ?? "").trim();
-    if (!/^\d{4,12}$/.test(pin)) {
-      return res.status(400).json({ error: "PIN powinien zawierać od 4 do 12 cyfr." });
-    }
+    const pinError = parentPinError(pin);
+    if (pinError) return res.status(400).json({ error: pinError });
     data.parentPin = hashParentPin(pin);
     data.pinSet = true;
     savePunktacja(data);
-    const token = crypto.randomBytes(24).toString("hex");
-    parentSessions.set(token, Date.now());
+    const token = createParentSession();
     res.json({ ok: true, token, data });
   } catch (err) {
     console.error("Punktacja setup PIN:", err);
     res.status(500).json({ error: err.message || "Nie udało się ustawić PIN-u." });
+  }
+});
+
+app.get("/api/punktacja/parent/session", parentAuth, (_req, res) => {
+  res.json({ ok: true });
+});
+
+app.post("/api/punktacja/parent/logout", parentAuth, (req, res) => {
+  parentSessions.delete(req.parentToken);
+  res.json({ ok: true });
+});
+
+app.post("/api/punktacja/parent/change-pin", parentAuth, (req, res) => {
+  try {
+    const data = loadPunktacja();
+    const currentPin = String(req.body?.currentPin ?? "");
+    const newPin = String(req.body?.newPin ?? "");
+    const pinError = parentPinError(newPin);
+    if (pinError) return res.status(400).json({ error: pinError });
+    const attemptKey = `change:${req.parentToken}`;
+    const attempts = parentLoginAttempts.get(attemptKey);
+    if (attempts && attempts.count >= 5 && Date.now() - attempts.startedAt < parentLoginWindowMs) {
+      return res.status(429).json({ error: "Zbyt wiele prób. Spróbuj ponownie za 15 minut." });
+    }
+    if (!verifyParentPin(currentPin, String(data.parentPin || ""))) {
+      const current = attempts && Date.now() - attempts.startedAt < parentLoginWindowMs
+        ? attempts : { count: 0, startedAt: Date.now() };
+      current.count += 1;
+      parentLoginAttempts.set(attemptKey, current);
+      return res.status(401).json({ error: "Dotychczasowy PIN jest nieprawidłowy." });
+    }
+    if (verifyParentPin(newPin, String(data.parentPin))) {
+      return res.status(400).json({ error: "Nowy PIN musi być inny niż dotychczasowy." });
+    }
+    data.parentPin = hashParentPin(newPin);
+    data.pinSet = true;
+    savePunktacja(data);
+    parentLoginAttempts.delete(attemptKey);
+    parentSessions.clear();
+    const token = createParentSession();
+    res.json({ ok: true, token, data });
+  } catch (err) {
+    console.error("Punktacja change PIN:", err);
+    res.status(500).json({ error: "Nie udało się zmienić PIN-u." });
   }
 });
 
@@ -491,14 +538,9 @@ app.post("/api/punktacja/parent/settings", parentAuth, (req, res) => {
     const data = loadPunktacja();
     const p = req.body || {};
 
-    // Start gry nie korzysta już z daty ani godziny.
+    // Zmiana PIN-u ma osobny endpoint, który wymaga starego PIN-u.
     if (p.parentPin !== undefined) {
-      const pin = String(p.parentPin).trim();
-      if (!/^\d{4,12}$/.test(pin)) {
-        return res.status(400).json({ error: "PIN powinien zawierać od 4 do 12 cyfr." });
-      }
-      data.parentPin = hashParentPin(pin);
-      data.pinSet = true;
+      return res.status(400).json({ error: "Zmień PIN w ustawieniach bezpieczeństwa." });
     }
 
     // Pytanie dnia: zapisujemy wyłącznie przekazane pola, zachowując pozostałe ustawienia.
@@ -830,11 +872,17 @@ app.post("/api/punktacja/parent/first-game", (req, res) => {
   try {
     const current = loadPunktacja();
     if (current.pinSet && current.parentPin) return res.status(409).json({error:"Pierwsza gra została już utworzona. Podaj dotychczasowy PIN rodzica."});
+    if (current.settings?.gameStarted || current.settings?.childName ||
+        ["tasks", "extras", "challenges", "rewards", "bonusPoints", "redemptions", "consequences"].some(key => current[key]?.length) ||
+        Object.keys(current.records || {}).length) {
+      return res.status(409).json({error:"Istnieją już dane gry. Ustaw PIN w panelu rodzica, aby je zachować."});
+    }
     const pin = String(req.body?.pin || "").trim();
     const childName = String(req.body?.childName || "").trim();
     const startDate = String(req.body?.startDate || "");
     const endDate = String(req.body?.endDate || "");
-    if (!/^\d{4,12}$/.test(pin)) return res.status(400).json({error:"PIN powinien zawierać od 4 do 12 cyfr."});
+    const pinError = parentPinError(pin);
+    if (pinError) return res.status(400).json({error:pinError});
     if (!childName || childName.length > 40) return res.status(400).json({error:"Wpisz imię podróżnika (maksymalnie 40 znaków)."});
     if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate) || !/^\d{4}-\d{2}-\d{2}$/.test(endDate) || endDate < startDate) return res.status(400).json({error:"Wybierz poprawne daty początku i końca gry."});
     const fresh = defaultPunktacja();
@@ -844,7 +892,7 @@ app.post("/api/punktacja/parent/first-game", (req, res) => {
     fresh.settings.status = "setup"; fresh.settings.gameStarted = false;
     fresh.settings.firstSetupPending = true;
     savePunktacja(fresh);
-    const token = crypto.randomBytes(24).toString("hex"); parentSessions.set(token, Date.now());
+    const token = createParentSession();
     console.log("PUNKTACJA: PIERWSZA GRA", childName, startDate, endDate);
     return res.json({ok:true,token,data:fresh});
   } catch (err) {
@@ -1128,7 +1176,7 @@ app.get("/punktacja", (req, res) => {
 
 /* ================= KONIEC SYSTEMU PUNKTACJI ================= */
 
-app.listen(3000, () => {
+if (require.main === module) app.listen(3000, "127.0.0.1", () => {
 
   console.log(
     "🚀 Serwer działa:"
@@ -1145,3 +1193,5 @@ console.log(
   "Grunwald: http://localhost:3000/grunwald"
 );
 });
+
+module.exports = app;
