@@ -1,4 +1,10 @@
 const state={db:null,screen:"welcome",date:new Date(),parentDate:new Date(),parentToken:null,lastDayKey:null,childLastTotal:null,cfgMonth:new Date(),cfgPickMode:"start",inConfig:false};
+const parentIdleMs=15*60*1000;
+let parentLastActivity=0, parentLastTouch=0, parentTouchInFlight=false;
+function setParentToken(token){state.parentToken=token;parentLastActivity=Date.now();parentLastTouch=Date.now()}
+function revokeParentSession(){const token=state.parentToken;state.parentToken=null;if(token)req("/api/punktacja/parent/logout",{method:"POST",headers:{Authorization:"Bearer "+token},body:"{}"}).catch(()=>{})}
+async function touchParentSession(){if(!state.parentToken||parentTouchInFlight)return;parentTouchInFlight=true;const token=state.parentToken;try{await req("/api/punktacja/parent/session",{headers:{Authorization:"Bearer "+token}});parentLastTouch=Date.now()}catch(_){if(state.parentToken===token)showScreen("welcome")}finally{parentTouchInFlight=false}}
+function noteParentActivity(){if(state.screen!=="parent"||!state.parentToken)return;const now=Date.now();if(now-parentLastActivity>=parentIdleMs){showScreen("welcome");return}parentLastActivity=now;if(now-parentLastTouch>=60*1000)touchParentSession()}
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const dateKey=d=>{const x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`};
@@ -39,7 +45,7 @@ function rafciaShowSad(points){
  requestAnimationFrame(()=>overlay.classList.add("show"));setTimeout(()=>overlay.classList.add("fade"),2800);setTimeout(()=>overlay.remove(),3450);
 }
 function rafciaMaybeShowWow(){if(state.screen!=="child"||!activeGame())return;const sad=rafciaTakeSadAmount();if(sad>0){setTimeout(()=>rafciaShowSad(sad),180);return}const points=rafciaTakeWowAmount();if(points>0)setTimeout(()=>rafciaShowWow(points),180);}
-async function showScreen(name){document.body.classList.toggle("child-scene-active",name==="child");state.screen=name;if(name==="parent"||name==="child"||name==="welcome")state.inConfig=false;document.querySelectorAll(".screen").forEach(s=>s.classList.add("hidden"));const target=$(name+"Screen");if(!target)return;target.classList.remove("hidden");document.querySelectorAll(".navBtn").forEach(b=>b.classList.toggle("active",b.dataset.screen===name));if(name==="child"){try{state.db=await req("/api/punktacja")}catch(e){console.error("Nie udało się odświeżyć danych panelu dziecka:",e)}state.childLastTotal=totalPoints();renderChild();rafciaMaybeShowWow()}if(name==="parent")renderParent()}
+async function showScreen(name){if(name!=="parent"&&state.parentToken)revokeParentSession();document.body.classList.toggle("child-scene-active",name==="child");state.screen=name;if(name==="parent"||name==="child"||name==="welcome")state.inConfig=false;document.querySelectorAll(".screen").forEach(s=>s.classList.add("hidden"));const target=$(name+"Screen");if(!target)return;target.classList.remove("hidden");document.querySelectorAll(".navBtn").forEach(b=>b.classList.toggle("active",b.dataset.screen===name));if(name==="child"){try{state.db=await req("/api/punktacja")}catch(e){console.error("Nie udało się odświeżyć danych panelu dziecka:",e)}state.childLastTotal=totalPoints();renderChild();rafciaMaybeShowWow()}if(name==="parent")renderParent()}
 function gameDateRange(){
   const s=state.db?.settings||{};
   const start=s.startDate||((s.gameStarted)?dateKey(new Date()):"");
@@ -626,7 +632,7 @@ let modalKind=null;
 function openAddModal(kind){modalKind=kind;const meta={task:['📋','CODZIENNIE','Dodaj codzienny obowiązek','Wybierz propozycję albo wpisz własny obowiązek.'],extra:['⭐','BONUS','Dodaj czynność ekstra','Wybierz propozycję albo dodaj własny bonus.'],challenge:['🚀','WYZWANIE','Dodaj misję czasową','Ustal termin i liczbę punktów za wykonanie misji.'],reward:['🎁','CEL','Dodaj nagrodę','Ustal próg punktowy, po którym nagroda będzie dostępna.']}[kind];$("modalIcon").textContent=meta[0];$("modalEyebrow").textContent=meta[1];$("modalTitle").textContent=meta[2];$("modalHint").textContent=meta[3];$("challengeDates").classList.toggle("hidden",kind!=="challenge");$("modalPoints").value=kind==='reward'?[100,250,500][0]:kind==='challenge'?50:10;$("modalIconInput").value=kind==='reward'?'🎁':kind==='extra'?'⭐':kind==='challenge'?'🚀':'📋';$("modalName").value='';$("rewardIconPicker").classList.remove('hidden');initRewardIconPicker();refreshRewardIconPicker();const box=$("suggestions");const previous=(state.db?.configLibrary?.[kind]||[]).map(x=>[x.name,kind==="reward"?x.cost:(kind==="task"?5:x.points),x.icon||"⭐"]);const stock=suggestionData[kind]||[];const all=[...previous.filter(x=>!stock.some(y=>y[0]===x[0])),...stock];box.innerHTML=all.map((s,i)=>`<button type="button" class="suggestion" data-suggestion="${i}"><span>${esc(s[2])}</span>${esc(s[0])}<b>${s[1]} pkt</b></button>`).join("");box.querySelectorAll(".suggestion").forEach(b=>b.onclick=()=>{const s=all[+b.dataset.suggestion];$("modalName").value=s[0];$("modalPoints").value=s[1];$("modalIconInput").value=s[2];refreshRewardIconPicker()});if(kind==='challenge'){const today=dateKey(new Date());$("modalStart").value=today;const end=new Date();end.setDate(end.getDate()+30);$("modalEnd").value=dateKey(end)}$("addModal").classList.remove('hidden');setTimeout(()=>$("modalName").focus(),50)}
 function closeAddModal(){$("addModal").classList.add('hidden');modalKind=null}
 function bindForms(){$("saveQuestionDay").onclick=saveQuestionDay;const qInput=$("questionDayInput"),qPoints=$("questionDayPointsInput");if(qInput)qInput.addEventListener("change",saveQuestionDay);if(qPoints)qPoints.addEventListener("change",saveQuestionDay);$("genericAddForm").onsubmit=async e=>{e.preventDefault();if(!modalKind)return;const name=$("modalName").value.trim();const points=+$("modalPoints").value;let item={name,icon:$("modalIconInput").value||'⭐'};if(modalKind==='reward')item.cost=points;else item.points=points;if(modalKind==='challenge'){item.start=$("modalStart").value;item.end=$("modalEnd").value;if(!item.start||!item.end||item.end<item.start)return alert('Sprawdź zakres dat.')}if(await add(modalKind,item))closeAddModal()};document.querySelectorAll('[data-open-add]').forEach(b=>b.onclick=()=>openAddModal(b.dataset.openAdd));$("closeAdd").onclick=closeAddModal;$("cancelAdd").onclick=closeAddModal}
-async function login(){const pin=$("pinInput").value.trim();try{const j=await req("/api/punktacja/parent/login",{method:"POST",body:JSON.stringify({pin})});state.parentToken=j.token;$("pinError").textContent="";$("parentPin").classList.add('hidden');showScreen("parent");renderParent()}catch(e){$("pinError").textContent=e.message}}
+async function login(){const pin=$("pinInput").value.trim();try{const j=await req("/api/punktacja/parent/login",{method:"POST",body:JSON.stringify({pin})});setParentToken(j.token);$("pinError").textContent="";$("parentPin").classList.add('hidden');showScreen("parent");renderParent()}catch(e){$("pinError").textContent=e.message}}
 async function openParentAccess(){
   try{
     const db=await load();
@@ -642,22 +648,22 @@ async function openParentAccess(){
 }
 async function setupPin(){
   const pin=$("newPinInput").value.trim(), confirmPin=$("newPinConfirm").value.trim();
-  if(!/^\d{4,12}$/.test(pin)) return $("pinSetupError").textContent="PIN powinien zawierać od 4 do 12 cyfr.";
+  if(!/^\d{6,12}$/.test(pin)) return $("pinSetupError").textContent="PIN powinien zawierać od 6 do 12 cyfr.";
   if(pin!==confirmPin) return $("pinSetupError").textContent="PIN-y nie są identyczne.";
   try{
     const j=await req("/api/punktacja/parent/setup-pin",{method:"POST",body:JSON.stringify({pin})});
-    state.parentToken=j.token;state.db=j.data||await load();$("pinSetupError").textContent="";$("parentPin").classList.add("hidden");showScreen("parent");renderParent();
+    setParentToken(j.token);state.db=j.data||await load();$("pinSetupError").textContent="";$("parentPin").classList.add("hidden");showScreen("parent");renderParent();
   }catch(e){$("pinSetupError").textContent=e.message}
 }
-function openPinChange(){if(!state.parentToken)return;$("changePinInput").value="";$("changePinConfirm").value="";$("pinChangeError").textContent="";$("pinChangeModal").classList.remove("hidden");setTimeout(()=>$("changePinInput").focus(),50)}
+function openPinChange(){if(!state.parentToken)return;$("changePinCurrent").value="";$("changePinInput").value="";$("changePinConfirm").value="";$("pinChangeError").textContent="";$("pinChangeModal").classList.remove("hidden");setTimeout(()=>$("changePinCurrent").focus(),50)}
 function closePinChange(){$("pinChangeModal")?.classList.add("hidden")}
 async function changePin(){
-  const pin=$("changePinInput").value.trim(), confirmPin=$("changePinConfirm").value.trim();
-  if(!/^\d{4,12}$/.test(pin)) return $("pinChangeError").textContent="PIN powinien zawierać od 4 do 12 cyfr.";
+  const currentPin=$("changePinCurrent").value.trim(), pin=$("changePinInput").value.trim(), confirmPin=$("changePinConfirm").value.trim();
+  if(!/^\d{6,12}$/.test(pin)) return $("pinChangeError").textContent="PIN powinien zawierać od 6 do 12 cyfr.";
   if(pin!==confirmPin) return $("pinChangeError").textContent="PIN-y nie są identyczne.";
   try{
-    const j=await req("/api/punktacja/parent/settings",{method:"POST",headers:{Authorization:"Bearer "+state.parentToken},body:JSON.stringify({parentPin:pin})});
-    state.db=j.data||j;closePinChange();alert("PIN rodzica został zmieniony.");
+    const j=await req("/api/punktacja/parent/change-pin",{method:"POST",headers:{Authorization:"Bearer "+state.parentToken},body:JSON.stringify({currentPin,newPin:pin})});
+    setParentToken(j.token);state.db=j.data;closePinChange();alert("PIN rodzica został zmieniony.");
   }catch(e){$("pinChangeError").textContent=e.message}
 }
 function openConsequenceModal(){
@@ -701,6 +707,7 @@ async function openNewGame(){
   }catch(e){alert("Nie udało się otworzyć konfiguracji nowej gry: "+e.message)}
 }
 function closeNewGame(){$("newGameModal")?.classList.add("hidden")}
+function cancelNewGame(){closeNewGame();if(state.screen==="welcome")revokeParentSession()}
 function updateNewGameEndDate(){
   const start=$("newGameStartDate")?.value, duration=$("newGameDuration")?.value, end=$("newGameEndDate");
   if(!start||!end||duration==="custom")return;
@@ -710,10 +717,10 @@ function updateNewGameEndDate(){
 }
 async function authorizeNewGame(){
   const pin=$("newGameCurrentPin").value.trim();
-  if(!/^\d{4,12}$/.test(pin))return $("newGamePinError").textContent="Wpisz prawidłowy PIN rodzica (4–12 cyfr).";
+  if(!/^\d{4,12}$/.test(pin))return $("newGamePinError").textContent="Wpisz dotychczasowy PIN rodzica.";
   try{
     const j=await req("/api/punktacja/parent/login",{method:"POST",body:JSON.stringify({pin})});
-    state.parentToken=j.token;$("newGamePinError").textContent="";$("newGamePinGate").classList.add("hidden");$("newGameDetails").classList.remove("hidden");
+    setParentToken(j.token);$("newGamePinError").textContent="";$("newGamePinGate").classList.add("hidden");$("newGameDetails").classList.remove("hidden");
     await refreshNewGameArchives();setTimeout(()=>$("newGameChildName")?.focus(),50);
   }catch(e){$("newGamePinError").textContent=e.message||"Nieprawidłowy PIN."}
 }
@@ -729,7 +736,7 @@ async function beginNewGame(saveCurrent){
   let firstPin="";
   if(firstRun){
     firstPin=$("newGameFirstPin").value.trim();const confirmPin=$("newGameFirstPinConfirm").value.trim();
-    if(!/^\d{4,12}$/.test(firstPin))return $("newGameFirstPinError").textContent="PIN powinien zawierać od 4 do 12 cyfr.";
+    if(!/^\d{6,12}$/.test(firstPin))return $("newGameFirstPinError").textContent="PIN powinien zawierać od 6 do 12 cyfr.";
     if(firstPin!==confirmPin)return $("newGameFirstPinError").textContent="Wpisane PIN-y nie są identyczne.";
   }else if(!state.parentToken){return alert("Najpierw potwierdź PIN rodzica.")}
   const msg=firstRun?"To będzie pierwsza gra. Zapiszemy imię podróżnika, daty gry i nowy PIN rodzica.":(saveCurrent?"Obecna gra zostanie zapisana w archiwum przed rozpoczęciem nowej.":"Obecna gra NIE zostanie zapisana do archiwum. Jej historia i wyniki zostaną utracone. Podpowiedzi z konfiguracji zostaną zachowane.");
@@ -739,7 +746,7 @@ async function beginNewGame(saveCurrent){
     const headers=firstRun?{}:{Authorization:"Bearer "+state.parentToken};
     const body={saveCurrent:!!saveCurrent,startDate,endDate,childName};if(firstRun)body.pin=firstPin;
     const j=await req(endpoint,{method:"POST",headers,body:JSON.stringify(body)});
-    state.parentToken=j.token||state.parentToken;state.db=j.data;state.inConfig=false;closeNewGame();initConfigDates();renderParent();renderConfigCalendar(true);
+    if(j.token)setParentToken(j.token);state.db=j.data;state.inConfig=false;closeNewGame();initConfigDates();renderParent();renderConfigCalendar(true);
     if(firstRun){showDailyConfig();alert("Pierwsza konfiguracja została utworzona. Ustaw teraz obowiązki, nagrody i pozostałe zasady. Na dole konfiguracji znajdziesz przycisk „Rozpocznij pierwszą grę”.");}
     else{alert(saveCurrent?"Poprzednia gra została zarchiwizowana. Możesz teraz skonfigurować nową grę.":"Nowa gra została utworzona. Poprzednia historia nie została zachowana.");}
   }catch(e){alert("Nie udało się rozpocząć nowej gry. Bieżący stan nie został wyczyszczony.\n"+e.message)}
@@ -906,6 +913,9 @@ function ensureConfigButton(){
 
 function bindNavigation(){
   const on=(id,event,fn)=>{const el=$(id);if(el)el[event]=fn};
+  document.addEventListener("pointerdown",noteParentActivity,true);
+  document.addEventListener("keydown",noteParentActivity,true);
+  setInterval(()=>{if(state.screen==="parent"&&state.parentToken&&Date.now()-parentLastActivity>=parentIdleMs)showScreen("welcome")},15000);
 
   // Okno jest wspólne dla ekranu startowego i panelu rodzica.
   // W HTML leży wewnątrz parentScreen, który na starcie jest ukryty.
@@ -914,7 +924,7 @@ function bindNavigation(){
 
   on("homeBtn","onclick",()=>showScreen("welcome"));
   on("goParent","onclick",()=>{showScreen("parent");openParentAccess()});
-  on("goChild","onclick",e=>{e?.preventDefault?.();e?.stopPropagation?.();state.parentToken=null;showScreen("child")});
+  on("goChild","onclick",e=>{e?.preventDefault?.();e?.stopPropagation?.();showScreen("child")});
   // Obsługa w fazie capture zabezpiecza kliknięcie przed nakładającymi się hotspotami ilustracji.
   document.addEventListener("click",e=>{
     const trigger=e.target.closest?.("#welcomeNewGame");
@@ -926,7 +936,7 @@ function bindNavigation(){
   on("newGameDuration","onchange",updateNewGameEndDate);
   on("newGameStartDate","onchange",updateNewGameEndDate);
   on("newGameFirstStart","onclick",()=>beginNewGame(false));
-  document.addEventListener("click",e=>{const child=e.target.closest?.("#goChild");if(child){e.preventDefault();e.stopPropagation();state.parentToken=null;showScreen("child")}},true);
+  document.addEventListener("click",e=>{const child=e.target.closest?.("#goChild");if(child){e.preventDefault();e.stopPropagation();showScreen("child")}},true);
   on("closePin","onclick",()=>showScreen("welcome"));
   on("pinForm","onsubmit",e=>{e.preventDefault();login()});
   on("pinSetupForm","onsubmit",e=>{e.preventDefault();setupPin()});
@@ -934,7 +944,7 @@ function bindNavigation(){
   on("closePinChange","onclick",closePinChange);
   on("cancelPinChange","onclick",closePinChange);
   on("pinChangeForm","onsubmit",e=>{e.preventDefault();changePin()});
-  on("childToParent","onclick",()=>{state.parentToken=null;showScreen("parent");openParentAccess()});
+  on("childToParent","onclick",()=>{showScreen("parent");openParentAccess()});
   on("startGame","onclick",startGame);
   on("stopGame","onclick",stopGame);
   on("saveGame","onclick",downloadSave);
@@ -943,7 +953,7 @@ function bindNavigation(){
   on("configSaveGame","onclick",downloadSave);
   on("configLoadGame","onclick",()=>$("configLoadGameFile")?.click());
   on("configLoadGameFile","onchange",e=>loadSaveFile(e.target.files?.[0]));
-  on("newGameBtn","onclick",openNewGame);on("closeNewGame","onclick",closeNewGame);on("newGameCancel","onclick",closeNewGame);on("newGameSaveAndStart","onclick",()=>beginNewGame(true));on("newGameNoSave","onclick",()=>beginNewGame(false));
+  on("newGameBtn","onclick",openNewGame);on("closeNewGame","onclick",cancelNewGame);on("newGameCancel","onclick",cancelNewGame);on("newGameSaveAndStart","onclick",()=>beginNewGame(true));on("newGameNoSave","onclick",()=>beginNewGame(false));
   on("addConsequenceBtn","onclick",openConsequenceModal);
   on("configAddConsequence","onclick",openConsequenceModal);
   on("closeConsequence","onclick",closeConsequenceModal);
@@ -964,7 +974,7 @@ function bindNavigation(){
   on("openConfigToolbar","onclick",showDailyConfig);
 
   on("openConfig","onclick",e=>{e.preventDefault();e.stopPropagation();showDailyConfig()});
-  on("childTopToParent","onclick",()=>{state.parentToken=null;showScreen("parent");openParentAccess()});
+  on("childTopToParent","onclick",()=>{showScreen("parent");openParentAccess()});
   on("prevMonth","onclick",()=>{state.date.setMonth(state.date.getMonth()-1);renderChild()});
   on("nextMonth","onclick",()=>{state.date.setMonth(state.date.getMonth()+1);renderChild()});
   on("pPrev","onclick",()=>{state.parentDate.setMonth(state.parentDate.getMonth()-1);renderDailyParent()});
@@ -1011,7 +1021,6 @@ window.showDailyPanel = showDailyPanel;
     if(child){
       e.preventDefault();
       e.stopPropagation();
-      state.parentToken=null;
       showScreen('child');
       return;
     }
@@ -1027,7 +1036,6 @@ window.showDailyPanel = showDailyPanel;
     if(toChild){
       e.preventDefault();
       e.stopPropagation();
-      state.parentToken=null;
       showScreen('child');
       return;
     }

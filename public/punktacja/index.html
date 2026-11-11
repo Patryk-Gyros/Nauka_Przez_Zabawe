@@ -42,8 +42,8 @@
         <div class="bigIcon">🔐</div><div class="eyebrow">PIERWSZE URUCHOMIENIE</div><h2>Ustaw PIN rodzica</h2>
         <p>Ustal teraz własny PIN. Nie ma PIN-u domyślnego — od tej chwili tylko ten PIN będzie otwierał strefę rodzica.</p>
         <form id="pinSetupForm">
-          <input id="newPinInput" type="password" inputmode="numeric" maxlength="12" minlength="4" placeholder="Nowy PIN (4–12 cyfr)" autocomplete="new-password" required>
-          <input id="newPinConfirm" type="password" inputmode="numeric" maxlength="12" minlength="4" placeholder="Powtórz PIN" autocomplete="new-password" required>
+          <input id="newPinInput" type="password" inputmode="numeric" maxlength="12" minlength="6" placeholder="Nowy PIN (6–12 cyfr)" autocomplete="new-password" required>
+          <input id="newPinConfirm" type="password" inputmode="numeric" maxlength="12" minlength="6" placeholder="Powtórz PIN" autocomplete="new-password" required>
           <button class="primary" type="submit">Ustaw PIN i otwórz panel →</button>
         </form>
         <div id="pinSetupError" class="error"></div>
@@ -164,8 +164,8 @@
           </div>
           <div id="newGameInitialPin" class="newGameSecurityBox hidden">
             <h3>🔐 Ustal PIN rodzica</h3><p>To pierwsza gra w tym systemie. Ustaw PIN, który będzie wymagany przy każdej kolejnej nowej grze oraz przy wejściu do panelu rodzica.</p>
-            <label>Nowy PIN (4–12 cyfr)<input id="newGameFirstPin" type="password" inputmode="numeric" maxlength="12" minlength="4" autocomplete="new-password" placeholder="Ustal PIN"></label>
-            <label>Powtórz PIN<input id="newGameFirstPinConfirm" type="password" inputmode="numeric" maxlength="12" minlength="4" autocomplete="new-password" placeholder="Powtórz PIN"></label>
+            <label>Nowy PIN (6–12 cyfr)<input id="newGameFirstPin" type="password" inputmode="numeric" maxlength="12" minlength="6" autocomplete="new-password" placeholder="Ustal PIN"></label>
+            <label>Powtórz PIN<input id="newGameFirstPinConfirm" type="password" inputmode="numeric" maxlength="12" minlength="6" autocomplete="new-password" placeholder="Powtórz PIN"></label>
             <div id="newGameFirstPinError" class="error"></div>
           </div>
           <div class="newGameSaveChoice" id="newGameSaveChoice"><b>Co zrobić z obecną grą?</b><p>Możesz zachować jej pełną historię w archiwum albo rozpocząć bez archiwizacji.</p>
@@ -181,10 +181,11 @@
       <div class="addModal card pinChangeCard">
         <button id="closePinChange" class="modalClose" type="button">×</button>
         <div class="modalIcon">🔒</div><span class="eyebrow">USTAWIENIA</span><h2>Zmień PIN rodzica</h2>
-        <p class="modalHint">Ustaw nowy PIN. Na razie nie dodajemy dodatkowych zabezpieczeń.</p>
+        <p class="modalHint">Potwierdź dotychczasowy PIN, a następnie ustaw nowy.</p>
         <form id="pinChangeForm">
-          <label>Nowy PIN<input id="changePinInput" type="password" inputmode="numeric" maxlength="12" minlength="4" placeholder="4–12 cyfr" autocomplete="new-password" required></label>
-          <label>Powtórz PIN<input id="changePinConfirm" type="password" inputmode="numeric" maxlength="12" minlength="4" placeholder="Powtórz PIN" autocomplete="new-password" required></label>
+          <label>Dotychczasowy PIN<input id="changePinCurrent" type="password" inputmode="numeric" maxlength="12" autocomplete="current-password" required></label>
+          <label>Nowy PIN<input id="changePinInput" type="password" inputmode="numeric" maxlength="12" minlength="6" placeholder="6–12 cyfr" autocomplete="new-password" required></label>
+          <label>Powtórz PIN<input id="changePinConfirm" type="password" inputmode="numeric" maxlength="12" minlength="6" placeholder="Powtórz PIN" autocomplete="new-password" required></label>
           <div id="pinChangeError" class="error"></div>
           <div class="modalActions"><button id="cancelPinChange" type="button" class="secondaryBtn">Anuluj</button><button type="submit" class="primary">🔒 Zapisz nowy PIN</button></div>
         </form>

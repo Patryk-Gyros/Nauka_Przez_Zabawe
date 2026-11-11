@@ -4,7 +4,8 @@
   "description": "Platforma edukacyjna z Systemem Rafcia i grami",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "reset:pin": "node scripts/reset-parent-pin.js"
   },
   "dependencies": {
     "cors": "2.8.6",
