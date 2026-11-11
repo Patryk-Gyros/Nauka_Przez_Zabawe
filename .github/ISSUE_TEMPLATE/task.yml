@@ -1,0 +1,77 @@
+name: Zadanie
+description: Uzgodnienie zakresu, odpowiedzialności i kryteriów pracy.
+title: "[Zadanie] "
+body:
+  - type: markdown
+    attributes:
+      value: "Zgłoszenie nie oznacza zgody na implementację. Sprawdź AGENTS.md, docs/TEAM_WORKFLOW.md i docs/DECISIONS.md."
+  - type: textarea
+    id: goal
+    attributes:
+      label: Problem i cel
+      description: Podaj dowód, właściwe wymaganie i odnośniki do kodu lub dokumentacji. Dla błędu opisz wynik obecny i oczekiwany.
+    validations:
+      required: true
+  - type: dropdown
+    id: change_type
+    attributes:
+      label: Typ zmiany
+      options:
+        - A — refaktor lub porządek techniczny bez zmiany zachowania
+        - B — naprawa względem potwierdzonego wymagania
+        - C — rozwój produktu wymagający osobnej akceptacji
+    validations:
+      required: true
+  - type: input
+    id: owner
+    attributes:
+      label: Osoba odpowiedzialna
+      description: Łukasz, Patryk albo do uzgodnienia. Agent nie przejmuje odpowiedzialności za decyzje ludzi.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Zakres i wyłączenia
+      description: Moduły/pliki, proponowane działanie, wpływ na produkt i wspólne kontrakty. Pozostałe gry są wyłączone z bieżącej modernizacji.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Kryteria akceptacji i weryfikacja
+      description: Co ma być spełnione, jakie testy lub kontrole to potwierdzą, jak ochronisz istniejące dane i reguły?
+    validations:
+      required: true
+  - type: textarea
+    id: planning
+    attributes:
+      label: Priorytet, nakład, ryzyka i zależności
+      description: P0–P3 z uzasadnieniem, szacunek pracy, blokujące zadania/PR i potencjalne konflikty. Jeśli brak zależności, napisz to wprost.
+    validations:
+      required: true
+  - type: textarea
+    id: decisions
+    attributes:
+      label: Decyzje i akceptacja zakresu
+      description: ID decyzji i odnośniki do uzgodnień; brakujące zgody oznacz jawnie. Istotne zmiany uzgadniają Łukasz i Patryk.
+    validations:
+      required: true
+  - type: dropdown
+    id: status
+    attributes:
+      label: Status zadania
+      options:
+        - do uzgodnienia
+        - gotowe
+        - w toku
+        - do review
+        - zablokowane
+        - zakończone
+    validations:
+      required: true
+  - type: textarea
+    id: handoff
+    attributes:
+      label: Gałąź, PR i przekazanie pracy
+      description: Uzupełnij przy podjęciu pracy. Handoff według .github/pull_request_template.md; przed PR może być komentarzem w tym Issue. Nie publikuj bez upoważnienia.

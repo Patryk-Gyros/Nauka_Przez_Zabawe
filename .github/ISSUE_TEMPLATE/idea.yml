@@ -1,0 +1,60 @@
+name: Pomysł
+description: Propozycja Łukasza lub Patryka do wspólnej analizy; bez automatycznej zgody na wdrożenie.
+title: "[Pomysł] "
+body:
+  - type: markdown
+    attributes:
+      value: "Sprawdź istniejące pomysły, zadania i docs/DECISIONS.md. Wpis w backlogu nie upoważnia do implementacji."
+  - type: input
+    id: proposer
+    attributes:
+      label: Autor propozycji
+      description: Osoba zgłaszająca pomysł.
+    validations:
+      required: true
+  - type: textarea
+    id: need
+    attributes:
+      label: Problem lub potrzeba
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Opis pomysłu i oczekiwana wartość
+      description: Dla kogo jest zmiana i co poprawi? Jeśli podobny pomysł już istnieje, podaj odnośnik i opisz różnicę.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Wpływ na obecny produkt
+      description: Mechaniki, UI/UX, dostępność, dane dzieci, kod i moduły. Co zostaje zachowane, a co wymaga zmiany zasad?
+    validations:
+      required: true
+  - type: textarea
+    id: feasibility
+    attributes:
+      label: Złożoność, zależności i ryzyka
+      description: Orientacyjny nakład lub niewiadome, zależne zadania i potrzebne decyzje. Dla kosztów zastosuj tabelę oceny z docs/TEAM_WORKFLOW.md.
+    validations:
+      required: true
+  - type: dropdown
+    id: status
+    attributes:
+      label: Status propozycji
+      options:
+        - propozycja
+        - do analizy
+        - zatwierdzona
+        - odroczona
+        - odrzucona
+    validations:
+      required: true
+  - type: textarea
+    id: decision
+    attributes:
+      label: Uzgodnienie i uzasadnienie decyzji
+      description: Dla nowej propozycji wpisz „oczekuje”. Dla decyzji podaj osoby i odnośniki do akceptacji; agent nie zatwierdza jej sam. Po akceptacji wskaż zadanie wykonawcze i ewentualny wpis w docs/DECISIONS.md.
+    validations:
+      required: true
