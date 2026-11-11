@@ -16,11 +16,11 @@ Pierwszy proponowany etap po zaakceptowaniu dokumentacji to RF-01. RF-02 przygot
 
 - **Cel / priorytet / nakład:** odtwarzalna praca obu programistów i agentów; P1, około 0,5–1 dnia. Właściciel: Łukasz. Bieżący handoff w `SESSION_STATE.md`.
 - **Zakres:** AGENTS, workflow, decyzje, ta roadmapa, punkt wznowienia, README i szablony Issue/PR. Bez zmian aplikacji, konfiguracji GitHub i narzędzi pamięci.
-- **Zależności:** instrukcje zleceniodawcy; review Patryka przed merge. Brak zgody na push lub merge.
+- **Zależności:** instrukcje zleceniodawcy; push i utworzenie PR zatwierdzone, review Patryka przed merge. Aktualny handoff i link do PR w `SESSION_STATE.md`; merge nadal wymaga osobnej zgody.
 - **Testy:** sprawdzenie diffu, lokalnych linków, składni i struktury formularzy oraz kompletności kart etapów i handoffu.
 - **Akceptacja:** następna sesja odczyta rezultat, decyzje, pliki, testy, ograniczenia i pierwszy krok z repo; każdy etap ma wymagane pola; AI-MEM-01 pozostaje odroczone. Gotowość dokumentacji nie oznacza review ani merge.
 - **Wycofanie:** nowy commit odwracający wskazany commit dokumentacyjny, kontrola odnośników i aktualizacja punktu wznowienia; bez resetu historii ani danych aplikacji.
-- **Ryzyko:** dokumentacja lokalna nie jest jeszcze dostępna dla Patryka; zasady wymagają późniejszej publikacji i review.
+- **Ryzyko:** sama publikacja dokumentacji nie oznacza jej akceptacji; review oraz uzgodnienie konfiguracji GitHub pozostają do wykonania.
 
 ### RF-01 — Utrwalenie dowodów audytu
 
