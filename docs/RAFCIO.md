@@ -16,3 +16,33 @@ PIN jest przechowywany jako skrót scrypt. Odpowiedzi API nie zawierają `parent
 Pozostałe gry mają własne strony i zasoby. Obecnie nie przekazują wyników do Rafcia. Przyszły kontrakt integracji powinien przyjmować wynik gry na serwerze, weryfikować limit prób i naliczać punkty według ustawień rodzica. Nie przyjmować liczby punktów jako zaufanej wartości od przeglądarki.
 
 Katalog `public/punktacja/assets/` zawiera zarówno używane obrazy, jak i starsze kopie kodu (`app.js`, `index.html`, style). Nie traktować tych kopii jako aktywnego interfejsu.
+
+## Jak działa gra
+
+Rafcio to domowa gra motywacyjna. Rodzic ustala, za co dziecko zdobywa punkty i na jakie nagrody może je wymieniać. Dziecko widzi swoje zadania, wynik i postęp na mapie wyprawy.
+
+1. **Przygotowanie.** Rodzic ustawia PIN, dodaje obowiązki, aktywności dodatkowe, misje i nagrody. Grę można rozpocząć od razu lub zaplanować. Data końcowa jest opcjonalna.
+2. **Rozliczenie dnia.** Rodzic wybiera dzień i oznacza wykonanie. Dziecko może przesłać odpowiedź na pytanie dnia, a rodzic oznacza je jako zaliczone lub niezaliczone.
+3. **Odbiór nagrody.** Dziecko prosi o dostępną nagrodę. Punkty są potrącane po zatwierdzeniu przez rodzica. Oczekująca prośba nie rezerwuje punktów. Serwer ponownie sprawdza saldo przy zatwierdzaniu.
+4. **Kolejna gra.** Przy rozpoczęciu nowej gry rodzic może zarchiwizować obecną. Wczytanie archiwum zastępuje bieżący stan.
+
+### Saldo widoczne w aplikacji
+
+| Zdarzenie | Wpływ na saldo |
+| --- | --- |
+| Obowiązek wykonany | Dodaje wartość obowiązku |
+| Obowiązek oznaczony jako niewykonany | Odejmuje tę samą wartość |
+| Obowiązek bez oceny | 0 pkt |
+| Aktywność dodatkowa | Dodaje swoją wartość po zaliczeniu danego dnia |
+| Misja czasowa | Dodaje swoją wartość jednokrotnie po zaliczeniu |
+| Pytanie dnia | Dodaje skonfigurowaną wartość po zaliczeniu przez rodzica, domyślnie 10 pkt. Niezaliczenie daje 0 pkt |
+| Ręczny bonus lub konsekwencja | Bonus dodaje punkty, konsekwencja je odejmuje |
+| Nagroda | Odejmuje koszt dopiero po zatwierdzeniu |
+
+Przykład. Obowiązek za 10 pkt, aktywność dodatkowa za 5 pkt i zaliczone pytanie za 10 pkt dają w aplikacji 25 pkt. Po zatwierdzeniu nagrody za 15 pkt ekran pokaże 10 pkt. W bieżącym kodzie serwer nie uwzględnia punktów za pytanie, więc w tym przykładzie przed zatwierdzeniem rozpozna tylko 15 pkt.
+
+### Postęp wyprawy
+
+Wyprawa pokazuje dwa dodatkowe rodzaje postępu. Szczyty odblokowują się za sumę zdobytych dodatnich punktów, bez potrąceń za nagrody i konsekwencje. Sprzęt odblokowuje się według najdłuższej serii dni z kompletem obowiązków. Idealny dzień wymaga co najmniej jednego aktywnego obowiązku i wykonania wszystkich aktywnych obowiązków. Dzisiejszy dzień w trakcie rozliczania nie przerywa bieżącej serii, chyba że rodzic oznaczy obowiązek jako niewykonany.
+
+Znane ograniczenia punktacji: [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
