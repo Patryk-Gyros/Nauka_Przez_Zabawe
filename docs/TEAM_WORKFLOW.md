@@ -125,7 +125,7 @@ GitHub Issues są wspólnym rejestrem pomysłów i zadań; nie tworzymy równole
 
 Status pomysłu: **propozycja / do analizy / zatwierdzona / odroczona / odrzucona**. Przy decyzji zapisz uzasadnienie, osoby zatwierdzające i odnośnik do ich uzgodnienia. Agent nie może sam zatwierdzić propozycji. „Zatwierdzona” nie oznacza jeszcze zgody na rozpoczęcie dowolnej implementacji: zadanie wykonawcze musi mieć uzgodniony zakres i termin/pierwszeństwo.
 
-Priorytet P0–P3, zależności i kolejność w Issues tworzą roadmapę. [ROADMAP.md](ROADMAP.md) zawiera początkowy podział na etapy oraz inicjatywy jeszcze nieopublikowane. Po utworzeniu Issue zastąp jego roboczą kartę odnośnikiem i zachowaj ID; status i szczegóły aktualizuj w jednym miejscu, w Issue. Nowy pomysł może zmienić kolejność po uzgodnieniu; nie unieważnia automatycznie rozpoczętych zadań. Nie utożsamiaj ważności pomysłu z jego akceptacją. Odroczona inicjatywa pamięci AI pozostaje wyłącznie wpisem na przyszłość.
+Priorytet P0–P3, zależności i kolejność w Issues tworzą roadmapę. [ROADMAP.md](ROADMAP.md) zawiera początkowy podział na etapy oraz inicjatywy jeszcze nieopublikowane. Po utworzeniu Issue zastąp jego roboczą kartę odnośnikiem i zachowaj ID; status i szczegóły aktualizuj w jednym miejscu, w Issue. Nowy pomysł może zmienić kolejność po uzgodnieniu; nie unieważnia automatycznie rozpoczętych zadań. Nie utożsamiaj ważności pomysłu z jego akceptacją.
 
 ## Decyzje i budżet
 

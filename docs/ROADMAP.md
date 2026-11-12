@@ -6,7 +6,7 @@ To roboczy podział prac do uzgodnienia, oparty na [wymaganiach](REQUIREMENTS.md
 
 **Aktualny status publikacji (2026-11-12):** na późniejsze zlecenie użytkownika pakiet F01/F05/RF-03/RF-04 wypchnięto i przekazano Patrykowi w [PR #4](https://github.com/Patryk-Gyros/Nauka_Przez_Zabawe/pull/4). Oczekuje na review; bez merge i wdrożenia. Wzmianki „lokalnie / bez push” poniżej zachowują stan wcześniejszych etapów, nie bieżący stan publikacji.
 
-ID `RF-*` i `AI-MEM-01` są lokalnymi identyfikatorami, nie numerami istniejących Issues. Po upoważnionej publikacji zachowaj ID i zastąp roboczą kartę linkiem do Issue. Wtedy tylko Issue przechowuje aktualny status, właściciela, zgodę i szczegóły etapu; tutaj zostaje kolejność i powiązanie. Nie publikowano tych zadań. Kontrola GitHub z 2026-11-12: brak otwartych PR; przed implementacją sprawdzić ponownie.
+ID `RF-*` są lokalnymi identyfikatorami, nie numerami istniejących Issues. Po upoważnionej publikacji zachowaj ID i zastąp roboczą kartę linkiem do Issue. Wtedy tylko Issue przechowuje aktualny status, właściciela, zgodę i szczegóły etapu; tutaj zostaje kolejność i powiązanie. Nie publikowano tych zadań. Kontrola GitHub z 2026-11-12: brak otwartych PR; przed implementacją sprawdzić ponownie.
 
 P0 oznacza potwierdzone ryzyko krytyczne, P1 fundamenty i istotne naprawy, P2 poprawę istniejącego rozwiązania, P3 możliwy rozwój. Na podstawie samego obecnego katalogu nie dopisujemy P0; nowe potwierdzone ustalenia mogą zmienić kolejność niezależnie od ukończenia RF-01. Szacunki są orientacyjnym czasem pracy jednej osoby, bez oczekiwania na decyzje. Właściciele RF-01–RF-10 pozostają do uzgodnienia według ról zespołu.
 
@@ -27,7 +27,6 @@ Najpierw realne problemy i wartość dla użytkownika, później uzasadnione zmi
 | RF-04 | Wykonane i przetestowane lokalnie; dni z samym pytaniem zwiększają postęp. Bez publikacji i merge. |
 | RF-07 | P2, warunkowe — proste CI dopiero dla użytecznych testów; lokalne kontrole wystarczają do pierwszej naprawy. Wcześniej P1. |
 | RF-08 | P2, odroczone — wydzielenie obliczenia tylko gdy obecny kod rzeczywiście utrudnia konkretną zmianę lub test. |
-| AI-MEM-01 | P3, odroczone — bez projektowania i instalacji. |
 
 Review agenta całego pakietu `14b309f..95a465e` z 2026-11-12: brak wykrytych technicznych blokad merge, regresja 47/47. Nie zastępuje zatwierdzenia drugiego programisty. Nieblokująca uwaga dotycząca advisory Multera i granice weryfikacji są w [handoffie](SESSION_STATE.md).
 
@@ -57,10 +56,10 @@ RF-02 dostarcza testy potrzebne konkretnej naprawie; nie wymaga budowy pełnej p
 ### RF-00 — Dokumentacja współpracy i ciągłości
 
 - **Cel / priorytet / nakład:** odtwarzalna praca obu programistów i agentów; P1, około 0,5–1 dnia. Właściciel: Łukasz. Bieżący handoff w `SESSION_STATE.md`.
-- **Zakres:** AGENTS, workflow, decyzje, ta roadmapa, punkt wznowienia, README i szablony Issue/PR. Bez zmian aplikacji, konfiguracji GitHub i narzędzi pamięci.
+- **Zakres:** AGENTS, workflow, decyzje, ta roadmapa, punkt wznowienia, README i szablony Issue/PR. Bez zmian aplikacji i konfiguracji GitHub.
 - **Zależności:** RF-00 wykonane i scalone przez użytkownika w PR #3, commit `14b309f`. Review Patryka przed merge nie zostało odnotowane; szczegóły i punkt wznowienia w `SESSION_STATE.md`. Nie ma oczekującego merge tego etapu.
 - **Testy:** sprawdzenie diffu, lokalnych linków, składni i struktury formularzy oraz kompletności kart etapów i handoffu.
-- **Akceptacja:** następna sesja odczyta rezultat, decyzje, pliki, testy, ograniczenia i pierwszy krok z repo; każdy etap ma wymagane pola; AI-MEM-01 pozostaje odroczone. Gotowość dokumentacji nie oznacza review ani merge.
+- **Akceptacja:** następna sesja odczyta rezultat, decyzje, pliki, testy, ograniczenia i pierwszy krok z repo; każdy etap ma wymagane pola. Gotowość dokumentacji nie oznacza review ani merge.
 - **Wycofanie:** nowy commit odwracający wskazany commit dokumentacyjny, kontrola odnośników i aktualizacja punktu wznowienia; bez resetu historii ani danych aplikacji.
 - **Ryzyko:** brak odnotowanego review w PR #3 jest odstępstwem od procesu; przy kolejnych PR obowiązuje review drugiej osoby przed merge. Konfiguracja GitHub pozostaje do uzgodnienia, RF-01 wymaga osobnego zatwierdzenia.
 
@@ -203,14 +202,5 @@ Wszystkie poniższe możliwości zachowujemy, ale bez dodatkowej zgody nie rozpo
 | Rozbudowana infrastruktura DevOps | Realna potrzeba wdrożeń i utrzymania; RF-07 pozostaje jedynie opcją prostej kontroli. |
 | Konta wielu rodzin | Zatwierdzona potrzeba produktowa; dziś jedna rodzina na lokalną instancję. |
 | Refaktor pozostałych gier | Osobny, uzgodniony zakres wykorzystania danego modułu; nie usuwać istniejących zasobów. |
-
-## Odroczona inicjatywa AI-MEM-01 — System trwałej i warstwowej pamięci agentów AI
-
-- **Status:** odroczona, P3; wyłącznie rejestracja na przyszłość na podstawie instrukcji z 2026-11-11. Nie jest etapem zatwierdzonym do projektowania lub implementacji.
-- **Problem i wartość:** ograniczyć zużycie kontekstu, zachować pełną historię istotnych decyzji, przekazywać wiedzę między sesjami i ułatwić współpracę wielu agentów.
-- **Do przyszłego rozważenia:** warstwowa organizacja pamięci, automatyczne podsumowania sesji, przechowywanie decyzji i zmian, ładowanie informacji właściwych dla zadania, wykrywanie nieaktualnych dokumentów, handoff między agentami oraz kontrola kosztów i zużycia kontekstu.
-- **Wpływ:** przyszłe narzędzie wspierające pracę; nie zmienia mechanik Rafcia. Obecny proces nadal opiera się na repo, Issues i PR.
-- **Złożoność i zależności:** nieoszacowane; najpierw doświadczenia z ręcznego standardu, konkretna potrzeba, wspólna decyzja o podjęciu analizy oraz ewentualny budżet. Właściciel do uzgodnienia przez Łukasza i Patryka.
-- **Granica obecnego wpisu:** bez architektury, wyboru technologii, projektu magazynu pamięci, instalacji narzędzi, automatyzacji i wydatków. Wznowienie wymaga osobnej zgody; wtedy dopiero powstaną małe zadania z testami, akceptacją i wycofaniem.
 
 Pozostały rozwój produktu, konta, baza, hosting i wykorzystanie innych gier wymagają własnych uzgodnień. Nie są domyślną kontynuacją tej kolejki. Nowe dowody i pomysły mogą zmieniać roadmapę, ale nie zakres już zatwierdzonej pracy bez ponownego uzgodnienia.
