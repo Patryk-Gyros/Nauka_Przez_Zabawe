@@ -9,8 +9,15 @@ const fs = require("fs");
 const cleanJsonFromAI =
   require("./utils/cleanJsonFromAI");
 
-const upload =
-  multer({ storage: multer.memoryStorage() });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+    files: 5,
+    fields: 0,
+    parts: 6
+  }
+}).array("images", 5);
 
 const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
@@ -104,14 +111,22 @@ let generatedQuestions = null;
 
 app.post(
   "/analizuj",
-  upload.array("images"),
+  (req, res, next) => {
+    // Reject before buffering multipart data when the generator is disabled.
+    if (!openai) {
+      return res.status(503).json({ error: "Generator quizu wymaga OPENAI_API_KEY." });
+    }
+    upload(req, res, (err) => {
+      if (!err) return next();
+      if (["LIMIT_FILE_SIZE", "LIMIT_FILE_COUNT", "LIMIT_PART_COUNT"].includes(err.code)) {
+        return res.status(413).json({ error: "Możesz przesłać maksymalnie 5 zdjęć, każde do 5 MiB." });
+      }
+      return res.status(400).json({ error: "Nieprawidłowy formularz zdjęć. Prześlij pliki w polu images, bez dodatkowych pól." });
+    });
+  },
   async (req, res) => {
 
     try {
-
-      if (!openai) {
-        return res.status(503).json({ error: "Generator quizu wymaga OPENAI_API_KEY." });
-      }
 
       if (
         !req.files ||

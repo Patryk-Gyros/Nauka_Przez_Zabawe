@@ -155,6 +155,7 @@ async function startAnalysis(){
     });
 
     const data=await response.json();
+    if(!response.ok)throw new Error(data.error||"Nie udało się przesłać zdjęć.");
 
     clearInterval(interval);
     progressBar.style.width="100%";
@@ -166,7 +167,7 @@ async function startAnalysis(){
 
   }catch(err){
     clearInterval(interval);
-    status.innerText="Błąd połączenia z serwerem.";
+    status.innerText=err.message||"Błąd połączenia z serwerem.";
     btn.disabled=false;
     progressBar.style.width="0%";
   }
