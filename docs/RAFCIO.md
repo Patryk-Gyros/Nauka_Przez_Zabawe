@@ -39,7 +39,7 @@ Rafcio to domowa gra motywacyjna. Rodzic ustala, za co dziecko zdobywa punkty i 
 | Ręczny bonus lub konsekwencja | Bonus dodaje punkty, konsekwencja je odejmuje |
 | Nagroda | Odejmuje koszt dopiero po zatwierdzeniu |
 
-Przykład. Obowiązek za 10 pkt, aktywność dodatkowa za 5 pkt i zaliczone pytanie za 10 pkt dają w aplikacji 25 pkt. Po zatwierdzeniu nagrody za 15 pkt ekran pokaże 10 pkt. W bieżącym kodzie serwer nie uwzględnia punktów za pytanie, więc w tym przykładzie przed zatwierdzeniem rozpozna tylko 15 pkt.
+Przykład. Obowiązek za 10 pkt, aktywność dodatkowa za 5 pkt i zaliczone pytanie za 10 pkt dają w aplikacji 25 pkt. Po zatwierdzeniu nagrody za 15 pkt ekran pokaże 10 pkt. Po lokalnej naprawie RF-03 serwer również rozpoznaje 25 pkt przed zatwierdzeniem i 10 pkt po nim. Wcześniejsze pomijanie pytania (wynik serwera 15 pkt przed zatwierdzeniem) pozostaje opisane w historii Git.
 
 ### Postęp wyprawy
 

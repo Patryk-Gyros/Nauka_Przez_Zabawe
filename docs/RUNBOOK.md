@@ -34,6 +34,10 @@ Generator quizów jest oddzielny: aby działał endpoint `/analizuj`, skopiuj `.
 
 `npm run test:archives` lub `node --test test/archives.test.js`: testy lokalnego HTTP i rzeczywistego zapisu na dysku, wyłącznie w automatycznie usuwanym katalogu tymczasowym z syntetyczną grą. Kopiowany jest kod, bez `.env`, danych użytkownika i archiwów. Sprawdzają zapis przy nowej grze → listę → odtworzenie całego stanu, zachowanie aktualnego PIN-u, oba formaty nazw, niepoprawne ścieżki i brak sesji. Odczyt obsługuje nazwy z separatorem daty/godziny i bez niego; istniejących plików nie trzeba przemianowywać. Wszystkie obecne testy: `node --test test/*.test.js`.
 
+## Kontrola salda RF-03
+
+`npm run test:balance` lub `node --test test/question-balance.test.js`: porównanie rzeczywistych funkcji naliczania frontendu z prośbą o nagrodę i decyzją rodzica przez HTTP. Obejmuje pytania bez obowiązków, stawki i statusy, pozostałe źródła punktów, granice salda, odrzucenie/powtórzenie decyzji oraz ponowną ocenę dostępności. Restart osobnego procesu serwera sprawdza trwałość nagrody i salda oraz wygaśnięcie sesji. Testy tworzą tylko syntetyczne dane w usuwanym katalogu tymczasowym; nie kopiują `.env` ani danych użytkownika i nie korzystają z AI. Porównanie obliczeń frontendu nie zastępuje pełnego testu przeglądarkowego.
+
 ## Znane ograniczenia
 
 Port 3000 jest obecnie wpisany na stałe w `server.js`. Jeśli jest zajęty, zakończ wcześniejszy proces albo zmień port w kodzie. Serwer nasłuchuje tylko na tym komputerze (`127.0.0.1`). Dane JSON są lokalne i zapisywane synchronicznie; nie uruchamiaj kilku serwerów na jednym pliku. Sesje rodzica znikają po restarcie.

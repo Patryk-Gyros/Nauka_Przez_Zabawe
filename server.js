@@ -426,6 +426,12 @@ function calculateAvailablePoints(data) {
       if (r.challenges?.[c.id] === true) total += Number(c.points) || 0;
     }
   }
+  // Match the question rate used by the child screen, including older saves.
+  const questionRate = Number(data.settings?.questionOfTheDayPoints);
+  const questionPoints = Number.isFinite(questionRate) && questionRate >= 0 ? Math.round(questionRate) : 10;
+  for (const status of Object.values(data.settings?.questionOfTheDayStatus || {})) {
+    if (status === "done") total += questionPoints;
+  }
   for (const x of data.redemptions || []) {
     if (x.status === "approved") total -= Number(x.cost) || 0;
   }
