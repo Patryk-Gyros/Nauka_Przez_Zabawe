@@ -86,7 +86,7 @@ Kontrole salda/nagród wykonano z RF-03, a kontrole dnia z samym pytaniem w wypr
 
 ### RF-03 — Zgodne saldo przy zatwierdzaniu nagrody
 
-**Wykonane lokalnie 2026-11-12, bez push/merge; do review i odbioru UI.** Użytkownik zlecił małą poprawkę pomijania pytań dnia i testy syntetyczne. Zmiana obejmuje wyłącznie doliczenie pytań w istniejącej funkcji salda. 20/20 testów salda i 17/17 regresji F01/F05 przeszło; przed poprawką 15/20 testów salda odtworzyło problem. Bez migracji, refaktoru i nowych zależności. Testy porównują obliczenie frontendu z HTTP, obejmują oba endpointy nagród i rzeczywisty restart procesu. Pełnego testu przeglądarkowego nie wykonano. RF-02 wykonane tylko w części salda i nagród.
+**Wykonane lokalnie 2026-11-12, bez push/merge; do review.** Użytkownik zlecił małą poprawkę pomijania pytań dnia i testy syntetyczne. Zmiana obejmuje wyłącznie doliczenie pytań w istniejącej funkcji salda. 20/20 testów salda i 17/17 regresji F01/F05 przeszło; przed poprawką 15/20 testów salda odtworzyło problem. Bez migracji, refaktoru i nowych zależności. Testy porównują obliczenie frontendu z HTTP, obejmują oba endpointy nagród i rzeczywisty restart procesu. Krótki test w Chrome przeszedł: 290 + 10 za pytanie umożliwiło prośbę i zatwierdzenie nagrody za 300, saldo po wymianie 0. Szczegóły w `SESSION_STATE.md`; nie jest to pełny odbiór RF-09. RF-02 wykonane tylko w części salda i nagród.
 
 - **Cel / priorytet / nakład:** rozwiązać P1 „Ekran i serwer liczą różne saldo” z `KNOWN_ISSUES.md`; P1, około 0,5–1 dnia; proponowany typ B.
 - **Zakres:** wyłącznie uwzględnienie zatwierdzonych pytań dnia w saldzie używanym do prośby o nagrodę i jej zatwierdzenia, zgodnie z uzgodnioną regułą z `RAFCIO.md`. Bez przebudowy pozostałych mechanik, formatu danych i logowania.
@@ -98,7 +98,7 @@ Kontrole salda/nagród wykonano z RF-03, a kontrole dnia z samym pytaniem w wypr
 
 ### RF-04 — Postęp wyprawy za dzień z samym pytaniem
 
-**Wykonane lokalnie 2026-11-12, do review; bez push/merge.** Użytkownik zlecił małą naprawę RF-04 i testy syntetyczne. Zmieniono tylko dobór dat w `rafciaPositiveLifetimePoints` (zbiór dat rozliczeń i pytań, wspólne daty raz). Przed poprawką 7/10 testów odtworzyło błąd; po poprawce 10/10 testów wyprawy oraz 37/37 pozostałych przeszło. Sprawdzono renderer na granicach wszystkich szczytów i niezmienione serie/ekwipunek. Bez zmian zapisu, progów, zależności i pozostałych reguł; pełnego E2E w przeglądarce nie wykonano.
+**Wykonane lokalnie 2026-11-12, do review; bez push/merge.** Użytkownik zlecił małą naprawę RF-04 i testy syntetyczne. Zmieniono tylko dobór dat w `rafciaPositiveLifetimePoints` (zbiór dat rozliczeń i pytań, wspólne daty raz). Przed poprawką 7/10 testów odtworzyło błąd; po poprawce 10/10 testów wyprawy oraz 37/37 pozostałych przeszło. Sprawdzono renderer na granicach wszystkich szczytów i niezmienione serie/ekwipunek. Bez zmian zapisu, progów, zależności i pozostałych reguł; krótki test w Chrome potwierdził próg 300 za pytanie bez rozliczeń, szczyt 1/7 zachowany po nagrodzie oraz zapis → lista → odtworzenie archiwum. Pełnego E2E całej aplikacji nie wykonano; szczegóły w `SESSION_STATE.md`.
 
 - **Cel / priorytet / nakład:** rozwiązać P2 „Wyprawa pomija niektóre zaliczone pytania” z `KNOWN_ISSUES.md`; P2, około 0,5 dnia; proponowany typ B.
 - **Zakres:** wyłącznie dobór dni do obliczania postępu w `public/punktacja/app.js`. Bez zmiany progów Siedmiu Szczytów, zasad ekwipunku i formatu danych.
