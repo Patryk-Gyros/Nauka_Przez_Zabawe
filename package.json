@@ -5,13 +5,17 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "reset:pin": "node scripts/reset-parent-pin.js"
+    "reset:pin": "node scripts/reset-parent-pin.js",
+    "test:upload": "node --test test/upload.test.js",
+    "test:archives": "node --test test/archives.test.js",
+    "test:balance": "node --test test/question-balance.test.js",
+    "test:expedition": "node --test test/expedition.test.js"
   },
   "dependencies": {
     "cors": "2.8.6",
     "dotenv": "16.6.1",
     "express": "4.22.3",
-    "multer": "1.4.5-lts.2",
+    "multer": "2.3.0",
     "openai": "4.104.0"
   },
   "engines": {

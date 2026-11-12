@@ -24,6 +24,24 @@ Generator quizów jest oddzielny: aby działał endpoint `/analizuj`, skopiuj `.
 - `curl -I http://localhost:3000/punktacja/` powinien zwrócić stronę HTML.
 - W przeglądarce sprawdź osobno pierwszy PIN, ponowne logowanie, panel dziecka i zapis po restarcie. Do testów zapisujących używaj odizolowanej kopii projektu i danych.
 
+## Kontrola uploadu F01
+
+`npm run test:upload` (lub `node --test test/upload.test.js`) sprawdza upload przez lokalne HTTP oraz obsługę odmowy w obu formularzach. Test sam tworzy tymczasową kopię kodu; nie kopiuje `.env`, danych gry ani archiwów. Korzysta z atrapy OpenAI, bez kosztów API i dodatkowych bibliotek testowych. Wymaga możliwości nasłuchiwania na `127.0.0.1` na losowym porcie.
+
+`/analizuj` przyjmuje maksymalnie 5 plików po 5 MiB w polu `images`, bez pól tekstowych. Limit jest egzekwowany także bez `Content-Length`. Przekroczenie rozmiaru/liczby części daje JSON 413, błędny formularz 400. Bez klucza generator zwraca 503 przed uruchomieniem parsera uploadu. Limity dotyczą jednego żądania; nie stanowią ochrony publicznej usługi przed masowym ruchem. Nie dodano sprawdzania zawartości obrazów ani zmiany zasad dostępu.
+
+## Kontrola archiwów F05
+
+`npm run test:archives` lub `node --test test/archives.test.js`: testy lokalnego HTTP i rzeczywistego zapisu na dysku, wyłącznie w automatycznie usuwanym katalogu tymczasowym z syntetyczną grą. Kopiowany jest kod, bez `.env`, danych użytkownika i archiwów. Sprawdzają zapis przy nowej grze → listę → odtworzenie całego stanu, zachowanie aktualnego PIN-u, oba formaty nazw, niepoprawne ścieżki i brak sesji. Odczyt obsługuje nazwy z separatorem daty/godziny i bez niego; istniejących plików nie trzeba przemianowywać. Wszystkie obecne testy: `node --test test/*.test.js`.
+
+## Kontrola salda RF-03
+
+`npm run test:balance` lub `node --test test/question-balance.test.js`: porównanie rzeczywistych funkcji naliczania frontendu z prośbą o nagrodę i decyzją rodzica przez HTTP. Obejmuje pytania bez obowiązków, stawki i statusy, pozostałe źródła punktów, granice salda, odrzucenie/powtórzenie decyzji oraz ponowną ocenę dostępności. Restart osobnego procesu serwera sprawdza trwałość nagrody i salda oraz wygaśnięcie sesji. Testy tworzą tylko syntetyczne dane w usuwanym katalogu tymczasowym; nie kopiują `.env` ani danych użytkownika i nie korzystają z AI. Porównanie obliczeń frontendu nie zastępuje pełnego testu przeglądarkowego.
+
+## Kontrola wyprawy RF-04
+
+`npm run test:expedition` lub `node --test test/expedition.test.js`: rzeczywiste funkcje obliczania i renderowania wyprawy uruchamiane w VM na danych syntetycznych, z atrapą DOM. Sprawdza dni z samym pytaniem, wspólne daty, brak zaliczenia, stawki, dodatnie źródła punktów, brak potrąceń za nagrody/konsekwencje, granice odblokowania wszystkich szczytów i niezmienione serie/ekwipunek. Bez uruchamiania serwera, dostępu do danych gry i instalacji zależności. Test renderera nie zastępuje pełnego E2E w przeglądarce.
+
 ## Znane ograniczenia
 
 Port 3000 jest obecnie wpisany na stałe w `server.js`. Jeśli jest zajęty, zakończ wcześniejszy proces albo zmień port w kodzie. Serwer nasłuchuje tylko na tym komputerze (`127.0.0.1`). Dane JSON są lokalne i zapisywane synchronicznie; nie uruchamiaj kilku serwerów na jednym pliku. Sesje rodzica znikają po restarcie.

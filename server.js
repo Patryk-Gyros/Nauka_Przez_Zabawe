@@ -9,8 +9,15 @@ const fs = require("fs");
 const cleanJsonFromAI =
   require("./utils/cleanJsonFromAI");
 
-const upload =
-  multer({ storage: multer.memoryStorage() });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+    files: 5,
+    fields: 0,
+    parts: 6
+  }
+}).array("images", 5);
 
 const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
@@ -104,14 +111,22 @@ let generatedQuestions = null;
 
 app.post(
   "/analizuj",
-  upload.array("images"),
+  (req, res, next) => {
+    // Reject before buffering multipart data when the generator is disabled.
+    if (!openai) {
+      return res.status(503).json({ error: "Generator quizu wymaga OPENAI_API_KEY." });
+    }
+    upload(req, res, (err) => {
+      if (!err) return next();
+      if (["LIMIT_FILE_SIZE", "LIMIT_FILE_COUNT", "LIMIT_PART_COUNT"].includes(err.code)) {
+        return res.status(413).json({ error: "Możesz przesłać maksymalnie 5 zdjęć, każde do 5 MiB." });
+      }
+      return res.status(400).json({ error: "Nieprawidłowy formularz zdjęć. Prześlij pliki w polu images, bez dodatkowych pól." });
+    });
+  },
   async (req, res) => {
 
     try {
-
-      if (!openai) {
-        return res.status(503).json({ error: "Generator quizu wymaga OPENAI_API_KEY." });
-      }
 
       if (
         !req.files ||
@@ -410,6 +425,12 @@ function calculateAvailablePoints(data) {
     for (const c of data.challenges || []) {
       if (r.challenges?.[c.id] === true) total += Number(c.points) || 0;
     }
+  }
+  // Match the question rate used by the child screen, including older saves.
+  const questionRate = Number(data.settings?.questionOfTheDayPoints);
+  const questionPoints = Number.isFinite(questionRate) && questionRate >= 0 ? Math.round(questionRate) : 10;
+  for (const status of Object.values(data.settings?.questionOfTheDayStatus || {})) {
+    if (status === "done") total += questionPoints;
   }
   for (const x of data.redemptions || []) {
     if (x.status === "approved") total -= Number(x.cost) || 0;
@@ -833,6 +854,9 @@ app.post("/api/punktacja/parent/consequence/edit", parentAuth, (req, res) => {
 });
 
 /* ================= NOWA GRA I ARCHIWUM ================= */
+// Accept names produced by the writer and the previously supported date-time separator.
+const punktacjaArchiveNamePattern = /^rafcia-\d{8}-?\d{6}-[a-z0-9]+\.json$/i;
+
 function rafciaConfigLibraryFrom(data) {
   const old = data.configLibrary && typeof data.configLibrary === "object" ? data.configLibrary : {};
   const copy = (kind, list, key) => {
@@ -861,7 +885,7 @@ function rafciaArchiveLabel(data) {
 app.get("/api/punktacja/parent/archives", parentAuth, (req, res) => {
   try {
     fs.mkdirSync(punktacjaArchiveDir, { recursive: true });
-    const archives = fs.readdirSync(punktacjaArchiveDir).filter(n => /^rafcia-\d{8}-\d{6}-[a-z0-9]+\.json$/i.test(n)).map(id => {
+    const archives = fs.readdirSync(punktacjaArchiveDir).filter(n => punktacjaArchiveNamePattern.test(n)).map(id => {
       try { const d=JSON.parse(fs.readFileSync(path.join(punktacjaArchiveDir,id),"utf8")); return {id,label:d.label||"Gra archiwalna",savedAtLabel:d.savedAt?new Date(d.savedAt).toLocaleString("pl-PL"):"",savedAt:d.savedAt}; } catch (_) { return null; }
     }).filter(Boolean).sort((a,b)=>String(b.savedAt).localeCompare(String(a.savedAt)));
     res.json({ok:true,archives});
@@ -944,7 +968,7 @@ app.post("/api/punktacja/parent/new-game", parentAuth, (req, res) => {
 app.post("/api/punktacja/parent/archive/load", parentAuth, (req, res) => {
   try {
     const id = String(req.body?.id || "");
-    if (!/^rafcia-\d{8}-\d{6}-[a-z0-9]+\.json$/i.test(id)) return res.status(400).json({error:"Nieprawidłowy identyfikator archiwum."});
+    if (!punktacjaArchiveNamePattern.test(id)) return res.status(400).json({error:"Nieprawidłowy identyfikator archiwum."});
     const file = path.join(punktacjaArchiveDir,id);
     if (!fs.existsSync(file)) return res.status(404).json({error:"Nie znaleziono zapisu w archiwum."});
     const archive = JSON.parse(fs.readFileSync(file,"utf8"));
