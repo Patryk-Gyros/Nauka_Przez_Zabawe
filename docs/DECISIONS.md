@@ -41,6 +41,8 @@ Decyzje początkowe D-001–D-003 zapisują zasady przekazane w zleceniu „ROZS
 
 ### D-004 — Etapowa realizacja i odtwarzalność między sesjami
 
+Bieżący zakres zgody z tego historycznego wpisu został zastąpiony przez [D-005](#d-005--prosty-rozwój-po-rf-00). Zasady małych etapów i trwałego przekazania pozostają w mocy.
+
 - **Data / status:** 2026-11-11 / zatwierdzona w instrukcji zleceniodawcy. Uzupełnia D-001 i D-002, nie zastępuje wcześniejszych ustaleń.
 - **Kontekst:** wielomiesięczny rozwój wymaga wznowienia pracy przez dowolnego z obu agentów bez dostępu do poprzedniej rozmowy lub wewnętrznej kompresji kontekstu.
 - **Decyzja:** każdy mały etap ma cel, zakres, zależności, testy, kryteria akceptacji i sposób wycofania. Zakończenie, review lub merge etapu nie upoważnia do rozpoczęcia kolejnego; potrzebne jest osobne zatwierdzenie.
@@ -48,6 +50,20 @@ Decyzje początkowe D-001–D-003 zapisują zasady przekazane w zleceniu „ROZS
 - **Odroczenie:** zarejestrować „System trwałej i warstwowej pamięci agentów AI” jako AI-MEM-01, bez projektowania implementacji, instalacji i wydatków. Zgoda na wpis nie oznacza zgody na realizację systemu.
 - **Zakres bieżącej zgody:** tylko dokumentacja RF-00, na osobnej gałęzi i w lokalnym commicie; brak push, merge, zmian aplikacji i automatycznego rozpoczęcia RF-01. Karty pozostałych etapów są propozycjami, nie przyjętymi rozwiązaniami.
 - **Akceptacja:** instrukcja zleceniodawcy „Dodatkowe wymagania: ciągłość pracy i etapowa realizacja”, punkty 1–5, z 2026-11-11. Nie stwierdzamy odrębnej akceptacji Patryka. Realizacja: [workflow](TEAM_WORKFLOW.md), [roadmapa](ROADMAP.md), [punkt wznowienia](SESSION_STATE.md).
+
+### D-005 — Prosty rozwój po RF-00
+
+- **Data / status:** 2026-11-12 / kierunek zatwierdzony w instrukcji zleceniodawcy „RAFCIO — Aktualizacja strategii rozwoju po RF-00”.
+- **Kontekst i alternatywy:** RF-00 jest wykonane i scalone. Po przeglądzie rekomendacji zleceniodawca przekazał wspólną decyzję o rezygnacji z kompleksowej przebudowy na rzecz małych zmian rozwiązujących realne problemy. Roadmapa jest zbiorem priorytetów i możliwości, nie obowiązkowym planem przebudowy.
+- **Decyzja:** najpierw wartość dla dziecka, stabilność, bezpieczeństwo i użyteczność; zmiany architektury dopiero przy wykazanej potrzebie. Zachowujemy Node.js/Express, istniejącą logikę biznesową, obowiązki, punkty i wymianę na nagrody, Siedem Szczytów, ekwipunek, charakter wizualny, pozostałe moduły oraz dokumentację. Potwierdzone błędy naprawiamy małymi, przetestowanymi zmianami.
+- **Priorytety:** potwierdzone błędy bezpieczeństwa; bezpieczny zapis i odtwarzanie danych; poprawne punkty; ochrona historii i osiągnięć dziecka; testy głównych funkcji; istniejące błędy użytkowe. Istotność ustalamy na podstawie dowodów i skutków, nie wielkości planowanej przebudowy.
+- **Odroczenia:** PostgreSQL/SQLite, migracja do chmury, całościowe przepisanie frontendu, reorganizacja repo, nowe frameworki, rozbudowany DevOps, konta wielu rodzin i refaktor pozostałych gier wymagają osobnej zgody oraz konkretnego uzasadnienia. Pomysły pozostają w roadmapie. AI-MEM-01 pozostaje odroczone.
+- **Audyt:** zachowujemy ustalenia i ich historię; rekomendacje nie są obowiązkiem wdrożenia. RF-01 nie jest ukończone: w sprawdzonym repo nie ma pełnego raportu. Utrwalenie brakujących źródeł pozostaje ważne, ale pełny audyt nie blokuje osobno zatwierdzonej naprawy problemu, którego wymaganie i dowód są już dostępne. Nowej weryfikacji nie nazywamy oryginalnym pełnym audytem.
+- **Zakres bieżącej zgody:** wyłącznie ocena stanu, aktualizacja strategii i dokumentów oraz propozycja pakietu technicznego. Bez zmian aplikacji, instalacji zależności, refaktoru, migracji, push i merge. RF-03 z testami z RF-02 jest rekomendacją, nie zgodą na implementację; pozostałe etapy również wymagają osobnego zlecenia.
+- **Wpływ i ryzyka:** brak zmiany kodu, danych, mechanik, wyglądu i kosztów; budżet D-003 pozostaje w mocy. Niepełny audyt oznacza nieznane ryzyka, a przejście pojedynczego testu nie dowodzi gotowości produkcyjnej. Potwierdzone pilne zagrożenie może zmienić kolejność po uzgodnieniu zakresu naprawy.
+- **Zastępuje / uzupełnia:** zastępuje wyłącznie historyczny „Zakres bieżącej zgody” D-004; zachowuje jego pozostałe zasady oraz D-001–D-003. Aktualizuje kolejność i zależności w roadmapie; poprzednia wersja pozostaje w historii Git.
+- **Akceptacja / publikacja:** źródłem jest powyższe zlecenie użytkownika z 2026-11-12, punkty 1–6; jego treść merytoryczna jest zapisana tutaj. Nie ma odnośnika do opublikowanego uzgodnienia ani odrębnego review Patryka dla tej zmiany. Agent nie przypisuje mu dodatkowej akceptacji. Zmiana lokalna, bez nowego Issue/PR; [punkt wznowienia](SESSION_STATE.md).
+- **Wycofanie:** korektę dokumentacyjną odwrócić nowym commitem; zmianę przyjętego kierunku zapisać jako kolejną decyzję, zachowując D-005. Bez cofania danych lub historii Git.
 
 ## Format przyszłego wpisu
 

@@ -2,15 +2,32 @@
 
 To roboczy podział prac do uzgodnienia, oparty na [wymaganiach](REQUIREMENTS.md), [mapie produktu](RAFCIO.md) i [znanych problemach](KNOWN_ISSUES.md). Nie zastępuje pełnego audytu ani nie zatwierdza jego rekomendacji. Pełny raport audytu nie został jeszcze utrwalony w repo; RF-01 ma uzupełnić ten brak bez odtwarzania nieznanych ustaleń z domysłów.
 
-**Obecna zgoda obejmuje wyłącznie RF-00: dokumentację współpracy, ciągłości i planu etapów.** Pozostałe zadania są propozycjami wymagającymi osobnego zatwierdzenia. Zakończenie jednego nie rozpoczyna następnego. Zasady akceptacji i wycofania określa [TEAM_WORKFLOW.md](TEAM_WORKFLOW.md), a bieżący stan i pierwszy krok kolejnej sesji — [SESSION_STATE.md](SESSION_STATE.md).
+**RF-00 jest wykonane i scalone. Obecna zgoda obejmuje aktualizację strategii i dokumentacji po RF-00, zgodnie z [D-005](DECISIONS.md#d-005--prosty-rozwój-po-rf-00), oraz propozycję małego pakietu prac; nie obejmuje implementacji.** Pozostałe zadania są propozycjami wymagającymi osobnego zatwierdzenia. Zakończenie jednego nie rozpoczyna następnego. Zasady akceptacji i wycofania określa [TEAM_WORKFLOW.md](TEAM_WORKFLOW.md), a bieżący stan i pierwszy krok kolejnej sesji — [SESSION_STATE.md](SESSION_STATE.md).
 
-ID `RF-*` i `AI-MEM-01` są lokalnymi identyfikatorami, nie numerami istniejących Issues. Po upoważnionej publikacji zachowaj ID i zastąp roboczą kartę linkiem do Issue. Wtedy tylko Issue przechowuje aktualny status, właściciela, zgodę i szczegóły etapu; tutaj zostaje kolejność i powiązanie. Nie publikowano tych zadań ani nie zweryfikowano konfliktów z aktualnymi zdalnymi PR.
+ID `RF-*` i `AI-MEM-01` są lokalnymi identyfikatorami, nie numerami istniejących Issues. Po upoważnionej publikacji zachowaj ID i zastąp roboczą kartę linkiem do Issue. Wtedy tylko Issue przechowuje aktualny status, właściciela, zgodę i szczegóły etapu; tutaj zostaje kolejność i powiązanie. Nie publikowano tych zadań. Kontrola GitHub z 2026-11-12: brak otwartych PR; przed implementacją sprawdzić ponownie.
 
-P0 oznacza potwierdzone ryzyko krytyczne, P1 fundamenty i istotne naprawy, P2 poprawę istniejącego rozwiązania, P3 możliwy rozwój. Na podstawie samego obecnego katalogu nie dopisujemy P0; potwierdzone ustalenia audytu mogą zmienić kolejność po RF-01. Szacunki są orientacyjnym czasem pracy jednej osoby, bez oczekiwania na decyzje. Właściciele RF-01–RF-09 pozostają do uzgodnienia według ról zespołu.
+P0 oznacza potwierdzone ryzyko krytyczne, P1 fundamenty i istotne naprawy, P2 poprawę istniejącego rozwiązania, P3 możliwy rozwój. Na podstawie samego obecnego katalogu nie dopisujemy P0; nowe potwierdzone ustalenia mogą zmienić kolejność niezależnie od ukończenia RF-01. Szacunki są orientacyjnym czasem pracy jednej osoby, bez oczekiwania na decyzje. Właściciele RF-01–RF-10 pozostają do uzgodnienia według ról zespołu.
 
-## Kolejność i niezależność
+## Priorytety po RF-00 — 2026-11-12
 
-Pierwszy proponowany etap po zaakceptowaniu dokumentacji to RF-01. RF-02 przygotowuje kontrole dla napraw RF-03 i RF-04; te dwie naprawy mogą być wdrażane osobno. RF-05 i RF-06 to niezależne decyzje o historii punktów, bez implementacji. RF-07 uruchamia istniejące kontrole w CI, RF-08 obejmuje jeden mały refaktor, a RF-09 weryfikuje jedną pełną ścieżkę użytkownika. Spełniona zależność nie jest zgodą na rozpoczęcie zadania.
+Najpierw realne problemy i wartość dla użytkownika, później uzasadnione zmiany architektury. Zachowujemy obecny produkt, wygląd i Node.js/Express. Numer etapu nie narzuca kolejności. Poniższa ocena zastępuje poprzednią kolejkę; historyczne karty i ich wcześniejsze priorytety są dostępne w Git.
+
+| Zadanie | Aktualny priorytet i kierunek |
+| --- | --- |
+| RF-00 | Wykonane i scalone; nie ponawiać merge. |
+| RF-01 | P1 — nieukończone utrwalenie audytu; potrzebne źródło albo osobno uzgodniona ponowna weryfikacja. Nie blokuje wszystkich znanych napraw. |
+| RF-02 + RF-03 | P1 — testy i naprawa dostępności nagrody; pierwszy rekomendowany pakiet opisany poniżej. |
+| RF-05 i RF-06 | P1 — ochrona historii punktów i osiągnięć. RF-06 podniesione z P2; obie karty nadal dotyczą decyzji, nie automatycznej migracji danych. |
+| RF-09 | P1 — odbiór podstawowej ścieżki rodzic–dziecko, w tym uprawnień i restartu, po naprawie salda. |
+| RF-10 | P1 — nowa, wąska weryfikacja lokalnego zapisu i odtwarzania; bez wyboru bazy. |
+| RF-04 | P2 — potwierdzony błąd postępu wyprawy, następna niezależna mała naprawa. |
+| RF-07 | P2, warunkowe — proste CI dopiero dla użytecznych testów; lokalne kontrole wystarczają do pierwszej naprawy. Wcześniej P1. |
+| RF-08 | P2, odroczone — wydzielenie obliczenia tylko gdy obecny kod rzeczywiście utrudnia konkretną zmianę lub test. |
+| AI-MEM-01 | P3, odroczone — bez projektowania i instalacji. |
+
+Potwierdzone błędy bezpieczeństwa mają pierwszeństwo stosownie do skutków (P0 dla krytycznych). Obecne cztery wpisy `KNOWN_ISSUES.md` nie stanowią pełnego audytu bezpieczeństwa; nie dopisujemy nieudowodnionych luk ani nie uznajemy bezpieczeństwa za potwierdzone. Dla wykrytej luki najpierw dowód, wpływ, mały zakres naprawy i osobna zgoda. Nie trzeba czekać na zakończenie całego RF-01.
+
+RF-02 dostarcza testy potrzebne konkretnej naprawie; nie wymaga budowy pełnej platformy testowej. RF-05 i RF-06 są niezależne, RF-10 nie wymaga RF-03 ani nowej architektury. RF-07 i RF-08 nie blokują napraw ani odbioru. Każdy etap wymaga zgody; pilny nowy dowód może zmienić proponowaną kolejność.
 
 ### RF-00 — Dokumentacja współpracy i ciągłości
 
@@ -24,9 +41,11 @@ Pierwszy proponowany etap po zaakceptowaniu dokumentacji to RF-01. RF-02 przygot
 
 ### RF-01 — Utrwalenie dowodów audytu
 
+**Status na 2026-11-12: nieukończone.** `KNOWN_ISSUES.md` zawiera cztery problemy punktacji, a `REQUIREMENTS.md` i `RAFCIO.md` część wymagań i reguł. Przegląd dokumentów, historii dokumentacji i PR #3 nie wykazał utrwalenia pełnego raportu z 2026-11-11. Brakuje pełnego źródła oraz kompletnego powiązania ustaleń z wersją, dowodem, ryzykiem i pytaniami. Niniejsza aktualizacja strategii nie zamyka RF-01.
+
 - **Cel / priorytet / nakład:** uniezależnić ustalenia techniczne od rozmowy; P1, około 0,5–1 dnia.
 - **Zakres:** uzupełnić istniejące `KNOWN_ISSUES.md`, `REQUIREMENTS.md` i `RAFCIO.md` o zweryfikowane ustalenia, wersję kodu, dowody, ryzyka i nierozstrzygnięte pytania; skorygować kolejkę małych zadań. Bez napraw i bez uznawania propozycji architektury za przyjęte.
-- **Zależności:** akceptacja RF-00 i osobna zgoda na RF-01; dostęp do pełnego raportu albo wyraźnie uzgodniony zakres ponownej weryfikacji. Brak źródła oznaczyć, nie uzupełniać z pamięci agenta.
+- **Zależności:** RF-00 zakończone; osobna zgoda na RF-01; dostęp do pełnego raportu albo wyraźnie uzgodniony zakres ponownej weryfikacji. Brak źródła oznaczyć, nie uzupełniać z pamięci agenta.
 - **Testy:** porównać każde przenoszone ustalenie z dokumentacją i wskazaną wersją kodu; sprawdzić linki, zakres diffu i brak danych prywatnych.
 - **Akceptacja:** potwierdzone zachowanie, wymagania, rozbieżności i propozycje są rozróżnione; każdy problem ma dowód, priorytet i wpływ; braki jawnie wymienione. Nowe naprawy stają się osobnymi propozycjami.
 - **Wycofanie:** odwrócić wyłącznie aktualizację dokumentacji nowym commitem, zachować poprzednie wersje w Git i sprawdzić linki.
@@ -36,7 +55,7 @@ Pierwszy proponowany etap po zaakceptowaniu dokumentacji to RF-01. RF-02 przygot
 
 - **Cel / priorytet / nakład:** zabezpieczyć dwa znane rozjazdy opisane w `KNOWN_ISSUES.md`; P1, około 1 dnia; typ A — kontrole bez zmiany zachowania aplikacji.
 - **Zakres:** mały zestaw danych i powtarzalne kontrole salda, zatwierdzania nagrody oraz dnia z samym pytaniem; instrukcja uruchomienia w odizolowanej kopii. Nie testować prawdziwego zapisu użytkownika ani przebudowywać środowiska aplikacji.
-- **Zależności:** RF-01, osobna zgoda na etap i dostępne działające Node.js/npm. Wybór lub zmiana wersji środowiska wymaga uzgodnienia poza tą kartą, jeśli okaże się potrzebna.
+- **Zależności:** dowód i wymaganie dla sprawdzanego problemu (pełne RF-01 nie jest blokadą), osobna zgoda na etap i działające środowisko do uruchomienia testów. Wybór lub zmiana wersji środowiska wymaga uzgodnienia poza tą kartą, jeśli okaże się potrzebna.
 - **Testy:** powtórzyć kontrole na świeżych danych; sprawdzić powtarzalność wyniku i to, że wszystkie zapisy trafiają do izolowanej lokalizacji.
 - **Akceptacja:** drugi programista odtwarza obecne zachowanie i rozjazdy jednym opisanym przebiegiem; oczekiwane reguły są oddzielone od testów obecnego błędu. Brak deklaracji, że istniejąca rozbieżność została naprawiona.
 - **Wycofanie:** odwrócić commit testów i instrukcji; zakończyć proces testowy, usunąć wyłącznie oznaczone dane syntetyczne. Kod i dane użytkownika nie wymagają odtwarzania.
@@ -45,8 +64,8 @@ Pierwszy proponowany etap po zaakceptowaniu dokumentacji to RF-01. RF-02 przygot
 ### RF-03 — Zgodne saldo przy zatwierdzaniu nagrody
 
 - **Cel / priorytet / nakład:** rozwiązać P1 „Ekran i serwer liczą różne saldo” z `KNOWN_ISSUES.md`; P1, około 0,5–1 dnia; proponowany typ B.
-- **Zakres:** wyłącznie uwzględnienie zatwierdzonych pytań dnia w saldzie używanym do oceny nagrody, zgodnie z uzgodnioną regułą z `RAFCIO.md`. Bez przebudowy pozostałych mechanik, formatu danych i logowania.
-- **Zależności:** RF-02 oraz potwierdzenie reguły i osobna zgoda na naprawę; przed zmianą `server.js` sprawdzić wpływ na wspólne moduły.
+- **Zakres:** wyłącznie uwzględnienie zatwierdzonych pytań dnia w saldzie używanym do prośby o nagrodę i jej zatwierdzenia, zgodnie z uzgodnioną regułą z `RAFCIO.md`. Bez przebudowy pozostałych mechanik, formatu danych i logowania.
+- **Zależności:** kontrole salda i nagród z RF-02 (mogą powstać w tym samym małym pakiecie) oraz potwierdzenie reguły i osobna zgoda na naprawę; przed zmianą `server.js` sprawdzić wpływ na wspólne moduły.
 - **Testy:** pytanie zaliczone/niezaliczone, nagroda dokładnie za dostępne saldo i za saldo przekroczone, potrącenie po zatwierdzeniu oraz brak potrącenia przy odrzuceniu.
 - **Akceptacja:** ekran i serwer uznają tę samą dostępność nagrody w uzgodnionych przypadkach; test odtwarzający błąd przechodzi po naprawie; inne źródła punktów i format zapisu pozostają zgodne.
 - **Wycofanie:** cofnąć commit kodu i jego oczekiwania testowe bez cofania faktycznie zatwierdzonych nagród; sprawdzić odczyt istniejącego zapisu i historię operacji. Powrót starszej reguły przywraca znany rozjazd i musi być jawnie zgłoszony.
@@ -66,7 +85,7 @@ Pierwszy proponowany etap po zaakceptowaniu dokumentacji to RF-01. RF-02 przygot
 
 - **Cel / priorytet / nakład:** rozstrzygnąć oczekiwaną trwałość punktów po usunięciu obowiązku lub misji; P1, około 0,5 dnia analizy; dokumentacja przed zmianą B/C.
 - **Zakres:** jeden przypadek z `KNOWN_ISSUES.md`: usunięcie definicji a poprzednie rozliczenia. Uzupełnić wymaganie i decyzję o starych oraz przyszłych zapisach; bez zmiany modelu danych.
-- **Zależności:** RF-01, osobna zgoda na analizę; rozstrzygnięcie produktowe Łukasza i Patryka.
+- **Zależności:** udokumentowany przypadek z `KNOWN_ISSUES.md` (bez wymagania pełnego RF-01), osobna zgoda na analizę; rozstrzygnięcie produktowe Łukasza i Patryka.
 - **Testy:** przejść przykład zdobycia punktów, usunięcia definicji, ponownego odczytu i odtworzenia archiwum; porównać obecny i proponowany wynik bez mutowania danych użytkownika.
 - **Akceptacja:** uzgodniono wynik każdego przykładu, postępowanie ze starymi zapisami i brakującą historią. Dopiero wtedy wydzielić małe zadanie implementacji z własnym testem i bezstratnym wycofaniem; nie rozpoczynać go automatycznie.
 - **Wycofanie:** propozycję dokumentacyjną cofnąć commitem; przyjętą decyzję zastąpić nową zatwierdzoną decyzją, zachowując historię. Brak zmian danych do odtwarzania.
@@ -74,9 +93,9 @@ Pierwszy proponowany etap po zaakceptowaniu dokumentacji to RF-01. RF-02 przygot
 
 ### RF-06 — Decyzja o stawce historycznego pytania dnia
 
-- **Cel / priorytet / nakład:** ustalić, czy zmiana stawki działa na przeszłość; P2, około 0,5 dnia analizy; dokumentacja przed zmianą B/C.
+- **Cel / priorytet / nakład:** ustalić, czy zmiana stawki działa na przeszłość; P1 (wcześniej P2), około 0,5 dnia analizy; dokumentacja przed zmianą B/C.
 - **Zakres:** osobna reguła opisana w `KNOWN_ISSUES.md`; wymaganie i decyzja dla istniejących oraz nowych zaliczeń. Bez implementacji i bez wyboru bazy.
-- **Zależności:** RF-01, osobna zgoda na analizę i wspólna decyzja produktowa. RF-05 nie blokuje tego zadania.
+- **Zależności:** udokumentowany przypadek z `KNOWN_ISSUES.md` (bez wymagania pełnego RF-01), osobna zgoda na analizę i wspólna decyzja produktowa. RF-05 nie blokuje tego zadania.
 - **Testy:** przykład pytania zaliczonego przy 10 pkt, zmiany stawki na 5 pkt, nowego zaliczenia i odczytu starszego archiwum; porównać saldo oraz postęp wyprawy.
 - **Akceptacja:** przyjęte przykłady i zasady obsługi starych zapisów są zapisane w wymaganiach i `DECISIONS.md`; osobne zadanie implementacyjne powstaje dopiero po tej decyzji, bez automatycznego rozpoczęcia.
 - **Wycofanie:** cofnąć propozycję dokumentacyjną nowym commitem; przyjętą decyzję zastąpić nowym uzgodnieniem z zachowaniem historii. Dane aplikacji pozostają niezmienione.
@@ -84,7 +103,7 @@ Pierwszy proponowany etap po zaakceptowaniu dokumentacji to RF-01. RF-02 przygot
 
 ### RF-07 — Jedna kontrola CI dla istniejących testów
 
-- **Cel / priorytet / nakład:** powtarzalna weryfikacja PR; P1, około 0,5 dnia; typ A — automatyzacja kontroli.
+- **Cel / priorytet / nakład:** powtarzalna weryfikacja PR; P2, warunkowe (wcześniej P1), około 0,5 dnia; typ A — automatyzacja kontroli.
 - **Zakres:** uruchomienie uzgodnionych istniejących testów na danych syntetycznych, bez wdrażania aplikacji, sekretów, automatycznego merge i zmian innych gier.
 - **Zależności:** RF-02, osobna zgoda na zmianę CI oraz potwierdzone środowisko, dostęp i limity mieszczące się w budżecie 0 PLN. Zmiana branch protection pozostaje osobną decyzją.
 - **Testy:** przebieg poprawnego zestawu oraz kontrolowanego błędu na gałęzi testowej; sprawdzenie logów pod kątem danych prywatnych.
@@ -94,7 +113,7 @@ Pierwszy proponowany etap po zaakceptowaniu dokumentacji to RF-01. RF-02 przygot
 
 ### RF-08 — Wydzielenie jednego obliczenia salda
 
-- **Cel / priorytet / nakład:** ułatwić testowanie reguły bez HTTP; P2, około 0,5–1 dnia; typ A.
+- **Cel / priorytet / nakład:** ułatwić testowanie reguły bez HTTP; P2, odroczone do wykazania potrzeby, około 0,5–1 dnia; typ A.
 - **Zakres:** wydzielić tylko jedno uzgodnione obliczenie salda Rafcia z `server.js`, zachowując kontrakt i wynik. Bez przebudowy całego serwera, nowego frameworka i zmiany zapisu.
 - **Zależności:** RF-02, zaakceptowana RF-03 oraz osobna zgoda na wskazaną funkcję i granicę refaktoru; ocena wspólnych konsumentów.
 - **Testy:** porównanie wyniku przed/po na tych samych przypadkach punktacji oraz kontrola zatwierdzania nagrody przez API.
@@ -111,6 +130,48 @@ Pierwszy proponowany etap po zaakceptowaniu dokumentacji to RF-01. RF-02 przygot
 - **Akceptacja:** wszystkie kroki mają wynik, wersję, środowisko i dowód albo odtwarzalne zgłoszenie błędu. Pozostałe przypadki z wymagań, m.in. błędny PIN, eksport i odtworzenie archiwum, są jawnie oznaczone jako niewykonane w tym przebiegu. Niezaliczona ścieżka blokuje deklarację gotowości, nie upoważnia do samodzielnych napraw.
 - **Wycofanie:** zakończyć testowy serwer i usunąć wyłącznie oznaczone dane syntetyczne; błędny raport skorygować nowym commitem/komentarzem z zachowaniem historii dowodu.
 - **Ryzyko:** przejście jednego scenariusza nie dowodzi bezpieczeństwa i poprawności całego produktu.
+
+### RF-10 — Sprawdzenie lokalnego zapisu i odtwarzania
+
+- **Cel / priorytet / nakład:** ustalić, czy można bezpiecznie odzyskać grę; P1, około 0,5–1 dnia, weryfikacja bez napraw. Właściciel do uzgodnienia.
+- **Zakres:** wyłącznie lokalny JSON, istniejący eksport i odtwarzanie archiwum Rafcia. Na syntetycznym stanie porównać punkty, rozliczenia, nagrody i postęp przed restartem oraz po odtworzeniu. Sprawdzić zachowanie przy niepoprawnym archiwum i błędzie zapisu; udokumentować bezpieczną lokalną procedurę kopii/odtworzenia. Bez migracji, chmury i zmian mechanik.
+- **Zależności:** osobna zgoda i izolacja całego zapisu, w tym archiwów; ustalenie oczekiwanego wyniku odtworzenia, które zastępuje bieżącą grę. Pełne RF-01 nie jest wymagane.
+- **Testy:** zapis–restart–odczyt, eksport–odtworzenie, niepoprawny JSON/format archiwum, wymuszona odmowa zapisu w izolowanym środowisku. Sprawdzić ochronę PIN-u, konieczność logowania po restarcie i brak nadpisania bieżącego stanu przez odrzucone archiwum. Zasymulowana awaria nie dowodzi odporności na wszystkie zaniki zasilania.
+- **Akceptacja:** każdy przypadek ma wersję kodu, wynik i dowód; procedura daje odtwarzalny wynik lub jawnie wskazuje brak. Wykryta utrata danych otrzymuje oddzielną propozycję małej naprawy, bez automatycznej implementacji. Bez deklaracji gotowości przy niezaliczonych kryteriach.
+- **Wycofanie:** zakończyć środowisko testowe, usunąć wyłącznie oznaczone dane syntetyczne; raport poprawić nowym commitem. Nie odtwarzać starszej kopii na danych użytkownika.
+- **Ryzyko:** błędne odtworzenie może zastąpić nowszą historię. Odczyt kodu `savePunktacja` na `529000b` pokazuje bezpośredni `writeFileSync` do głównego pliku; to wskazanie do testu trwałości, nie dowód zaistniałej utraty danych. Nie projektujemy teraz nowego magazynu.
+
+## Pierwszy rekomendowany pakiet — RF-03 z testami salda z RF-02
+
+**Status: propozycja do zatwierdzenia, nie rozpoczęto implementacji.** Jeden rezultat i jeden przyszły PR: dziecko może poprosić o nagrodę za punkty widoczne na ekranie. Typ B z niezbędnymi testami regresji; proponowany wykonawca Łukasz, review Patryk, do uzgodnienia. Szacunek 0,5–1 dnia po zapewnieniu izolowanego uruchomienia.
+
+- **Dowód i reguła:** odczyt kodu na `529000b`: `server.js::calculateAvailablePoints` pomija pytania, a oba endpointy nagród korzystają z tej funkcji. `public/punktacja/app.js::dayPoints`, `totalPoints`, `questionDayPoints` uwzględniają daty ze statusem `done`. Źródła wymagań: `RAFCIO.md`, sekcje „Odbiór nagrody” w przebiegu gry i tabela salda; `KNOWN_ISSUES.md`, pierwszy problem. Jest to potwierdzenie statyczne; testu uruchomieniowego w tej sesji nie wykonywano.
+- **Dokładny zakres:** doliczyć po stronie serwera zaliczone pytania dnia do salda używanego przez `/api/punktacja/reward-request` oraz `/api/punktacja/parent/reward`. Zachować semantykę obecnej stawki z `questionDayPoints`: liczba skończona i nieujemna zaokrąglona do całkowitej, w pozostałych przypadkach 10; tylko status `done`, również bez wpisu daty w `records`. Testy i krótka instrukcja uruchomienia oraz aktualizacja opisu naprawionego problemu należą do pakietu.
+- **Granice:** bez wydzielania modułów, przebudowy frontendu, zmian HTTP/API, formatu JSON, autoryzacji, innych gier, historii stawek, reguł wyprawy i instalowania zależności. Wspólny `server.js` zmienia tylko obliczenie Rafcia; przed implementacją potwierdzić wszystkich jego konsumentów. RF-04, RF-05, RF-06 i RF-08 pozostają osobnymi zadaniami.
+- **Przygotowanie i zależności:** przed zmianą potwierdzić aktualny dowód oraz zgodę na tę regułę; sprawdzić Git/PR. Uruchomić kopię wyłącznie kodu i niezbędnych zasobów z syntetycznymi danymi, bez kopiowania `.env`, prawdziwego JSON i archiwów. Sprawdzić wszystkie ścieżki zapisu przed pierwszym żądaniem. Wykorzystać dostępne narzędzia bez nowych bibliotek; jeśli środowisko wymaga instalacji lub szerszej zmiany, zgłosić ograniczenie. Pełne RF-01 i pełne RF-02 nie blokują tego pakietu.
+- **Test odtwarzający błąd:** samo zaliczone pytanie za 10 pkt, brak `records`, nagroda za 10 pkt: ekran pokazuje 10, obecny serwer odrzuca prośbę. Ten sam test ma przejść po naprawie. Oddzielnie sprawdzić istniejącą oczekującą prośbę zatwierdzaną przez rodzica.
+- **Testy regresji:** pytanie `done`, niezaliczone i bez statusu; stawki 0, 10, ułamkowa, brak i niepoprawna; dzień z samym pytaniem oraz pytaniem i obowiązkiem bez podwójnego naliczenia. Sprawdzić też obowiązki wykonane/niewykonane, aktywności, misje, bonusy, konsekwencje i już zatwierdzone nagrody.
+- **Testy granic nagrody:** koszt równy saldu — sukces; koszt większy o 1 — odmowa; prośba oczekująca nie potrąca punktów, zatwierdzenie potrąca raz, odrzucenie nie potrąca, ponowne zatwierdzenie nie potrąca drugi raz. Zmniejszenie salda pomiędzy prośbą a decyzją blokuje zatwierdzenie. Brak sesji rodzica daje odmowę bez zmiany zapisu. Restart zachowuje zatwierdzoną nagrodę i saldo.
+- **Odbiór UI:** krótki przebieg dziecko → prośba → rodzic → zatwierdzenie → dziecko na danych syntetycznych; porównać saldo ekranu z decyzją API przed i po operacji. To część kontroli nagrody, nie zaliczenie całego RF-09.
+- **Kryteria akceptacji:** test pierwotnego rozjazdu nie przechodzi na bazie i przechodzi po naprawie; wszystkie powyższe przypadki mają zgodny wynik UI/API tam, gdzie dotyczy, oraz dowód. Druga osoba odtwarza testy według instrukcji. Format danych, pozostałe źródła punktów i kontrakty pozostają zgodne; brak zapisu do danych użytkownika. Diff ograniczony do obliczenia, testów i właściwych dokumentów; brak nowych zależności. Niezaliczone kryterium blokuje uznanie naprawy za gotową.
+- **Ryzyko:** mały zakres kodu, umiarkowany wpływ biznesowy — zmienia dostępność nagród. Możliwe podwójne naliczenie, inna wartość domyślna lub potrącenie przy powtórzonej operacji; testy powyżej pokrywają te granice. Zmiana stawki nadal działa wstecz do rozstrzygnięcia RF-06; nie deklarować ochrony całej historii po tym pakiecie.
+- **Wycofanie:** nowy commit odwracający wyłącznie naprawę i jej oczekiwania testowe; pozostawić rzeczywiście zatwierdzone nagrody i wszystkie nowsze dane. Powtórzyć odczyt i kontrolę historii operacji. Powrót starego kodu przywróci znany rozjazd — zgłosić to jawnie; nie odtwarzać starszego JSON. Potrzeba migracji oznacza zatrzymanie i osobne uzgodnienie.
+
+Zakres RF-02 wykonany w pakiecie należy oznaczyć jako częściowy; test dnia z samym pytaniem dla wyprawy nadal należy do RF-04. Nie oznaczać RF-01, całego RF-02 ani RF-09 jako ukończonych przy zamykaniu samej naprawy salda.
+
+## Odroczone lub warunkowe kierunki architektoniczne
+
+Wszystkie poniższe możliwości zachowujemy, ale bez dodatkowej zgody nie rozpoczynamy analizy wykonawczej ani wdrożenia:
+
+| Kierunek | Warunek powrotu do rozważenia |
+| --- | --- |
+| PostgreSQL lub SQLite | Wykazane wymaganie trwałości/skali, którego nie da się rozsądnie spełnić małą poprawką obecnego rozwiązania. |
+| Migracja do chmury / hosting | Rzeczywista potrzeba dostępu zdalnego, uzgodnione bezpieczeństwo, koszty, kopie i plan wyjścia. |
+| Kompleksowe przepisanie frontendu | Konkretne problemy użytkowe lub utrzymaniowe, których nie rozwiązują lokalne poprawki; zachować charakter wizualny. |
+| Całościowa reorganizacja repo / nowe frameworki | Udokumentowana przeszkoda w pracy i przewaga nad mniejszym rozwiązaniem. |
+| Rozbudowana infrastruktura DevOps | Realna potrzeba wdrożeń i utrzymania; RF-07 pozostaje jedynie opcją prostej kontroli. |
+| Konta wielu rodzin | Zatwierdzona potrzeba produktowa; dziś jedna rodzina na lokalną instancję. |
+| Refaktor pozostałych gier | Osobny, uzgodniony zakres wykorzystania danego modułu; nie usuwać istniejących zasobów. |
 
 ## Odroczona inicjatywa AI-MEM-01 — System trwałej i warstwowej pamięci agentów AI
 
