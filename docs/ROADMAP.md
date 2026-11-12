@@ -2,7 +2,7 @@
 
 To roboczy podział prac do uzgodnienia, oparty na [wymaganiach](REQUIREMENTS.md), [mapie produktu](RAFCIO.md) i [znanych problemach](KNOWN_ISSUES.md). Nie zastępuje pełnego audytu ani nie zatwierdza jego rekomendacji. Pełny raport audytu nie został jeszcze utrwalony w repo; RF-01 ma uzupełnić ten brak bez odtwarzania nieznanych ustaleń z domysłów.
 
-**RF-00 jest wykonane i scalone. Kierunek określa [D-005](DECISIONS.md#d-005--prosty-rozwój-po-rf-00). Zlecenia z 2026-11-12 zatwierdziły osobno małe naprawy F01, F05 i RF-03 z testami, bez push i merge; wyniki poniżej.** Pozostałe zadania są propozycjami wymagającymi osobnego zatwierdzenia. Zakończenie jednego nie rozpoczyna następnego. Zasady akceptacji i wycofania określa [TEAM_WORKFLOW.md](TEAM_WORKFLOW.md), a bieżący stan i pierwszy krok kolejnej sesji — [SESSION_STATE.md](SESSION_STATE.md).
+**RF-00 jest wykonane i scalone. Kierunek określa [D-005](DECISIONS.md#d-005--prosty-rozwój-po-rf-00). Zlecenia z 2026-11-12 zatwierdziły osobno małe naprawy F01, F05, RF-03 i RF-04 z testami, bez push i merge; wyniki poniżej.** Pozostałe zadania są propozycjami wymagającymi osobnego zatwierdzenia. Zakończenie jednego nie rozpoczyna następnego. Zasady akceptacji i wycofania określa [TEAM_WORKFLOW.md](TEAM_WORKFLOW.md), a bieżący stan i pierwszy krok kolejnej sesji — [SESSION_STATE.md](SESSION_STATE.md).
 
 ID `RF-*` i `AI-MEM-01` są lokalnymi identyfikatorami, nie numerami istniejących Issues. Po upoważnionej publikacji zachowaj ID i zastąp roboczą kartę linkiem do Issue. Wtedy tylko Issue przechowuje aktualny status, właściciela, zgodę i szczegóły etapu; tutaj zostaje kolejność i powiązanie. Nie publikowano tych zadań. Kontrola GitHub z 2026-11-12: brak otwartych PR; przed implementacją sprawdzić ponownie.
 
@@ -22,7 +22,7 @@ Najpierw realne problemy i wartość dla użytkownika, później uzasadnione zmi
 | RF-05 i RF-06 | P1 — ochrona historii punktów i osiągnięć. RF-06 podniesione z P2; obie karty nadal dotyczą decyzji, nie automatycznej migracji danych. |
 | RF-09 | P1 — odbiór podstawowej ścieżki rodzic–dziecko, w tym uprawnień i restartu, po naprawie salda. |
 | RF-10 | P1 — nowa, wąska weryfikacja lokalnego zapisu i odtwarzania; bez wyboru bazy. |
-| RF-04 | P2 — potwierdzony błąd postępu wyprawy, następna niezależna mała naprawa. |
+| RF-04 | Wykonane i przetestowane lokalnie; dni z samym pytaniem zwiększają postęp. Bez publikacji i merge. |
 | RF-07 | P2, warunkowe — proste CI dopiero dla użytecznych testów; lokalne kontrole wystarczają do pierwszej naprawy. Wcześniej P1. |
 | RF-08 | P2, odroczone — wydzielenie obliczenia tylko gdy obecny kod rzeczywiście utrudnia konkretną zmianę lub test. |
 | AI-MEM-01 | P3, odroczone — bez projektowania i instalacji. |
@@ -74,6 +74,8 @@ RF-02 dostarcza testy potrzebne konkretnej naprawie; nie wymaga budowy pełnej p
 
 ### RF-02 — Odtwarzalne kontrole punktacji na danych syntetycznych
 
+Kontrole salda/nagród wykonano z RF-03, a kontrole dnia z samym pytaniem w wyprawie z RF-04. Polecenia są w `RUNBOOK.md`; odbiór przez drugiego programistę pozostaje do wykonania. Nie jest to zamknięcie RF-09.
+
 - **Cel / priorytet / nakład:** zabezpieczyć dwa znane rozjazdy opisane w `KNOWN_ISSUES.md`; P1, około 1 dnia; typ A — kontrole bez zmiany zachowania aplikacji.
 - **Zakres:** mały zestaw danych i powtarzalne kontrole salda, zatwierdzania nagrody oraz dnia z samym pytaniem; instrukcja uruchomienia w odizolowanej kopii. Nie testować prawdziwego zapisu użytkownika ani przebudowywać środowiska aplikacji.
 - **Zależności:** dowód i wymaganie dla sprawdzanego problemu (pełne RF-01 nie jest blokadą), osobna zgoda na etap i działające środowisko do uruchomienia testów. Wybór lub zmiana wersji środowiska wymaga uzgodnienia poza tą kartą, jeśli okaże się potrzebna.
@@ -95,6 +97,8 @@ RF-02 dostarcza testy potrzebne konkretnej naprawie; nie wymaga budowy pełnej p
 - **Ryzyko:** wpływ na dostępność nagród; jeśli naprawa wymaga zmiany formatu danych, zatrzymać etap i uzgodnić osobny zakres z wycofaniem danych.
 
 ### RF-04 — Postęp wyprawy za dzień z samym pytaniem
+
+**Wykonane lokalnie 2026-11-12, do review; bez push/merge.** Użytkownik zlecił małą naprawę RF-04 i testy syntetyczne. Zmieniono tylko dobór dat w `rafciaPositiveLifetimePoints` (zbiór dat rozliczeń i pytań, wspólne daty raz). Przed poprawką 7/10 testów odtworzyło błąd; po poprawce 10/10 testów wyprawy oraz 37/37 pozostałych przeszło. Sprawdzono renderer na granicach wszystkich szczytów i niezmienione serie/ekwipunek. Bez zmian zapisu, progów, zależności i pozostałych reguł; pełnego E2E w przeglądarce nie wykonano.
 
 - **Cel / priorytet / nakład:** rozwiązać P2 „Wyprawa pomija niektóre zaliczone pytania” z `KNOWN_ISSUES.md`; P2, około 0,5 dnia; proponowany typ B.
 - **Zakres:** wyłącznie dobór dni do obliczania postępu w `public/punktacja/app.js`. Bez zmiany progów Siedmiu Szczytów, zasad ekwipunku i formatu danych.
@@ -180,7 +184,7 @@ RF-02 dostarcza testy potrzebne konkretnej naprawie; nie wymaga budowy pełnej p
 - **Ryzyko:** mały zakres kodu, umiarkowany wpływ biznesowy — zmienia dostępność nagród. Możliwe podwójne naliczenie, inna wartość domyślna lub potrącenie przy powtórzonej operacji; testy powyżej pokrywają te granice. Zmiana stawki nadal działa wstecz do rozstrzygnięcia RF-06; nie deklarować ochrony całej historii po tym pakiecie.
 - **Wycofanie:** nowy commit odwracający wyłącznie naprawę i jej oczekiwania testowe; pozostawić rzeczywiście zatwierdzone nagrody i wszystkie nowsze dane. Powtórzyć odczyt i kontrolę historii operacji. Powrót starego kodu przywróci znany rozjazd — zgłosić to jawnie; nie odtwarzać starszego JSON. Potrzeba migracji oznacza zatrzymanie i osobne uzgodnienie.
 
-Zakres RF-02 wykonany w pakiecie należy oznaczyć jako częściowy; test dnia z samym pytaniem dla wyprawy nadal należy do RF-04. Nie oznaczać RF-01, całego RF-02 ani RF-09 jako ukończonych przy zamykaniu samej naprawy salda.
+W samym RF-03 wykonano część RF-02 dotyczącą salda/nagród; test dnia z samym pytaniem w wyprawie wykonano później w RF-04. Kontrole te nie zamykają RF-01 ani RF-09; odbiór RF-02 przez drugiego programistę pozostaje do wykonania.
 
 ## Odroczone lub warunkowe kierunki architektoniczne
 

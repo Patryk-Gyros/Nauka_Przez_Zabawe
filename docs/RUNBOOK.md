@@ -38,6 +38,10 @@ Generator quizów jest oddzielny: aby działał endpoint `/analizuj`, skopiuj `.
 
 `npm run test:balance` lub `node --test test/question-balance.test.js`: porównanie rzeczywistych funkcji naliczania frontendu z prośbą o nagrodę i decyzją rodzica przez HTTP. Obejmuje pytania bez obowiązków, stawki i statusy, pozostałe źródła punktów, granice salda, odrzucenie/powtórzenie decyzji oraz ponowną ocenę dostępności. Restart osobnego procesu serwera sprawdza trwałość nagrody i salda oraz wygaśnięcie sesji. Testy tworzą tylko syntetyczne dane w usuwanym katalogu tymczasowym; nie kopiują `.env` ani danych użytkownika i nie korzystają z AI. Porównanie obliczeń frontendu nie zastępuje pełnego testu przeglądarkowego.
 
+## Kontrola wyprawy RF-04
+
+`npm run test:expedition` lub `node --test test/expedition.test.js`: rzeczywiste funkcje obliczania i renderowania wyprawy uruchamiane w VM na danych syntetycznych, z atrapą DOM. Sprawdza dni z samym pytaniem, wspólne daty, brak zaliczenia, stawki, dodatnie źródła punktów, brak potrąceń za nagrody/konsekwencje, granice odblokowania wszystkich szczytów i niezmienione serie/ekwipunek. Bez uruchamiania serwera, dostępu do danych gry i instalacji zależności. Test renderera nie zastępuje pełnego E2E w przeglądarce.
+
 ## Znane ograniczenia
 
 Port 3000 jest obecnie wpisany na stałe w `server.js`. Jeśli jest zajęty, zakończ wcześniejszy proces albo zmień port w kodzie. Serwer nasłuchuje tylko na tym komputerze (`127.0.0.1`). Dane JSON są lokalne i zapisywane synchronicznie; nie uruchamiaj kilku serwerów na jednym pliku. Sesje rodzica znikają po restarcie.

@@ -43,6 +43,6 @@ Przykład. Obowiązek za 10 pkt, aktywność dodatkowa za 5 pkt i zaliczone pyta
 
 ### Postęp wyprawy
 
-Wyprawa pokazuje dwa dodatkowe rodzaje postępu. Szczyty odblokowują się za sumę zdobytych dodatnich punktów, bez potrąceń za nagrody i konsekwencje. Sprzęt odblokowuje się według najdłuższej serii dni z kompletem obowiązków. Idealny dzień wymaga co najmniej jednego aktywnego obowiązku i wykonania wszystkich aktywnych obowiązków. Dzisiejszy dzień w trakcie rozliczania nie przerywa bieżącej serii, chyba że rodzic oznaczy obowiązek jako niewykonany.
+Wyprawa pokazuje dwa dodatkowe rodzaje postępu. Szczyty odblokowują się za sumę zdobytych dodatnich punktów, bez potrąceń za nagrody i konsekwencje. Po lokalnej naprawie RF-04 uwzględniają także daty z samym zaliczonym pytaniem; dzień wspólny dla pytań i obowiązków jest rozliczany raz. Sprzęt odblokowuje się według najdłuższej serii dni z kompletem obowiązków. Idealny dzień wymaga co najmniej jednego aktywnego obowiązku i wykonania wszystkich aktywnych obowiązków. Dzisiejszy dzień w trakcie rozliczania nie przerywa bieżącej serii, chyba że rodzic oznaczy obowiązek jako niewykonany.
 
 Znane ograniczenia punktacji: [KNOWN_ISSUES.md](KNOWN_ISSUES.md).

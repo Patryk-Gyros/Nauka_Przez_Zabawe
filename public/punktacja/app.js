@@ -193,7 +193,9 @@ const rafciaMountainGoals=[
 ];
 function rafciaPositiveLifetimePoints(){
  let n=0;const records=state.db?.records||{};
- for(const [k,r] of Object.entries(records)){
+ const days=new Set([...Object.keys(records),...Object.keys(questionDayStatuses())]);
+ for(const k of days){
+  const r=rec(k);
   for(const t of state.db.tasks||[])if(taskState(r,t.id)==="done")n+=Number(t.points)||0;
   for(const e of state.db.extras||[])if(r.extras?.[e.id])n+=Number(e.points)||0;
   for(const c of state.db.challenges||[])if(r.challenges?.[c.id])n+=Number(c.points)||0;
