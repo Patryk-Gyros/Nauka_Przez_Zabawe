@@ -18,7 +18,7 @@ Najpierw realne problemy i wartość dla użytkownika, później uzasadnione zmi
 | F01 | Naprawa uploadu wykonana i przetestowana lokalnie; bez publikacji i merge. |
 | F05 | Zgodność nazw archiwów naprawiona i przetestowana lokalnie; bez publikacji i merge. |
 | RF-01 | P1 — nieukończone utrwalenie audytu; źródło już odnalezione, pełny raport jeszcze poza repo. Nie blokuje wszystkich znanych napraw. |
-| RF-02 + RF-03 | RF-03 wykonane i przetestowane lokalnie; część RF-02 dotycząca salda/nagród wykonana. Odbiór UI i review nadal do wykonania; nie zamyka to całego RF-02 ani RF-09. |
+| RF-02 + RF-03 | RF-03 wykonane i przetestowane lokalnie; część RF-02 dotycząca salda/nagród wykonana. Krótki odbiór UI i review agenta wykonane; akceptacja drugiego programisty pozostaje do wykonania; nie zamyka to całego RF-02 ani RF-09. |
 | RF-05 i RF-06 | P1 — ochrona historii punktów i osiągnięć. RF-06 podniesione z P2; obie karty nadal dotyczą decyzji, nie automatycznej migracji danych. |
 | RF-09 | P1 — odbiór podstawowej ścieżki rodzic–dziecko, w tym uprawnień i restartu, po naprawie salda. |
 | RF-10 | P1 — nowa, wąska weryfikacja lokalnego zapisu i odtwarzania; bez wyboru bazy. |
@@ -26,6 +26,8 @@ Najpierw realne problemy i wartość dla użytkownika, później uzasadnione zmi
 | RF-07 | P2, warunkowe — proste CI dopiero dla użytecznych testów; lokalne kontrole wystarczają do pierwszej naprawy. Wcześniej P1. |
 | RF-08 | P2, odroczone — wydzielenie obliczenia tylko gdy obecny kod rzeczywiście utrudnia konkretną zmianę lub test. |
 | AI-MEM-01 | P3, odroczone — bez projektowania i instalacji. |
+
+Review agenta całego pakietu `14b309f..95a465e` z 2026-11-12: brak wykrytych technicznych blokad merge, regresja 47/47. Nie zastępuje zatwierdzenia drugiego programisty. Nieblokująca uwaga dotycząca advisory Multera i granice weryfikacji są w [handoffie](SESSION_STATE.md).
 
 Audyt przekazany później przez użytkownika ujawnił F01 (upload) i F05 (niezgodne nazwy zapisu/odczytu archiwów); oba potwierdzono w aktualnym kodzie. Obie naprawy wykonano w osobnych lokalnych commitach, bez automatycznej realizacji pozostałych zaleceń.
 
