@@ -38,12 +38,29 @@ Przy utrwalaniu audytu korzystaj z istniejących dokumentów: problem trafia do 
 5. **Gałąź.** Utwórz własną gałąź z aktualnego, uzgodnionego `main`, np. `docs/123-team-workflow`, `fix/124-archive-read` lub `feat/125-approved-feature`. Jedna gałąź realizuje jeden spójny zakres. Nie pracuj bezpośrednio na `main`.
 6. **Implementacja.** Przy istotnej zmianie przedstaw plan przed edycją. Zabezpiecz zmieniane zachowania odpowiednimi testami, pracuj w małych commitach, aktualizuj dokumentację i nie poszerzaj zakresu samodzielnie.
 7. **Publikacja.** Wykonaj push i utwórz PR tylko w zakresie jawnego upoważnienia. Użyj [szablonu PR](../.github/pull_request_template.md), wskaż Issue i poproś drugiego programistę o review. Nie ustawiaj automatycznego merge.
-8. **Review i merge.** Autor poprawia uwagi, a drugi programista zatwierdza aktualny zakres zmian. Istotna zmiana po review wymaga ponownego przeglądu. Merge następuje dopiero po wymaganych kontrolach, review i upoważnieniu do merge. Zgoda na implementację lub push nie jest zgodą na merge ani wdrożenie.
+8. **Review i merge.** Przekaż PR do [niezależnego review](#niezależne-code-review-i-warunki-merge) przez drugiego programistę i jego agenta; spełnij opisane tam warunki merge. Zgoda na implementację lub push nie jest zgodą na merge ani wdrożenie.
 9. **Zamknięcie.** Po rzeczywistym scaleniu uzupełnij Issue, decyzje i wymagane dalsze działania. Oddziel stan implementacji, akceptacji, merge i wdrożenia. Lokalny commit, otwarty PR lub zielone CI nie oznaczają ukończenia wdrożenia. Zostaw punkt wznowienia i zakończ pracę nad etapem; nie uruchamiaj kolejnego bez osobnego zatwierdzenia.
 
 Agent może przygotować treść Issue, komentarza lub PR lokalnie, ale nie publikuje jej bez upoważnienia. Gdy GitHub jest niedostępny albo publikacja nie jest zatwierdzona, użyj lokalnego ID etapu i utrwal handoff w [SESSION_STATE.md](SESSION_STATE.md), także podając go użytkownikowi. Przy późniejszej publikacji dodaj mapowanie lokalnego ID na Issue, zachowując identyfikator do wyszukiwania w historii Git. Nie udawaj, że zespół widzi jeszcze nieopublikowaną gałąź.
 
 Status zadania zapisujemy w Issue: **do uzgodnienia → gotowe → w toku → do review → zakończone**; **zablokowane** wymaga przyczyny i następnego kroku. „Gotowe” oznacza wystarczająco zatwierdzony zakres, nie sam wpis do backlogu.
+
+## Niezależne code review i warunki merge
+
+Po zakończeniu implementacji i przygotowaniu PR przez agenta Łukasza praca trafia do niezależnego review przez Patryka i jego agenta. Analogicznie PR agenta Patryka trafia do Łukasza i jego agenta. Samokontrola autora nie zastępuje niezależnego review. Agent odbierający wskazuje oczekujący PR użytkownikowi; rozpoczyna jego review lub poprawki oraz publikuje wynik wyłącznie w zakresie udzielonego upoważnienia.
+
+Agent wykonujący review:
+
+1. Czyta opis zadania, wymagania, kryteria akceptacji i właściwe zaakceptowane decyzje.
+2. Sprawdza rzeczywisty diff względem bazy PR oraz zmienione pliki i potrzebny kontekst kodu. Zapisuje sprawdzony commit; samo podsumowanie drugiego agenta nie wystarcza.
+3. Weryfikuje zgodność z zaakceptowanym zakresem i logikę biznesową, szuka błędów i regresji, a gdy dotyczy — ocenia bezpieczeństwo.
+4. Analizuje testy, ich pokrycie zmienianego zachowania i wyniki dla sprawdzonej wersji. Wykonuje potrzebne kontrole w odizolowanym środowisku, podaje wyniki własne i pochodzące od autora oraz testy niewykonane z przyczyną. Dla dokumentacji sprawdza spójność, linki i diff.
+5. Zgłasza konkretne uwagi: plik i linię lub zakres diffu, problem, jego skutek oraz dowód lub warunki odtworzenia. Oddziela istotne uwagi blokujące od sugestii.
+6. Przedstawia rekomendację: **zaakceptować / poprawić / wstrzymać do wyjaśnienia**, wraz z uzasadnieniem i ograniczeniami weryfikacji. Brak znalezisk nie jest gwarancją braku błędów.
+
+Agent nie zatwierdza pracy w imieniu programisty ani nie wystawia za niego `APPROVE`. Jego rekomendacja jest materiałem do decyzji człowieka; zgoda na publikację komentarza review nie jest zgodą na zatwierdzenie PR.
+
+Merge jest dopuszczalny dopiero po ukończeniu wymaganych testów i kontroli z wynikiem pozwalającym na merge, niezależnym review, rozwiązaniu istotnych uwag oraz zatwierdzeniu aktualnej wersji przez uprawnionego drugiego programistę. Agent dodatkowo potrzebuje jawnego upoważnienia do merge. Jeżeli po review pojawią się istotne zmiany w kodzie, wymagane są ponowne sprawdzenie zmienionego zakresu, właściwe kontrole i potwierdzenie akceptacji aktualnej wersji. Zielone CI ani review wcześniejszego commitu nie zastępują tych warunków.
 
 ## Mały etap i warunek przejścia dalej
 
@@ -71,12 +88,13 @@ Domyślnym miejscem przekazania jest opis PR zgodny z [szablonem](../.github/pul
 Przekazanie obejmuje:
 
 - ID i cel zadania oraz właściciela;
-- gałąź, commit lub PR i stan publikacji;
-- wykonane zmiany, listę zmienionych plików i modułów;
+- numer i link PR (lub Issue przed utworzeniem PR), gałąź, commit i stan publikacji; brak PR oznacz jawnie;
+- wykonane zmiany i ich uzasadnienie, listę zmienionych plików i modułów;
 - decyzje, odnośniki do akceptacji i przyjęte założenia;
 - wykonane kontrole z wynikiem oraz kontrole niewykonane z powodem;
 - znane problemy, ryzyka, zależności i możliwe konflikty;
-- pozostałą pracę, następne zadanie, pierwszy krok i stan zgody na nie oraz decyzje wymagane od drugiego programisty.
+- co ma sprawdzić drugi agent i kto odbiera review;
+- stan przekazania: oczekuje na review / poprawki / merge, pozostałą pracę, następne zadanie, pierwszy krok i stan zgody na nie oraz decyzje wymagane od drugiego programisty. „Oczekuje na merge” nie oznacza zgody na jego wykonanie.
 
 Gdy PR nie jest gotowy, umieść ten sam format w komentarzu do właściwego Issue. Jeżeli nie można jeszcze publikować, zapisz go w istniejącym [SESSION_STATE.md](SESSION_STATE.md), oznaczając gałąź i brak publikacji. Sama odpowiedź w rozmowie nie wystarcza. Nie twórz osobnego pliku Markdown dla każdej drobnej zmiany.
 
@@ -97,10 +115,7 @@ Na koniec istotnej pracy, również przerwanej w połowie etapu:
 
 Na początku kolejnej sesji:
 
-1. Odczytaj `AGENTS.md`, `SESSION_STATE.md` i wskazany handoff. Sprawdź status Git, gałąź, commity i niezapisane zmiany, zanim zaczniesz edytować.
-2. Zweryfikuj aktualność właściwych Issues, PR, decyzji i referencji zdalnych, jeśli są dostępne; porównaj zmiany od wersji handoffu. Brak dostępu lub nieopublikowane materiały zaznacz jako ograniczenie, nie zgaduj ich treści.
-3. Przeczytaj dokumentację wybranego modułu i etap w roadmapie/Issue. Sprawdź zależności i konflikty. Kod wskazuje zachowanie, zatwierdzone wymagania wskazują cel; sprzeczność zgłoś przed zależną zmianą.
-4. Krótko podaj rozpoznany stan i pierwszy krok. Kontynuuj przerwany etap tylko w granicach nadal aktualnej zgody; jeśli ukończony, poczekaj na zatwierdzenie następnego. Nie powtarzaj kontroli bez powodu: wcześniejsze wyniki zachowują znaczenie tylko dla wskazanej wersji i środowiska.
+Stosuj procedurę startową z [AGENTS.md](../AGENTS.md#na-początku-każdej-nowej-sesji-i-przed-zadaniem). Porównaj stan GitHub z datą i commitem ostatniego handoffu, w tym nowe PR, komentarze review i zmiany wymagające uwagi. Przy pierwszej sesji lub braku takiego punktu sprawdź bieżące otwarte zadania i PR bez odtwarzania całej historii. Brak dostępu lub nieopublikowane materiały zaznacz jako ograniczenie, nie zgaduj ich treści. Kod wskazuje zachowanie, zatwierdzone wymagania wskazują cel; sprzeczność zgłoś przed zależną zmianą. Wcześniejsze wyniki kontroli zachowują znaczenie tylko dla wskazanej wersji i środowiska.
 
 `SESSION_STATE.md` jest mapą aktywnych przekazań, nie dziennikiem wszystkich rozmów ani drugim rejestrem decyzji. Po publikacji przenieś szczegóły do właściwego Issue/PR i pozostaw odnośnik; wersja offline zostaje w historii Git. Po merge zaktualizuj punkt wznowienia zgodnie z rzeczywistym stanem, bez zgadywania przyszłych hashy. Nie zapisuj sekretów ani danych dzieci w żadnej warstwie dokumentacji.
 
@@ -110,7 +125,7 @@ GitHub Issues są wspólnym rejestrem pomysłów i zadań; nie tworzymy równole
 
 Status pomysłu: **propozycja / do analizy / zatwierdzona / odroczona / odrzucona**. Przy decyzji zapisz uzasadnienie, osoby zatwierdzające i odnośnik do ich uzgodnienia. Agent nie może sam zatwierdzić propozycji. „Zatwierdzona” nie oznacza jeszcze zgody na rozpoczęcie dowolnej implementacji: zadanie wykonawcze musi mieć uzgodniony zakres i termin/pierwszeństwo.
 
-Priorytet P0–P3, zależności i kolejność w Issues tworzą roadmapę. [ROADMAP.md](ROADMAP.md) zawiera początkowy podział na etapy oraz inicjatywy jeszcze nieopublikowane. Po utworzeniu Issue zastąp jego roboczą kartę odnośnikiem i zachowaj ID; status i szczegóły aktualizuj w jednym miejscu, w Issue. Nowy pomysł może zmienić kolejność po uzgodnieniu; nie unieważnia automatycznie rozpoczętych zadań. Nie utożsamiaj ważności pomysłu z jego akceptacją. Odroczona inicjatywa pamięci AI pozostaje wyłącznie wpisem na przyszłość.
+Priorytet P0–P3, zależności i kolejność w Issues tworzą roadmapę. [ROADMAP.md](ROADMAP.md) zawiera początkowy podział na etapy oraz inicjatywy jeszcze nieopublikowane. Po utworzeniu Issue zastąp jego roboczą kartę odnośnikiem i zachowaj ID; status i szczegóły aktualizuj w jednym miejscu, w Issue. Nowy pomysł może zmienić kolejność po uzgodnieniu; nie unieważnia automatycznie rozpoczętych zadań. Nie utożsamiaj ważności pomysłu z jego akceptacją.
 
 ## Decyzje i budżet
 
