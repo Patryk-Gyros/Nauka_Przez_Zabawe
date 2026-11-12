@@ -10,3 +10,7 @@
 Multer `1.4.5-lts.2` był objęty [GHSA-wc9g-mqfw-jrwm](https://github.com/expressjs/multer/security/advisories/GHSA-wc9g-mqfw-jrwm), a upload nie miał limitów. Naprawa: Multer `2.3.0`, ograniczenia plików/części i brak pól tekstowych, sprawdzenie konfiguracji generatora przed parserem oraz kontrolowane błędy JSON. Formularze pokazują odmowę zamiast przechodzić do edytora. Zakres: wspólny serwer, zależność i obsługa odpowiedzi uploadu; bez zmian Rafcia i mechanik pozostałych gier. Nie sprawdzano dostępności serwera z internetu.
 
 12 testów przeszło na Node 18.18.0, także po czystym `npm ci --ignore-scripts`; [uruchomienie i limity](RUNBOOK.md#kontrola-uploadu-f01). Status publikacji i ograniczenia w [punkcie wznowienia](SESSION_STATE.md). Pozostałych ustaleń audytu nie uznajemy za naprawione.
+
+## F05 — Niezgodne nazwy archiwów (naprawione lokalnie 2026-11-12)
+
+Zapis tworzył `rafcia-YYYYMMDDHHmmss-losowy.json`, a lista i odczyt wymagały `rafcia-YYYYMMDD-HHmmss-losowy.json`. Wspólny wzorzec odczytu akceptuje teraz oba formaty. Nie zmieniono zapisu ani nazw istniejących plików. Test HTTP zapis → lista → odtworzenie potwierdza zachowanie historii gry i aktualnego PIN-u; dodatkowo sprawdzono oba formaty, odrzucanie obcych ścieżek i wymóg sesji rodzica. [Uruchomienie testów](RUNBOOK.md#kontrola-archiwów-f05). Ta naprawa nie obejmuje odporności zapisu na awarie ani walidacji zawartości importu (F06/F07).

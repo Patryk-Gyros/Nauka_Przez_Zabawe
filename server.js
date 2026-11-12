@@ -848,6 +848,9 @@ app.post("/api/punktacja/parent/consequence/edit", parentAuth, (req, res) => {
 });
 
 /* ================= NOWA GRA I ARCHIWUM ================= */
+// Accept names produced by the writer and the previously supported date-time separator.
+const punktacjaArchiveNamePattern = /^rafcia-\d{8}-?\d{6}-[a-z0-9]+\.json$/i;
+
 function rafciaConfigLibraryFrom(data) {
   const old = data.configLibrary && typeof data.configLibrary === "object" ? data.configLibrary : {};
   const copy = (kind, list, key) => {
@@ -876,7 +879,7 @@ function rafciaArchiveLabel(data) {
 app.get("/api/punktacja/parent/archives", parentAuth, (req, res) => {
   try {
     fs.mkdirSync(punktacjaArchiveDir, { recursive: true });
-    const archives = fs.readdirSync(punktacjaArchiveDir).filter(n => /^rafcia-\d{8}-\d{6}-[a-z0-9]+\.json$/i.test(n)).map(id => {
+    const archives = fs.readdirSync(punktacjaArchiveDir).filter(n => punktacjaArchiveNamePattern.test(n)).map(id => {
       try { const d=JSON.parse(fs.readFileSync(path.join(punktacjaArchiveDir,id),"utf8")); return {id,label:d.label||"Gra archiwalna",savedAtLabel:d.savedAt?new Date(d.savedAt).toLocaleString("pl-PL"):"",savedAt:d.savedAt}; } catch (_) { return null; }
     }).filter(Boolean).sort((a,b)=>String(b.savedAt).localeCompare(String(a.savedAt)));
     res.json({ok:true,archives});
@@ -959,7 +962,7 @@ app.post("/api/punktacja/parent/new-game", parentAuth, (req, res) => {
 app.post("/api/punktacja/parent/archive/load", parentAuth, (req, res) => {
   try {
     const id = String(req.body?.id || "");
-    if (!/^rafcia-\d{8}-\d{6}-[a-z0-9]+\.json$/i.test(id)) return res.status(400).json({error:"Nieprawidłowy identyfikator archiwum."});
+    if (!punktacjaArchiveNamePattern.test(id)) return res.status(400).json({error:"Nieprawidłowy identyfikator archiwum."});
     const file = path.join(punktacjaArchiveDir,id);
     if (!fs.existsSync(file)) return res.status(404).json({error:"Nie znaleziono zapisu w archiwum."});
     const archive = JSON.parse(fs.readFileSync(file,"utf8"));

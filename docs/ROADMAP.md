@@ -2,7 +2,7 @@
 
 To roboczy podział prac do uzgodnienia, oparty na [wymaganiach](REQUIREMENTS.md), [mapie produktu](RAFCIO.md) i [znanych problemach](KNOWN_ISSUES.md). Nie zastępuje pełnego audytu ani nie zatwierdza jego rekomendacji. Pełny raport audytu nie został jeszcze utrwalony w repo; RF-01 ma uzupełnić ten brak bez odtwarzania nieznanych ustaleń z domysłów.
 
-**RF-00 jest wykonane i scalone. Kierunek określa [D-005](DECISIONS.md#d-005--prosty-rozwój-po-rf-00). Zlecenie z 2026-11-12 zatwierdziło małą naprawę F01 i potrzebne testy, bez push i merge; wynik poniżej.** Pozostałe zadania są propozycjami wymagającymi osobnego zatwierdzenia. Zakończenie jednego nie rozpoczyna następnego. Zasady akceptacji i wycofania określa [TEAM_WORKFLOW.md](TEAM_WORKFLOW.md), a bieżący stan i pierwszy krok kolejnej sesji — [SESSION_STATE.md](SESSION_STATE.md).
+**RF-00 jest wykonane i scalone. Kierunek określa [D-005](DECISIONS.md#d-005--prosty-rozwój-po-rf-00). Zlecenia z 2026-11-12 zatwierdziły osobno małe naprawy F01 i F05 z testami, bez push i merge; wyniki poniżej.** Pozostałe zadania są propozycjami wymagającymi osobnego zatwierdzenia. Zakończenie jednego nie rozpoczyna następnego. Zasady akceptacji i wycofania określa [TEAM_WORKFLOW.md](TEAM_WORKFLOW.md), a bieżący stan i pierwszy krok kolejnej sesji — [SESSION_STATE.md](SESSION_STATE.md).
 
 ID `RF-*` i `AI-MEM-01` są lokalnymi identyfikatorami, nie numerami istniejących Issues. Po upoważnionej publikacji zachowaj ID i zastąp roboczą kartę linkiem do Issue. Wtedy tylko Issue przechowuje aktualny status, właściciela, zgodę i szczegóły etapu; tutaj zostaje kolejność i powiązanie. Nie publikowano tych zadań. Kontrola GitHub z 2026-11-12: brak otwartych PR; przed implementacją sprawdzić ponownie.
 
@@ -16,8 +16,9 @@ Najpierw realne problemy i wartość dla użytkownika, później uzasadnione zmi
 | --- | --- |
 | RF-00 | Wykonane i scalone; nie ponawiać merge. |
 | F01 | Naprawa uploadu wykonana i przetestowana lokalnie; bez publikacji i merge. |
+| F05 | Zgodność nazw archiwów naprawiona i przetestowana lokalnie; bez publikacji i merge. |
 | RF-01 | P1 — nieukończone utrwalenie audytu; źródło już odnalezione, pełny raport jeszcze poza repo. Nie blokuje wszystkich znanych napraw. |
-| RF-02 + RF-03 | P1 — testy i naprawa dostępności nagrody; pakiet salda opisany poniżej; po audycie pierwszeństwo otrzymało F01, a następnie rekomendowana jest naprawa archiwów F05. |
+| RF-02 + RF-03 | P1 — testy i naprawa dostępności nagrody; pakiet salda opisany poniżej; wcześniej wykonano lokalnie F01 i F05; naprawa salda nadal wymaga osobnej zgody. |
 | RF-05 i RF-06 | P1 — ochrona historii punktów i osiągnięć. RF-06 podniesione z P2; obie karty nadal dotyczą decyzji, nie automatycznej migracji danych. |
 | RF-09 | P1 — odbiór podstawowej ścieżki rodzic–dziecko, w tym uprawnień i restartu, po naprawie salda. |
 | RF-10 | P1 — nowa, wąska weryfikacja lokalnego zapisu i odtwarzania; bez wyboru bazy. |
@@ -26,7 +27,7 @@ Najpierw realne problemy i wartość dla użytkownika, później uzasadnione zmi
 | RF-08 | P2, odroczone — wydzielenie obliczenia tylko gdy obecny kod rzeczywiście utrudnia konkretną zmianę lub test. |
 | AI-MEM-01 | P3, odroczone — bez projektowania i instalacji. |
 
-Audyt przekazany później przez użytkownika ujawnił F01 (upload) i F05 (niezgodne nazwy zapisu/odczytu archiwów); oba potwierdzono w aktualnym kodzie. Obecna zmiana naprawia tylko F01.
+Audyt przekazany później przez użytkownika ujawnił F01 (upload) i F05 (niezgodne nazwy zapisu/odczytu archiwów); oba potwierdzono w aktualnym kodzie. Obie naprawy wykonano w osobnych lokalnych commitach, bez automatycznej realizacji pozostałych zaleceń.
 
 Potwierdzone błędy bezpieczeństwa mają pierwszeństwo stosownie do skutków (P0 dla krytycznych). Katalog `KNOWN_ISSUES.md` nie stanowi pełnego audytu bezpieczeństwa; nie dopisujemy nieudowodnionych luk ani nie uznajemy bezpieczeństwa za potwierdzone. Dla wykrytej luki najpierw dowód, wpływ, mały zakres naprawy i osobna zgoda. Nie trzeba czekać na zakończenie całego RF-01.
 
@@ -39,7 +40,15 @@ RF-02 dostarcza testy potrzebne konkretnej naprawie; nie wymaga budowy pełnej p
 - **Testy / akceptacja:** 12/12 testów HTTP i formularzy, również po czystej instalacji z lockfile. Poprawny upload działa z atrapą AI, błędne/zbyt duże/przerwane żądania nie zatrzymują procesu. Bez odczytu danych użytkownika. Szczegóły w [handoffie](SESSION_STATE.md) i [runbooku](RUNBOOK.md#kontrola-uploadu-f01).
 - **Ryzyko / zależności:** zmiana głównej wersji parsera sprawdzona na obecnym runtime; limity mogą odrzucić dotychczas przyjmowane duże zestawy. Nie wykonywano pełnego E2E z usługą AI ani testu masowego ruchu.
 - **Wycofanie:** odwrócenie commitu nie wymaga migracji danych, ale przywraca podatność. Nie uruchamiać starego uploadu po cofnięciu; przy problemie zgodności pozostawić generator wyłączony (bez klucza) z nową bramką przed parserem i przygotować poprawkę. Nie odtwarzać wcześniejszych danych gry.
-- **Status:** wykonane lokalnie, do review; bez push/PR/merge. F05 i pakiet salda pozostają niezatwierdzone.
+- **Status:** wykonane lokalnie, do review; bez push/PR/merge. F05 wykonano później na podstawie osobnego zlecenia; pakiet salda nadal niezatwierdzony.
+
+### F05 — Zgodność nazw archiwów
+
+- **Cel / zakres / zgoda:** mała naprawa listy i odtwarzania archiwów; typ B, P1, właściciel Łukasz. Zlecenie użytkownika z 2026-11-12: F05 i test zapis → lista → odtworzenie, bez push/merge. Bez zmian formatu danych i migracji plików.
+- **Wynik:** jeden wzorzec nazw dla listy i odczytu przyjmuje zapisane przez aplikację 14 cyfr oraz wcześniej akceptowany separator daty/godziny. Zapis pozostaje zgodny z dotychczasowymi plikami.
+- **Testy / akceptacja:** przed poprawką 3/5 testów archiwów wykazały problem; po poprawce 5/5 przeszło, wraz z 12/12 testów F01. Rzeczywisty zapis i HTTP na syntetycznych danych; pełny stan gry i aktualny PIN zachowane po odtworzeniu. Oba formaty, obce ścieżki, pliki tymczasowe i brak sesji sprawdzone.
+- **Ryzyko / wycofanie:** starsze, dotychczas ukryte archiwa stają się dostępne. Odtworzenie nadal zastępuje bieżącą grę; bez zmian ochrony przed awarią i walidacji importu. Cofnąć wyłącznie commit F05, bez podmieniania danych i bez cofania F01; stare ograniczenie nazw wtedy wróci.
+- **Status / zależności:** wykonane lokalnie, do review. Gałąź zawiera wcześniejsze lokalne F01 i dokumentację; szczegóły w [punkcie wznowienia](SESSION_STATE.md). Żaden kolejny etap nie jest zlecony.
 
 ### RF-00 — Dokumentacja współpracy i ciągłości
 
@@ -155,7 +164,7 @@ RF-02 dostarcza testy potrzebne konkretnej naprawie; nie wymaga budowy pełnej p
 
 ## Pierwszy rekomendowany pakiet — RF-03 z testami salda z RF-02
 
-**Status: propozycja do zatwierdzenia, nie rozpoczęto implementacji. Po otrzymaniu audytu pierwszeństwo otrzymało F01; następnie rekomendowane jest F05.** Jeden rezultat i jeden przyszły PR: dziecko może poprosić o nagrodę za punkty widoczne na ekranie. Typ B z niezbędnymi testami regresji; proponowany wykonawca Łukasz, review Patryk, do uzgodnienia. Szacunek 0,5–1 dnia po zapewnieniu izolowanego uruchomienia.
+**Status: propozycja do zatwierdzenia, nie rozpoczęto implementacji. Po otrzymaniu audytu wcześniej wykonano lokalnie F01 i F05.** Jeden rezultat i jeden przyszły PR: dziecko może poprosić o nagrodę za punkty widoczne na ekranie. Typ B z niezbędnymi testami regresji; proponowany wykonawca Łukasz, review Patryk, do uzgodnienia. Szacunek 0,5–1 dnia po zapewnieniu izolowanego uruchomienia.
 
 - **Dowód i reguła:** odczyt kodu na `529000b`: `server.js::calculateAvailablePoints` pomija pytania, a oba endpointy nagród korzystają z tej funkcji. `public/punktacja/app.js::dayPoints`, `totalPoints`, `questionDayPoints` uwzględniają daty ze statusem `done`. Źródła wymagań: `RAFCIO.md`, sekcje „Odbiór nagrody” w przebiegu gry i tabela salda; `KNOWN_ISSUES.md`, pierwszy problem. Jest to potwierdzenie statyczne; testu uruchomieniowego w tej sesji nie wykonywano.
 - **Dokładny zakres:** doliczyć po stronie serwera zaliczone pytania dnia do salda używanego przez `/api/punktacja/reward-request` oraz `/api/punktacja/parent/reward`. Zachować semantykę obecnej stawki z `questionDayPoints`: liczba skończona i nieujemna zaokrąglona do całkowitej, w pozostałych przypadkach 10; tylko status `done`, również bez wpisu daty w `records`. Testy i krótka instrukcja uruchomienia oraz aktualizacja opisu naprawionego problemu należą do pakietu.

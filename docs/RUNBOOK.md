@@ -30,6 +30,10 @@ Generator quizów jest oddzielny: aby działał endpoint `/analizuj`, skopiuj `.
 
 `/analizuj` przyjmuje maksymalnie 5 plików po 5 MiB w polu `images`, bez pól tekstowych. Limit jest egzekwowany także bez `Content-Length`. Przekroczenie rozmiaru/liczby części daje JSON 413, błędny formularz 400. Bez klucza generator zwraca 503 przed uruchomieniem parsera uploadu. Limity dotyczą jednego żądania; nie stanowią ochrony publicznej usługi przed masowym ruchem. Nie dodano sprawdzania zawartości obrazów ani zmiany zasad dostępu.
 
+## Kontrola archiwów F05
+
+`npm run test:archives` lub `node --test test/archives.test.js`: testy lokalnego HTTP i rzeczywistego zapisu na dysku, wyłącznie w automatycznie usuwanym katalogu tymczasowym z syntetyczną grą. Kopiowany jest kod, bez `.env`, danych użytkownika i archiwów. Sprawdzają zapis przy nowej grze → listę → odtworzenie całego stanu, zachowanie aktualnego PIN-u, oba formaty nazw, niepoprawne ścieżki i brak sesji. Odczyt obsługuje nazwy z separatorem daty/godziny i bez niego; istniejących plików nie trzeba przemianowywać. Wszystkie obecne testy: `node --test test/*.test.js`.
+
 ## Znane ograniczenia
 
 Port 3000 jest obecnie wpisany na stałe w `server.js`. Jeśli jest zajęty, zakończ wcześniejszy proces albo zmień port w kodzie. Serwer nasłuchuje tylko na tym komputerze (`127.0.0.1`). Dane JSON są lokalne i zapisywane synchronicznie; nie uruchamiaj kilku serwerów na jednym pliku. Sesje rodzica znikają po restarcie.
