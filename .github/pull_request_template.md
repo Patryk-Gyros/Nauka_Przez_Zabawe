@@ -34,13 +34,16 @@
 ## Agent Handoff
 
 - Gałąź:
-- Commit przekazania lub PR:
-- Stan publikacji / review / merge:
+- Commit przekazania:
+- Numer i link PR (przed publikacją: Issue lub „PR nieutworzony”):
+- Stan publikacji / review / merge (oczekuje na review / poprawki / merge):
 - Znane problemy i ryzyka:
 - Zależności i potencjalne konflikty z innymi zadaniami / PR:
 - Dalsze wymagane działania:
 - Następna sesja: ID zadania, pierwszy krok i stan zgody (kontynuacja / oczekuje na zatwierdzenie):
 - Punkt wznowienia w docs/SESSION_STATE.md i niezacommitowane zmiany, jeśli zostały:
+- Odbiorca niezależnego review: Patryk i jego agent / Łukasz i jego agent:
+- Co powinien sprawdzić drugi agent:
 - Decyzja lub działanie wymagane od drugiego programisty:
 
 ## Gotowość do review
@@ -51,4 +54,13 @@
 - [ ] Istotne decyzje i właściwa dokumentacja są aktualne.
 - [ ] Handoff i punkt wznowienia są zapisane; kolejny etap nie został rozpoczęty bez zatwierdzenia.
 
-<!-- Review drugiego programisty i upoważnienie do merge są osobnymi warunkami. Te checkboxy ani zielone CI ich nie zastępują. Bez automatycznego merge. Gdy PR nie jest gotowy, użyj tego samego formatu w Issue lub nieopublikowanym handoffie dla użytkownika. -->
+## Review i gotowość do merge
+
+- Sprawdzony commit i odnośnik do niezależnego review:
+- Rekomendacja agenta: zaakceptować / poprawić / wstrzymać do wyjaśnienia; uzasadnienie, uwagi z lokalizacją oraz testy niewykonane:
+- Zatwierdzenie aktualnej wersji przez uprawnionego drugiego programistę (osoba / odnośnik; do czasu decyzji: oczekuje):
+- [ ] Wymagane testy i kontrole ukończone z wynikiem pozwalającym na merge.
+- [ ] Niezależne review wykonane, istotne uwagi rozwiązane; istotne zmiany po review ponownie sprawdzone.
+- [ ] Drugi programista zatwierdził aktualną wersję; upoważnienie do merge jest udokumentowane.
+
+<!-- Zasady review: docs/TEAM_WORKFLOW.md, sekcja „Niezależne code review i warunki merge”. Agent przedstawia rekomendację, nie zatwierdza PR w imieniu człowieka. Zaznaczaj wyłącznie potwierdzone warunki. Bez automatycznego merge. Gdy PR nie jest gotowy, użyj tego samego formatu w Issue lub nieopublikowanym handoffie dla użytkownika. -->

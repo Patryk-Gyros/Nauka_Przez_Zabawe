@@ -2,13 +2,15 @@
 
 Rafcio jest aplikacją dla wszystkich dzieci, również dzieci o różnych potrzebach rozwojowych. To prototyp obejmujący panel rodzica i dziecka; nie deklaruj gotowości produkcyjnej.
 
-## Przed zadaniem
+## Na początku każdej nowej sesji i przed zadaniem
 
-1. Przeczytaj ten plik, [punkt wznowienia](docs/SESSION_STATE.md), wskazany handoff oraz dokumentację dotyczącą zmienianego modułu. Nie czytaj całego repo przy drobnej operacji.
-2. Sprawdź zatwierdzone [decyzje](docs/DECISIONS.md), właściwe Issue, zależności i powiązane PR. Gdy nie masz dostępu do GitHub, zaznacz brak weryfikacji i poproś o aktualne informacje potrzebne do pracy.
-3. Sprawdź gałąź, status Git i odpowiednie zmiany względem uzgodnionej bazy. Lokalny `origin/main` może być nieaktualny. Nie nadpisuj cudzych ani niezidentyfikowanych zmian.
-4. Określ zakres i typ zmiany: **A** — refaktor bez zmiany zachowania; **B** — naprawa względem potwierdzonego wymagania; **C** — rozwój produktu wymagający osobnej zgody. Dla istotnej zmiany przedstaw plan i uzgodnij brakujące decyzje przed implementacją.
-5. Wybierz jeden zatwierdzony etap z [roadmapy](docs/ROADMAP.md) lub właściwego Issue. Musi mieć cel, zakres, zależności, testy, kryteria akceptacji i sposób wycofania. Zakończenie etapu nie upoważnia do rozpoczęcia kolejnego.
+1. Przeczytaj ten plik, a następnie aktualny [punkt wznowienia](docs/SESSION_STATE.md) i wskazany handoff. Czytaj tylko dokumenty i zmiany istotne dla zadania, bez odtwarzania całej historii projektu.
+2. Sprawdź aktualne Issues i Pull Requests w GitHub, w tym nowe PR, komentarze review i zmiany od poprzedniego przekazania. Ustal, czy drugi programista lub jego agent zakończył pracę oczekującą na niezależne review. Gdy nie masz dostępu do GitHub, zaznacz brak weryfikacji i poproś o aktualne informacje potrzebne do pracy.
+3. Sprawdź zatwierdzone [decyzje](docs/DECISIONS.md) dotyczące zadania, jego wymagania, zależności i dokumentację modułu.
+4. Sprawdź gałąź, status Git i odpowiednie zmiany względem uzgodnionej bazy. Pobierz aktualne referencje zdalne, jeśli masz dostęp; lokalny `origin/main` może być nieaktualny. Nie nadpisuj cudzych ani niezidentyfikowanych zmian.
+5. Przed edycją krótko wskaż użytkownikowi zadania zakończone, oczekujące na review oraz prace możliwe do kontynuowania w ramach aktualnej zgody. Wskaż nowe uwagi i zaproponuj odpowiednią czynność. Bez upoważnienia nie rozpoczynaj pracy nad cudzym PR ani nie publikuj review.
+6. Określ zakres i typ zmiany: **A** — refaktor bez zmiany zachowania; **B** — naprawa względem potwierdzonego wymagania; **C** — rozwój produktu wymagający osobnej zgody. Dla istotnej zmiany przedstaw plan i uzgodnij brakujące decyzje przed implementacją.
+7. Wybierz jeden zatwierdzony etap z [roadmapy](docs/ROADMAP.md) lub właściwego Issue. Musi mieć cel, zakres, zależności, testy, kryteria akceptacji i sposób wycofania. Zakończenie etapu nie upoważnia do rozpoczęcia kolejnego.
 
 ## Źródła i granice
 
@@ -21,7 +23,7 @@ Rafcio jest aplikacją dla wszystkich dzieci, również dzieci o różnych potrz
 
 - Łukasz odpowiada domyślnie za architekturę, backend, integracje, infrastrukturę, bezpieczeństwo, jakość, CI/CD, środowiska i wdrożenia. Patryk za kierunek produktu, mechaniki, grę, propozycje UI/UX i implementację uzgodnionych zadań. Podział jest elastyczny; propozycje obu osób są równorzędne.
 - Istotne decyzje architektoniczne, produktowe i infrastrukturalne uzgadniają obaj programiści. Agent nie zatwierdza decyzji w ich imieniu.
-- Pracuj na osobnej gałęzi i w niezależnym checkoutcie przy równoległej pracy. Bez bezpośrednich zmian na `main`, nadpisywania cudzej gałęzi i automatycznego merge. Push i merge wykonuj tylko w zakresie jawnego upoważnienia; merge wymaga review i zatwierdzenia drugiego programisty.
+- Pracuj na osobnej gałęzi i w niezależnym checkoutcie przy równoległej pracy. Bez bezpośrednich zmian na `main`, nadpisywania cudzej gałęzi i automatycznego merge. Push i merge wykonuj tylko w zakresie jawnego upoważnienia; [niezależne review i warunki merge](docs/TEAM_WORKFLOW.md#niezależne-code-review-i-warunki-merge) są obowiązkowe. Agent przedstawia rekomendację, nie zatwierdza pracy w imieniu programisty.
 - Niezależne sesje agentów nie komunikują się automatycznie. Obaj agenci korzystają z tych samych zatwierdzonych zasad i sprawdzają ich aktualność. Przekazuj stan przez Issue, PR, komentarze i dokumenty; rozmowa, kompresja kontekstu i lokalna pamięć nie są jedynym źródłem. Stosuj [TEAM_WORKFLOW.md](docs/TEAM_WORKFLOW.md) oraz [szablon PR / handoff](.github/pull_request_template.md).
 
 ## Jakość, dane i koszty
